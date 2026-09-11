@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ARGUS-NEURO :: Fleet Health Console</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+          <circle cx="24" cy="24" r="21" class="brand-ring" />
+          <circle cx="24" cy="24" r="6" class="brand-eye" />
+          <path d="M24 3 L24 10 M24 38 L24 45 M3 24 L10 24 M38 24 L45 24" class="brand-spokes" />
+        </svg>
+        <div class="brand-text">
+          <h1>ARGUS<span class="accent">-NEURO</span></h1>
+          <p class="subtitle" data-i18n="subtitle">Прогнозная диагностика силовой электроники · морские и беспилотные платформы</p>
+        </div>
+      </div>
+      <div class="header-controls">
+        <div class="lang-switch" role="group" aria-label="language">
+          <button type="button" class="lang-btn active" data-lang="ru">RU</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <div class="conn-status" id="connStatus">
+          <span class="dot" id="connDot"></span>
+          <span id="connLabel">connecting…</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="fleet-summary" id="fleetSummary">
+      <div class="summary-card">
+        <span class="summary-value" id="summaryAvgHealth">--</span>
+        <span class="summary-label" data-i18n="avgHealth">Средний индекс здоровья</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-value" id="summaryAssetCount">--</span>
+        <span class="summary-label" data-i18n="assetsMonitored">Активов под наблюдением</span>
+      </div>
+      <div class="summary-card warn">
+        <span class="summary-value" id="summaryAnomalyCount">--</span>
+        <span class="summary-label" data-i18n="activeAnomalies">Активные аномалии</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-value" id="summaryBackend">--</span>
+        <span class="summary-label" data-i18n="backendMode">Режим инференса</span>
+      </div>
+    </section>
+
+    <main>
+      <section class="fleet-grid" id="fleetGrid" aria-label="Fleet asset cards"></section>
+
+      <aside class="alerts-panel">
+        <h2 data-i18n="alertsTitle">Журнал аномалий</h2>
+        <ul id="alertsList" class="alerts-list">
+          <li class="alert-empty" data-i18n="noAlerts">Аномалий пока не зафиксировано</li>
+        </ul>
+      </aside>
+    </main>
+
+    <footer class="app-footer">
+      <span data-i18n="footerLine">ARGUS-NEURO &mdash; платформа прогнозной диагностики и мониторинга состояния силовой электроники (C++/Python, ML + DL)</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
