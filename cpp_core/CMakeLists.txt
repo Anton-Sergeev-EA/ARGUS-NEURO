@@ -9,6 +9,11 @@ target_compile_features(argus_core_lib PUBLIC cxx_std_20)
 # pybind11 shared module below.
 set_target_properties(argus_core_lib PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
+# Native unit tests (no external framework, see tests/test_signal_features.cpp).
+add_executable(argus_core_tests tests/test_signal_features.cpp)
+target_link_libraries(argus_core_tests PRIVATE argus_core_lib)
+target_compile_features(argus_core_tests PUBLIC cxx_std_20)
+
 # Python extension module (built only when pybind11 is available).
 find_package(pybind11 CONFIG QUIET)
 if(pybind11_FOUND)
