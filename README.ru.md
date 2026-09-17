@@ -143,7 +143,7 @@ bash scripts/run_dashboard.sh
 ## Автор
 
 **Сергеев Антон Валентинович**
-Почта: [avsergeev1981@gmail.com](mailto:avsergeev1981@gmail.com)
+Почта: [kavery@mail.ru](mailto:kavery@mail.ru)
 
 ## Лицензия
 
