@@ -105,7 +105,7 @@ argus-neuro/
 ## Quickstart
 
 ```bash
-git clone <this-repo> argus-neuro && cd argus-neuro
+git clone https://github.com/Anton-Sergeev-EA/ARGUS-NEURO.git argus-neuro && cd argus-neuro
 
 # 1. Install Python deps + build the native C++ core (creates ./build)
 bash scripts/setup_env.sh
@@ -147,4 +147,4 @@ Email: [avsergeev1981@gmail.com](mailto:avsergeev1981@gmail.com)
 
 ## License
 
-See [LICENSE](LICENSE) — all rights reserved, provided for evaluation and demonstration.
+See [LICENSE](LICENSE) — MIT.
