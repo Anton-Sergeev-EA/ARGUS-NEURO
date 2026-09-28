@@ -57,6 +57,8 @@ concept SampleRange = requires(R r) {
 ///                    vibration waveform) for one window.
 /// @param sample_rate_hz  Sampling rate used to acquire `samples`, needed to
 ///                    convert FFT bins to physical frequencies (Hz).
+/// @throws std::invalid_argument for empty/non-finite samples or a sampling
+///                    rate that is not finite and positive.
 FeatureVector extract_features(std::span<const double> samples,
                                 double sample_rate_hz);
 
@@ -72,9 +74,10 @@ FeatureVector extract_features(const R& samples, double sample_rate_hz) {
 /// raw spectra for visualization, not just summary features.
 void fft_radix2(std::vector<std::complex<double>>& data);
 
-/// Zero-pads (or truncates) `input` up to the next power-of-two length,
+/// Zero-pads `input` up to the next power-of-two length,
 /// runs fft_radix2 and returns the single-sided magnitude spectrum
-/// (length = padded_size / 2 + 1).
+/// (length = padded_size / 2 + 1), normalized by padded_size. No samples are
+/// truncated. Empty/non-finite input is rejected. A single sample has only DC.
 std::vector<double> magnitude_spectrum(std::span<const double> input);
 
 }  // namespace argus_core
