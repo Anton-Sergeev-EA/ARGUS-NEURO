@@ -7,6 +7,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include <cstring>
 #include <vector>
 
 #include "argus_core/signal_features.hpp"
@@ -15,13 +16,21 @@ namespace py = pybind11;
 
 namespace {
 
-std::vector<double> ndarray_to_vector(const py::array_t<double>& arr) {
+using SampleArray = py::array_t<double, py::array::c_style | py::array::forcecast>;
+
+std::vector<double> ndarray_to_vector(const SampleArray& arr) {
     py::buffer_info info = arr.request();
     if (info.ndim != 1) {
         throw std::invalid_argument("expected a 1-D array of samples");
     }
-    const auto* ptr = static_cast<const double*>(info.ptr);
-    return std::vector<double>(ptr, ptr + info.shape[0]);
+    // c_style materializes strided/reversed arrays before taking this pointer.
+    // Own a copy before releasing the GIL: Python may then mutate the source.
+    if (info.shape[0] == 0) return {};
+    std::vector<double> result(static_cast<std::size_t>(info.shape[0]));
+    // NumPy permits contiguous views with unaligned data pointers. memcpy
+    // avoids dereferencing an unaligned double on stricter CPU architectures.
+    std::memcpy(result.data(), info.ptr, result.size() * sizeof(double));
+    return result;
 }
 
 }  // namespace
@@ -63,8 +72,9 @@ PYBIND11_MODULE(argus_core, m) {
 
     m.def(
         "extract_features",
-        [](const py::array_t<double>& samples, double sample_rate_hz) {
+        [](const SampleArray& samples, double sample_rate_hz) {
             const auto vec = ndarray_to_vector(samples);
+            py::gil_scoped_release release;
             return argus_core::extract_features(vec, sample_rate_hz);
         },
         py::arg("samples"), py::arg("sample_rate_hz"),
@@ -73,8 +83,9 @@ PYBIND11_MODULE(argus_core, m) {
 
     m.def(
         "magnitude_spectrum",
-        [](const py::array_t<double>& samples) {
+        [](const SampleArray& samples) {
             const auto vec = ndarray_to_vector(samples);
+            py::gil_scoped_release release;
             return argus_core::magnitude_spectrum(vec);
         },
         py::arg("samples"),

@@ -8,4 +8,6 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+include(CTest)
+
 add_subdirectory(cpp_core)

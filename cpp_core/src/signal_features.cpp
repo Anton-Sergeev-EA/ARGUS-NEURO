@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <bit>
 #include <cmath>
+#include <limits>
 #include <numbers>
 #include <numeric>
 #include <stdexcept>
@@ -31,7 +32,22 @@ namespace {
 
 std::size_t next_pow2(std::size_t n) {
     if (n <= 1) return 1;
-    return std::size_t{1} << (std::bit_width(n - 1));
+    const auto bits = std::bit_width(n - 1);
+    if (bits >= std::numeric_limits<std::size_t>::digits) {
+        throw std::length_error("sample window is too large for FFT padding");
+    }
+    return std::size_t{1} << bits;
+}
+
+void validate_samples(std::span<const double> samples) {
+    if (samples.empty()) {
+        throw std::invalid_argument("expected a non-empty sample window");
+    }
+    if (!std::all_of(samples.begin(), samples.end(), [](double value) {
+            return std::isfinite(value);
+        })) {
+        throw std::invalid_argument("samples must contain only finite values");
+    }
 }
 
 }  // namespace
@@ -71,6 +87,7 @@ void fft_radix2(std::vector<std::complex<double>>& data) {
 }
 
 std::vector<double> magnitude_spectrum(std::span<const double> input) {
+    validate_samples(input);
     const std::size_t padded = next_pow2(input.size());
     std::vector<std::complex<double>> buffer(padded, {0.0, 0.0});
     for (std::size_t i = 0; i < input.size(); ++i) {
@@ -88,11 +105,9 @@ std::vector<double> magnitude_spectrum(std::span<const double> input) {
 
 FeatureVector extract_features(std::span<const double> samples,
                                 double sample_rate_hz) {
-    if (samples.empty()) {
-        throw std::invalid_argument("extract_features: empty sample window");
-    }
-    if (sample_rate_hz <= 0.0) {
-        throw std::invalid_argument("extract_features: sample_rate_hz must be > 0");
+    validate_samples(samples);
+    if (!std::isfinite(sample_rate_hz) || sample_rate_hz <= 0.0) {
+        throw std::invalid_argument("sample_rate_hz must be finite and > 0");
     }
 
     const auto n = static_cast<double>(samples.size());
@@ -138,22 +153,30 @@ FeatureVector extract_features(std::span<const double> samples,
 
     // --- Frequency-domain features ---
     const auto spectrum = magnitude_spectrum(samples);
-    const std::size_t padded = (spectrum.size() - 1) * 2;
+    const std::size_t padded = next_pow2(samples.size());
     const double bin_hz = sample_rate_hz / static_cast<double>(padded);
 
-    double energy = 0.0, weighted_freq = 0.0, best_mag = -1.0;
+    double energy = 0.0, weighted_freq = 0.0, best_mag = 0.0;
     std::size_t best_bin = 0;
     // Skip DC bin (index 0) when looking for the dominant oscillation.
     for (std::size_t bin = 1; bin < spectrum.size(); ++bin) {
         const double mag = spectrum[bin];
         energy += mag * mag;
         weighted_freq += mag * static_cast<double>(bin) * bin_hz;
-        if (mag > best_mag) {
-            best_mag = mag;
-            best_bin = bin;
-        }
+        best_mag = std::max(best_mag, mag);
     }
     const double mag_sum = std::accumulate(spectrum.begin() + 1, spectrum.end(), 0.0);
+
+    // Ignore numerical noise and choose the lowest bin for effectively tied
+    // peaks, so equivalent FFT implementations produce the same frequency.
+    if (best_mag > 1e-12) {
+        for (std::size_t bin = 1; bin < spectrum.size(); ++bin) {
+            if (spectrum[bin] >= best_mag * (1.0 - 1e-12)) {
+                best_bin = bin;
+                break;
+            }
+        }
+    }
 
     f.dominant_frequency_hz = static_cast<double>(best_bin) * bin_hz;
     f.spectral_centroid_hz = (mag_sum > 1e-12) ? weighted_freq / mag_sum : 0.0;

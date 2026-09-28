@@ -4,10 +4,12 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-PYBIND11_CMAKE_DIR="$(python3 -m pybind11 --cmakedir)"
+ARGUS_PYTHON="${ARGUS_PYTHON:-$PWD/.venv/bin/python}"
+if [[ ! -x "$ARGUS_PYTHON" ]]; then ARGUS_PYTHON=python3; fi
+PYBIND11_CMAKE_DIR="$("$ARGUS_PYTHON" -m pybind11 --cmakedir)"
 
 mkdir -p build
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Dpybind11_DIR="${PYBIND11_CMAKE_DIR}"
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Dpybind11_DIR="${PYBIND11_CMAKE_DIR}" -DPython_EXECUTABLE="$(command -v "$ARGUS_PYTHON")"
 cmake --build build -j"$(nproc)"
 
 echo
