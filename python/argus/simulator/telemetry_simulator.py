@@ -33,10 +33,10 @@ class AssetType(str, enum.Enum):
 
 class FaultType(str, enum.Enum):
     NONE = "NONE"
-    OVERHEATING = "OVERHEATING"               # cooling degradation / overload
-    BEARING_WEAR = "BEARING_WEAR"              # rising broadband vibration
-    VOLTAGE_SAG = "VOLTAGE_SAG"                # weakening supply / connector
-    FREQUENCY_DRIFT = "FREQUENCY_DRIFT"        # control-loop / clock fault
+    OVERHEATING = "OVERHEATING"  # cooling degradation / overload
+    BEARING_WEAR = "BEARING_WEAR"  # rising broadband vibration
+    VOLTAGE_SAG = "VOLTAGE_SAG"  # weakening supply / connector
+    FREQUENCY_DRIFT = "FREQUENCY_DRIFT"  # control-loop / clock fault
     INSULATION_DEGRADATION = "INSULATION_DEGRADATION"  # leakage current rise
 
 
@@ -61,8 +61,14 @@ _PROFILES: dict[AssetType, _NominalProfile] = {
         vibration_g=0.15,
         frequency_hz=50.0,
         load_factor=0.65,
-        noise_std=dict(voltage_v=1.5, current_a=2.0, temperature_c=0.4,
-                        vibration_g=0.01, frequency_hz=0.03, load_factor=0.03),
+        noise_std=dict(
+            voltage_v=1.5,
+            current_a=2.0,
+            temperature_c=0.4,
+            vibration_g=0.01,
+            frequency_hz=0.03,
+            load_factor=0.03,
+        ),
     ),
     AssetType.UAV_PDU: _NominalProfile(
         voltage_v=48.0,
@@ -71,8 +77,14 @@ _PROFILES: dict[AssetType, _NominalProfile] = {
         vibration_g=0.35,
         frequency_hz=400.0,
         load_factor=0.55,
-        noise_std=dict(voltage_v=0.4, current_a=1.2, temperature_c=0.6,
-                        vibration_g=0.03, frequency_hz=0.5, load_factor=0.05),
+        noise_std=dict(
+            voltage_v=0.4,
+            current_a=1.2,
+            temperature_c=0.6,
+            vibration_g=0.03,
+            frequency_hz=0.5,
+            load_factor=0.05,
+        ),
     ),
 }
 
@@ -98,7 +110,7 @@ def fault_progression(n_steps: int, onset_frac: float) -> np.ndarray:
     if tail > 0:
         # Smoothstep-ish ramp: slow start, accelerating decay -> failure.
         x = np.linspace(0.0, 1.0, tail)
-        ramp[onset_step:] = x ** 1.6
+        ramp[onset_step:] = x**1.6
     return ramp
 
 
@@ -131,20 +143,36 @@ class AssetSimulator:
         anomaly detectors.
         """
         profile = _PROFILES[asset_type]
-        severity = fault_progression(n_steps, fault_onset_frac) if fault_type != FaultType.NONE else np.zeros(n_steps)
+        severity = (
+            fault_progression(n_steps, fault_onset_frac)
+            if fault_type != FaultType.NONE
+            else np.zeros(n_steps)
+        )
 
         t = np.arange(n_steps) * dt_seconds
         rng = self._rng
 
-        voltage = np.full(n_steps, profile.voltage_v) + rng.normal(0, profile.noise_std["voltage_v"], n_steps)
-        current = np.full(n_steps, profile.current_a) + rng.normal(0, profile.noise_std["current_a"], n_steps)
-        temperature = np.full(n_steps, profile.temperature_c) + rng.normal(0, profile.noise_std["temperature_c"], n_steps)
-        vibration = np.full(n_steps, profile.vibration_g) + rng.normal(0, profile.noise_std["vibration_g"], n_steps)
-        frequency = np.full(n_steps, profile.frequency_hz) + rng.normal(0, profile.noise_std["frequency_hz"], n_steps)
+        voltage = np.full(n_steps, profile.voltage_v) + rng.normal(
+            0, profile.noise_std["voltage_v"], n_steps
+        )
+        current = np.full(n_steps, profile.current_a) + rng.normal(
+            0, profile.noise_std["current_a"], n_steps
+        )
+        temperature = np.full(n_steps, profile.temperature_c) + rng.normal(
+            0, profile.noise_std["temperature_c"], n_steps
+        )
+        vibration = np.full(n_steps, profile.vibration_g) + rng.normal(
+            0, profile.noise_std["vibration_g"], n_steps
+        )
+        frequency = np.full(n_steps, profile.frequency_hz) + rng.normal(
+            0, profile.noise_std["frequency_hz"], n_steps
+        )
         load = np.clip(
-            profile.load_factor + 0.12 * np.sin(2 * math.pi * t / (n_steps * dt_seconds / 3))
+            profile.load_factor
+            + 0.12 * np.sin(2 * math.pi * t / (n_steps * dt_seconds / 3))
             + rng.normal(0, profile.noise_std["load_factor"], n_steps),
-            0.05, 1.0,
+            0.05,
+            1.0,
         )
 
         if fault_type == FaultType.OVERHEATING:
@@ -157,7 +185,11 @@ class AssetSimulator:
             voltage -= severity * (profile.voltage_v * 0.22)
             current += severity * (profile.current_a * 0.15)
         elif fault_type == FaultType.FREQUENCY_DRIFT:
-            frequency += severity * (profile.frequency_hz * 0.06) * np.sign(rng.normal(size=n_steps))
+            frequency += (
+                severity
+                * (profile.frequency_hz * 0.06)
+                * np.sign(rng.normal(size=n_steps))
+            )
         elif fault_type == FaultType.INSULATION_DEGRADATION:
             current += severity * (profile.current_a * 0.35)
             temperature += severity * (profile.temperature_c * 0.3)
@@ -169,21 +201,23 @@ class AssetSimulator:
             np.maximum(n_steps - 1 - np.arange(n_steps), 0),
         )
 
-        return pd.DataFrame({
-            "t_s": t,
-            "asset_id": asset_id,
-            "asset_type": asset_type.value,
-            "voltage_v": voltage,
-            "current_a": current,
-            "temperature_c": temperature,
-            "vibration_g": np.clip(vibration, 0.0, None),
-            "frequency_hz": frequency,
-            "load_factor": load,
-            "fault_type": fault_type.value,
-            "fault_label": detectable.astype(int),
-            "fault_severity": severity,
-            "rul_steps": rul_steps,
-        })
+        return pd.DataFrame(
+            {
+                "t_s": t,
+                "asset_id": asset_id,
+                "asset_type": asset_type.value,
+                "voltage_v": voltage,
+                "current_a": current,
+                "temperature_c": temperature,
+                "vibration_g": np.clip(vibration, 0.0, None),
+                "frequency_hz": frequency,
+                "load_factor": load,
+                "fault_type": fault_type.value,
+                "fault_label": detectable.astype(int),
+                "fault_severity": severity,
+                "rul_steps": rul_steps,
+            }
+        )
 
     # ------------------------------------------------------------------
     # Single high-rate raw waveform (for the C++ spectral feature core)
@@ -220,9 +254,13 @@ class AssetSimulator:
             signal += severity * 0.3 * np.sin(2 * math.pi * fundamental * 2.7 * t)
         elif fault_type == FaultType.FREQUENCY_DRIFT:
             drift = severity * fundamental * 0.05
-            signal = np.sin(2 * math.pi * (fundamental + drift) * t) + rng.normal(0, 0.02, n_samples)
+            signal = np.sin(2 * math.pi * (fundamental + drift) * t) + rng.normal(
+                0, 0.02, n_samples
+            )
         elif fault_type == FaultType.INSULATION_DEGRADATION:
-            signal += severity * 0.25 * np.sin(2 * math.pi * fundamental * 0.5 * t)  # sub-harmonic leakage
+            signal += (
+                severity * 0.25 * np.sin(2 * math.pi * fundamental * 0.5 * t)
+            )  # sub-harmonic leakage
         elif fault_type == FaultType.VOLTAGE_SAG:
             envelope = 1.0 - severity * 0.3
             signal *= envelope
