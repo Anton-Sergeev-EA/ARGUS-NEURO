@@ -52,6 +52,8 @@ def test_spectral_baseline_detector_separates_normal_from_extreme():
     detector = SpectralBaselineDetector(contamination=0.05).fit(normal)
 
     normal_scores = detector.score_batch(rng.normal(loc=0.0, scale=1.0, size=(50, 11)))
-    extreme_scores = detector.score_batch(rng.normal(loc=15.0, scale=1.0, size=(50, 11)))
+    extreme_scores = detector.score_batch(
+        rng.normal(loc=15.0, scale=1.0, size=(50, 11))
+    )
 
     assert extreme_scores.mean() > normal_scores.mean()
