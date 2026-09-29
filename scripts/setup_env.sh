@@ -1,21 +1,10 @@
 #!/usr/bin/env bash
-# One-shot environment setup: Python dependencies + native core build.
+# Isolated environment for the tested CPython 3.12 dependency set.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-
-echo "==> Installing Python dependencies"
-pip install -r python/requirements.txt
-
-echo "==> Installing pybind11 (build-time, CMake config package)"
-pip install pybind11
-
-echo "==> Building the C++ core"
+ARGUS_PYTHON="${ARGUS_PYTHON:-python3}"
+if [[ ! -x .venv/bin/python ]]; then "$ARGUS_PYTHON" -m venv .venv; fi
+.venv/bin/python -m pip install -r python/requirements-dev.txt
+export PATH="$PWD/.venv/bin:$PATH"
 bash scripts/build_cpp_core.sh
-
-echo
-echo "Setup complete. Next steps:"
-echo "  export PYTHONPATH=\"\$PWD/python:\$PWD/build/cpp_core\""
-echo "  python -m argus.training.train_anomaly"
-echo "  python -m argus.training.train_rul"
-echo "  python -m argus.export.export_onnx"
-echo "  bash scripts/run_dashboard.sh"
+printf '%s\n' 'Next: bash scripts/train_all.sh, then bash scripts/run_dashboard.sh'
