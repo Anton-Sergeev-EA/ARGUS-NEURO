@@ -1,11 +1,13 @@
-numpy>=1.26
-pandas>=2.2
-scikit-learn>=1.4
-torch>=2.2
-onnx>=1.15
-onnxscript>=0.2  # required by torch's dynamo-based ONNX exporter (torch>=2.5)
-joblib>=1.3
-fastapi>=0.110
-uvicorn[standard]>=0.29
-websockets>=12.0
-pytest>=8.0
+# Tested on CPython 3.12 / Linux. Retrain bundles when changing versions.
+numpy==2.5.3
+pandas==3.0.5
+scikit-learn==1.9.1
+torch==2.14.0
+onnx==1.22.0
+onnxscript==0.7.2
+joblib==1.6.0
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+websockets==17.1
+pybind11==3.1.0
+pytest==9.1.1
