@@ -163,3 +163,29 @@ canvas.sparkline { width: 100%; height: 42px; display: block; }
   .fleet-summary { grid-template-columns: repeat(2, 1fr); }
   main { grid-template-columns: 1fr; }
 }
+
+/* Source, freshness and evidence are part of every diagnostic decision. */
+.source-banner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding: 14px 16px; border: 1px solid var(--accent); border-radius: var(--radius); background: var(--accent-soft); font-size: 12px; }
+.source-banner strong, #freshnessLabel { display: block; }
+#freshnessLabel { margin-top: 6px; color: var(--text-dim); }
+.source-banner.stale { border-color: var(--warn); background: rgba(251, 191, 36, 0.06); }
+.feed-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.feed-controls button { color: var(--text); border: 1px solid var(--border); border-radius: 7px; padding: 7px 10px; background: var(--bg-panel); font: inherit; cursor: pointer; }
+.feed-controls button:disabled { opacity: .5; cursor: default; }
+button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.asset-card.stale { border-style: dashed; }
+.asset-card.stale .gauge-row { opacity: .55; }
+.badge.unknown { background: rgba(251, 191, 36, 0.1); color: var(--warn); }
+.rul-note { margin: 6px 0; font-size: 10.5px; color: var(--text-dim); }
+.quality-line { font-size: 11px; color: var(--text-dim); margin-top: 12px; }
+.quality-issues, .evidence-list, .explanation-list { padding-left: 15px; margin: 7px 0; font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
+.quality-issues { color: var(--warn); }
+.evidence-panel, .decision-passport { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 11px; }
+summary { cursor: pointer; color: var(--text-dim); }
+.disagreement { color: var(--warn); font-size: 11px; font-weight: 600; margin-top: 8px; }
+.passport-id, .model-version { margin-top: 6px; overflow-wrap: anywhere; font: 10px var(--mono); color: var(--text-dim); }
+.asset-card-head { gap: 6px; }
+.asset-id { overflow-wrap: anywhere; }
+.badge { flex-shrink: 0; max-width: 45%; text-align: center; }
+#summaryBackend { font-size: 17px; min-height: 31px; display: flex; align-items: center; }
+@media (max-width: 440px) { .app { padding: 16px 12px 40px; } .fleet-summary { gap: 8px; } .summary-card { padding: 12px; } .header-controls { flex-wrap: wrap; } }
