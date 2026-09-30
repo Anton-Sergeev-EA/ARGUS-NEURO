@@ -1,0 +1,19 @@
+{
+  "cpp_release_build": "passed",
+  "ctest": "1/1 passed",
+  "python_native": "65 passed",
+  "python_numpy": "50 passed, 15 native-only skipped",
+  "ruff_check": "passed",
+  "ruff_format": "27 files formatted",
+  "dashboard_node": "3 passed",
+  "full_training_export_activation": "passed",
+  "http_routes": [
+    "/",
+    "/app.js",
+    "/styles.css",
+    "/api/fleet"
+  ],
+  "websocket": "3 consecutive snapshots, six assets each",
+  "browser_visual": "unavailable: bwrap sandbox failure",
+  "onnx_backend": "ReferenceEvaluator; deployment runtime not tested"
+}

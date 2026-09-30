@@ -1,0 +1,27 @@
+{
+  "hypothesis": "Whole-run splits and training-only scalers remove window leakage; input checks and reference evidence improve diagnostic correctness. No claim of superior field accuracy.",
+  "commit": "fd64b9d355e62f97986a8e90bd7e1f59c89fabe9",
+  "uncommitted_changes": true,
+  "created_at": "2026-09-30T18:02:38.938908+00:00",
+  "seeds": {
+    "autoencoder": 3,
+    "rul": 5,
+    "baseline": 11
+  },
+  "epochs": {
+    "autoencoder": 12,
+    "rul": 15
+  },
+  "batch_size": 64,
+  "learning_rate": 0.001,
+  "n_steps": 600,
+  "dt_seconds": 5,
+  "command": "bash scripts/train_all.sh",
+  "active_bundle": "run-20260930-205903-mXJuVp",
+  "baseline_source": "git archive HEAD python; original training modules, current native core on unchanged power-of-two waveform sizes",
+  "seconds": {
+    "baseline": 36.05690622329712,
+    "revised": 24.62027121699998
+  },
+  "scope_note": "Protocol repair and diagnostic features, not a controlled single-hyperparameter accuracy experiment."
+}

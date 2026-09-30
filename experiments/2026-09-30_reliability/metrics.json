@@ -1,0 +1,1046 @@
+{
+  "anomaly_training_report.json": {
+    "baseline": {
+      "baseline": {
+        "backend": "native_cpp",
+        "healthy_mean_score": 0.4057959308453178,
+        "faulty_mean_score": 0.698027590616922,
+        "separation": 0.2922316597716042
+      },
+      "autoencoder": {
+        "epochs": 12,
+        "final_train_loss": 0.035276999103914165,
+        "loss_history": [
+          0.49507182204820077,
+          0.14592638037509414,
+          0.110326483687027,
+          0.04984662845791232,
+          0.04143616902447376,
+          0.039071697424379374,
+          0.03738057939807977,
+          0.036582720093806906,
+          0.03590137631638055,
+          0.035638047695824876,
+          0.035491252911199665,
+          0.035276999103914165
+        ],
+        "anomaly_threshold": 0.07913181930780411,
+        "precision": 0.7542662116040956,
+        "recall": 0.5893333333333334,
+        "f1": 0.6616766467065869,
+        "n_windows_evaluated": 8990
+      },
+      "seconds": 11.064002275466919
+    },
+    "revised": {
+      "schema_version": 2,
+      "data_source": "synthetic",
+      "real_world_calibrated": false,
+      "versions": {
+        "numpy": "2.5.3",
+        "torch": "2.14.0+cpu",
+        "scikit-learn": "1.9.1",
+        "pandas": "3.0.5"
+      },
+      "sample_interval_seconds": 5.0,
+      "n_steps": 600,
+      "window_len": 24,
+      "sensor_columns": [
+        "voltage_v",
+        "current_a",
+        "temperature_c",
+        "vibration_g",
+        "frequency_hz",
+        "load_factor"
+      ],
+      "sensor_reference_profiles": {
+        "MARINE_CONVERTER": {
+          "mean": [
+            400.0274554540358,
+            120.02416604741948,
+            55.00255951118518,
+            0.1500897804940391,
+            50.00039179176776,
+            0.6497362101798801
+          ],
+          "std": [
+            1.496159451860424,
+            1.9842866396936187,
+            0.39576475473396755,
+            0.009952452146925339,
+            0.03009623470290805,
+            0.08987478787295314
+          ],
+          "columns": [
+            "voltage_v",
+            "current_a",
+            "temperature_c",
+            "vibration_g",
+            "frequency_hz",
+            "load_factor"
+          ]
+        },
+        "UAV_PDU": {
+          "mean": [
+            48.00388085567114,
+            34.97836097463464,
+            42.00850100817767,
+            0.35032959000872743,
+            399.9969207953116,
+            0.5500921925273379
+          ],
+          "std": [
+            0.4008463427066954,
+            1.193267418397851,
+            0.6070048924345127,
+            0.03022951903295579,
+            0.4982949986200538,
+            0.09936271233518941
+          ],
+          "columns": [
+            "voltage_v",
+            "current_a",
+            "temperature_c",
+            "vibration_g",
+            "frequency_hz",
+            "load_factor"
+          ]
+        }
+      },
+      "baseline": {
+        "precision": 0.9933774834437086,
+        "recall": 1.0,
+        "f1": 0.9966777408637874,
+        "false_positive_rate": 0.0125,
+        "confusion_matrix": {
+          "tp": 150,
+          "fp": 1,
+          "fn": 0,
+          "tn": 79
+        },
+        "n_windows_evaluated": 230,
+        "backend": "native_cpp",
+        "healthy_mean_score": 0.4057542932981084,
+        "faulty_mean_score": 0.6980922997019323,
+        "separation": 0.2923380064038239,
+        "anomaly_threshold": 0.562875641797126,
+        "threshold_quantile": 0.99,
+        "train_seed": 11,
+        "validation_seed": 12,
+        "test_seed": 13,
+        "evaluation_partition": "independent_synthetic_test_waveforms"
+      },
+      "autoencoder": {
+        "precision": 0.7811634349030471,
+        "recall": 0.5850622406639004,
+        "f1": 0.6690391459074733,
+        "false_positive_rate": 0.05103359173126615,
+        "confusion_matrix": {
+          "tp": 282,
+          "fp": 79,
+          "fn": 200,
+          "tn": 1469
+        },
+        "n_windows_evaluated": 2030,
+        "epochs": 12,
+        "batch_size": 64,
+        "learning_rate": 0.001,
+        "seed": 3,
+        "final_train_loss": 0.038970895265710764,
+        "loss_history": [
+          0.5230070786229495,
+          0.15069781233524454,
+          0.12760537104017433,
+          0.10237432949501893,
+          0.08796824997869031,
+          0.05193197435174865,
+          0.043320156830823284,
+          0.0414968632932367,
+          0.040283028233325344,
+          0.03962564619108178,
+          0.03925458254485295,
+          0.038970895265710764
+        ],
+        "anomaly_threshold": 0.07825745642185211,
+        "threshold_quantile": 0.99,
+        "threshold_partition": "healthy_validation_runs",
+        "scaler_partition": "healthy_train_runs",
+        "evaluation_partition": "test",
+        "split": {
+          "strategy": "stratified_run",
+          "train": {
+            "n_runs": 34,
+            "run_ids": [
+              "MARINE_CONVERTER-BEARING_WEAR-000",
+              "MARINE_CONVERTER-FREQUENCY_DRIFT-001",
+              "MARINE_CONVERTER-INSULATION_DEGRADATION-002",
+              "MARINE_CONVERTER-HEALTHY-003",
+              "MARINE_CONVERTER-HEALTHY-013",
+              "MARINE_CONVERTER-HEALTHY-014",
+              "MARINE_CONVERTER-HEALTHY-010",
+              "MARINE_CONVERTER-HEALTHY-006",
+              "MARINE_CONVERTER-HEALTHY-001",
+              "MARINE_CONVERTER-HEALTHY-002",
+              "MARINE_CONVERTER-HEALTHY-011",
+              "MARINE_CONVERTER-HEALTHY-007",
+              "MARINE_CONVERTER-HEALTHY-000",
+              "MARINE_CONVERTER-HEALTHY-009",
+              "MARINE_CONVERTER-HEALTHY-004",
+              "MARINE_CONVERTER-OVERHEATING-000",
+              "MARINE_CONVERTER-VOLTAGE_SAG-001",
+              "UAV_PDU-BEARING_WEAR-002",
+              "UAV_PDU-FREQUENCY_DRIFT-001",
+              "UAV_PDU-INSULATION_DEGRADATION-000",
+              "UAV_PDU-HEALTHY-012",
+              "UAV_PDU-HEALTHY-014",
+              "UAV_PDU-HEALTHY-007",
+              "UAV_PDU-HEALTHY-002",
+              "UAV_PDU-HEALTHY-015",
+              "UAV_PDU-HEALTHY-009",
+              "UAV_PDU-HEALTHY-003",
+              "UAV_PDU-HEALTHY-001",
+              "UAV_PDU-HEALTHY-011",
+              "UAV_PDU-HEALTHY-013",
+              "UAV_PDU-HEALTHY-008",
+              "UAV_PDU-HEALTHY-005",
+              "UAV_PDU-OVERHEATING-000",
+              "UAV_PDU-VOLTAGE_SAG-001"
+            ]
+          },
+          "validation": {
+            "n_runs": 14,
+            "run_ids": [
+              "MARINE_CONVERTER-BEARING_WEAR-002",
+              "MARINE_CONVERTER-FREQUENCY_DRIFT-000",
+              "MARINE_CONVERTER-INSULATION_DEGRADATION-000",
+              "MARINE_CONVERTER-HEALTHY-015",
+              "MARINE_CONVERTER-HEALTHY-012",
+              "MARINE_CONVERTER-OVERHEATING-002",
+              "MARINE_CONVERTER-VOLTAGE_SAG-002",
+              "UAV_PDU-BEARING_WEAR-001",
+              "UAV_PDU-FREQUENCY_DRIFT-002",
+              "UAV_PDU-INSULATION_DEGRADATION-001",
+              "UAV_PDU-HEALTHY-000",
+              "UAV_PDU-HEALTHY-004",
+              "UAV_PDU-OVERHEATING-001",
+              "UAV_PDU-VOLTAGE_SAG-000"
+            ]
+          },
+          "test": {
+            "n_runs": 14,
+            "run_ids": [
+              "MARINE_CONVERTER-BEARING_WEAR-001",
+              "MARINE_CONVERTER-FREQUENCY_DRIFT-002",
+              "MARINE_CONVERTER-INSULATION_DEGRADATION-001",
+              "MARINE_CONVERTER-HEALTHY-005",
+              "MARINE_CONVERTER-HEALTHY-008",
+              "MARINE_CONVERTER-OVERHEATING-001",
+              "MARINE_CONVERTER-VOLTAGE_SAG-000",
+              "UAV_PDU-BEARING_WEAR-000",
+              "UAV_PDU-FREQUENCY_DRIFT-000",
+              "UAV_PDU-INSULATION_DEGRADATION-002",
+              "UAV_PDU-HEALTHY-006",
+              "UAV_PDU-HEALTHY-010",
+              "UAV_PDU-OVERHEATING-002",
+              "UAV_PDU-VOLTAGE_SAG-002"
+            ]
+          }
+        },
+        "n_train_windows": 3480,
+        "n_validation_windows": 580,
+        "model_config": {
+          "n_features": 6,
+          "hidden_size": 32,
+          "latent_size": 12,
+          "num_layers": 1
+        }
+      },
+      "sha256": {
+        "baseline_detector.joblib": "e6fb25caf2183515175f0c3160ac884e7c1065814bc7eb1d1558885f6579ec72",
+        "autoencoder.pt": "b3d8f8b7a54a295dd3c20fdc264e71b0bcdf4a5bb1d1c4794ecfce93e13b28a0",
+        "sensor_scaler.json": "a1d8a96d77e57dfa839ffb8ba7fae4441b5d0597c272b546e544fab65beb7db6"
+      },
+      "seconds": 6.547855501999948
+    }
+  },
+  "rul_training_report.json": {
+    "baseline": {
+      "epochs": 15,
+      "final_val_mae_normalized": 0.19641444087028503,
+      "history": [
+        {
+          "epoch": 0,
+          "train_loss": 0.040074261440376,
+          "val_mae": 0.21827003359794617
+        },
+        {
+          "epoch": 1,
+          "train_loss": 0.03285622385918006,
+          "val_mae": 0.21642372012138367
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.031746551847466956,
+          "val_mae": 0.20858751237392426
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.031030729629522524,
+          "val_mae": 0.20969612896442413
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.03080302961057328,
+          "val_mae": 0.20578429102897644
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.030464078473875538,
+          "val_mae": 0.20461513102054596
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.03010283268489412,
+          "val_mae": 0.20076516270637512
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.03036292040981277,
+          "val_mae": 0.2088799625635147
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.03018690047683629,
+          "val_mae": 0.24794161319732666
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.033262883864237376,
+          "val_mae": 0.20472528040409088
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.03049462925771187,
+          "val_mae": 0.2014259397983551
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.030199984727053323,
+          "val_mae": 0.19862541556358337
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.02920621346992121,
+          "val_mae": 0.19655145704746246
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.02956265241481953,
+          "val_mae": 0.20554310083389282
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.028974625861185318,
+          "val_mae": 0.19641444087028503
+        }
+      ],
+      "seconds": 24.9929039478302,
+      "n_windows": 11600
+    },
+    "revised": {
+      "schema_version": 2,
+      "data_source": "synthetic",
+      "real_world_calibrated": false,
+      "sample_interval_seconds": 5.0,
+      "n_steps": 600,
+      "horizon_seconds": 3000.0,
+      "window_len": 24,
+      "sensor_columns": [
+        "voltage_v",
+        "current_a",
+        "temperature_c",
+        "vibration_g",
+        "frequency_hz",
+        "load_factor"
+      ],
+      "scaler_file": "rul_sensor_scaler.json",
+      "scaler_partition": "healthy_train_runs",
+      "prediction_interval": {
+        "method": "held_out_validation_absolute_residual",
+        "coverage": 0.9,
+        "absolute_error_quantile_normalized": 0.4675038158893585,
+        "test_empirical_coverage": 0.9206896551724137,
+        "caveat": "Overlapping windows are correlated; no real-world coverage guarantee."
+      },
+      "target_semantics": "Synthetic failure countdown; healthy runs right-censored at horizon.",
+      "epochs": 15,
+      "batch_size": 64,
+      "learning_rate": 0.001,
+      "seed": 5,
+      "versions": {
+        "numpy": "2.5.3",
+        "torch": "2.14.0+cpu",
+        "scikit-learn": "1.9.1",
+        "pandas": "3.0.5"
+      },
+      "model_config": {
+        "n_features": 6,
+        "hidden_size": 32,
+        "num_layers": 2,
+        "dropout": 0.1
+      },
+      "split": {
+        "strategy": "stratified_run",
+        "train": {
+          "n_runs": 56,
+          "run_ids": [
+            "MARINE_CONVERTER-BEARING_WEAR-002",
+            "MARINE_CONVERTER-BEARING_WEAR-003",
+            "MARINE_CONVERTER-BEARING_WEAR-005",
+            "MARINE_CONVERTER-BEARING_WEAR-000",
+            "MARINE_CONVERTER-FREQUENCY_DRIFT-001",
+            "MARINE_CONVERTER-FREQUENCY_DRIFT-003",
+            "MARINE_CONVERTER-FREQUENCY_DRIFT-002",
+            "MARINE_CONVERTER-FREQUENCY_DRIFT-005",
+            "MARINE_CONVERTER-INSULATION_DEGRADATION-000",
+            "MARINE_CONVERTER-INSULATION_DEGRADATION-001",
+            "MARINE_CONVERTER-INSULATION_DEGRADATION-004",
+            "MARINE_CONVERTER-INSULATION_DEGRADATION-002",
+            "MARINE_CONVERTER-HEALTHY-006",
+            "MARINE_CONVERTER-HEALTHY-004",
+            "MARINE_CONVERTER-HEALTHY-001",
+            "MARINE_CONVERTER-HEALTHY-003",
+            "MARINE_CONVERTER-HEALTHY-000",
+            "MARINE_CONVERTER-HEALTHY-007",
+            "MARINE_CONVERTER-HEALTHY-008",
+            "MARINE_CONVERTER-HEALTHY-005",
+            "MARINE_CONVERTER-OVERHEATING-002",
+            "MARINE_CONVERTER-OVERHEATING-001",
+            "MARINE_CONVERTER-OVERHEATING-003",
+            "MARINE_CONVERTER-OVERHEATING-000",
+            "MARINE_CONVERTER-VOLTAGE_SAG-000",
+            "MARINE_CONVERTER-VOLTAGE_SAG-003",
+            "MARINE_CONVERTER-VOLTAGE_SAG-002",
+            "MARINE_CONVERTER-VOLTAGE_SAG-004",
+            "UAV_PDU-BEARING_WEAR-000",
+            "UAV_PDU-BEARING_WEAR-001",
+            "UAV_PDU-BEARING_WEAR-004",
+            "UAV_PDU-BEARING_WEAR-005",
+            "UAV_PDU-FREQUENCY_DRIFT-003",
+            "UAV_PDU-FREQUENCY_DRIFT-002",
+            "UAV_PDU-FREQUENCY_DRIFT-004",
+            "UAV_PDU-FREQUENCY_DRIFT-005",
+            "UAV_PDU-INSULATION_DEGRADATION-004",
+            "UAV_PDU-INSULATION_DEGRADATION-001",
+            "UAV_PDU-INSULATION_DEGRADATION-003",
+            "UAV_PDU-INSULATION_DEGRADATION-000",
+            "UAV_PDU-HEALTHY-005",
+            "UAV_PDU-HEALTHY-001",
+            "UAV_PDU-HEALTHY-000",
+            "UAV_PDU-HEALTHY-006",
+            "UAV_PDU-HEALTHY-002",
+            "UAV_PDU-HEALTHY-003",
+            "UAV_PDU-HEALTHY-009",
+            "UAV_PDU-HEALTHY-004",
+            "UAV_PDU-OVERHEATING-004",
+            "UAV_PDU-OVERHEATING-005",
+            "UAV_PDU-OVERHEATING-000",
+            "UAV_PDU-OVERHEATING-002",
+            "UAV_PDU-VOLTAGE_SAG-004",
+            "UAV_PDU-VOLTAGE_SAG-002",
+            "UAV_PDU-VOLTAGE_SAG-005",
+            "UAV_PDU-VOLTAGE_SAG-001"
+          ]
+        },
+        "validation": {
+          "n_runs": 12,
+          "run_ids": [
+            "MARINE_CONVERTER-BEARING_WEAR-001",
+            "MARINE_CONVERTER-FREQUENCY_DRIFT-004",
+            "MARINE_CONVERTER-INSULATION_DEGRADATION-005",
+            "MARINE_CONVERTER-HEALTHY-009",
+            "MARINE_CONVERTER-OVERHEATING-005",
+            "MARINE_CONVERTER-VOLTAGE_SAG-005",
+            "UAV_PDU-BEARING_WEAR-003",
+            "UAV_PDU-FREQUENCY_DRIFT-001",
+            "UAV_PDU-INSULATION_DEGRADATION-005",
+            "UAV_PDU-HEALTHY-007",
+            "UAV_PDU-OVERHEATING-003",
+            "UAV_PDU-VOLTAGE_SAG-003"
+          ]
+        },
+        "test": {
+          "n_runs": 12,
+          "run_ids": [
+            "MARINE_CONVERTER-BEARING_WEAR-004",
+            "MARINE_CONVERTER-FREQUENCY_DRIFT-000",
+            "MARINE_CONVERTER-INSULATION_DEGRADATION-003",
+            "MARINE_CONVERTER-HEALTHY-002",
+            "MARINE_CONVERTER-OVERHEATING-004",
+            "MARINE_CONVERTER-VOLTAGE_SAG-001",
+            "UAV_PDU-BEARING_WEAR-002",
+            "UAV_PDU-FREQUENCY_DRIFT-000",
+            "UAV_PDU-INSULATION_DEGRADATION-002",
+            "UAV_PDU-HEALTHY-008",
+            "UAV_PDU-OVERHEATING-001",
+            "UAV_PDU-VOLTAGE_SAG-000"
+          ]
+        }
+      },
+      "evaluation_partition": "test",
+      "final_val_mae_normalized": 0.21105296909809113,
+      "test_mae_normalized": 0.18753905594348907,
+      "test_rmse_normalized": 0.24700476229190826,
+      "baseline": {
+        "method": "training_target_median",
+        "prediction": 0.6733333468437195,
+        "test_mae_normalized": 0.2880459427833557
+      },
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.042297134941141006,
+          "val_mae": 0.21345597505569458
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.03304687248808997,
+          "val_mae": 0.21412135660648346
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.031955244188458465,
+          "val_mae": 0.21446660161018372
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.03126298120162757,
+          "val_mae": 0.20499412715435028
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.03172037954180699,
+          "val_mae": 0.20963941514492035
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.030836784344148167,
+          "val_mae": 0.2054065614938736
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.030567523385650417,
+          "val_mae": 0.20305930078029633
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.030044098752619597,
+          "val_mae": 0.21596719324588776
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.030188857101527928,
+          "val_mae": 0.1988513469696045
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.029692010730137965,
+          "val_mae": 0.19872476160526276
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.03082117204705776,
+          "val_mae": 0.19870489835739136
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.030742823855556878,
+          "val_mae": 0.20511092245578766
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.028935243383857417,
+          "val_mae": 0.199446901679039
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.02857623555940654,
+          "val_mae": 0.1983170360326767
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.028522765722694656,
+          "val_mae": 0.21105296909809113
+        }
+      ],
+      "n_train_windows": 8120,
+      "n_validation_windows": 1740,
+      "n_test_windows": 1740,
+      "seconds": 18.072415715000034,
+      "sha256": {
+        "rul_predictor.pt": "031f185b6e10065ac7ab587267e4302d02b7f6e81e35c2f7327b74437e64c226",
+        "rul_sensor_scaler.json": "d98a81e901f11f1e9d0fec21da908359ae9ccf25e011956e1a5c1e77c94154d0"
+      }
+    }
+  },
+  "onnx": {
+    "autoencoder": {
+      "path": "autoencoder.onnx",
+      "max_absolute_error": 7.748603820800781e-07,
+      "test_scales": [
+        0,
+        1,
+        5
+      ],
+      "backend": "onnx.reference.ReferenceEvaluator"
+    },
+    "rul_predictor": {
+      "path": "rul_predictor.onnx",
+      "max_absolute_error": 1.1920928955078125e-07,
+      "test_scales": [
+        0,
+        1,
+        5
+      ],
+      "backend": "onnx.reference.ReferenceEvaluator"
+    }
+  },
+  "integration": {
+    "ticks": 401,
+    "seconds_median_p95_max": [
+      0.07235385900003166,
+      0.14525385499996446,
+      0.20004858799995873
+    ],
+    "snapshots": {
+      "0": [
+        {
+          "asset_id": "SHIP-CONV-01",
+          "status": "warming_up",
+          "is_anomaly": null,
+          "rul_hours": null,
+          "health_index": null,
+          "evidence": []
+        },
+        {
+          "asset_id": "SHIP-CONV-02",
+          "status": "warming_up",
+          "is_anomaly": null,
+          "rul_hours": null,
+          "health_index": null,
+          "evidence": []
+        },
+        {
+          "asset_id": "SHIP-THRUST-01",
+          "status": "warming_up",
+          "is_anomaly": null,
+          "rul_hours": null,
+          "health_index": null,
+          "evidence": []
+        },
+        {
+          "asset_id": "UAV-PDU-07",
+          "status": "warming_up",
+          "is_anomaly": null,
+          "rul_hours": null,
+          "health_index": null,
+          "evidence": []
+        },
+        {
+          "asset_id": "UAV-PDU-11",
+          "status": "warming_up",
+          "is_anomaly": null,
+          "rul_hours": null,
+          "health_index": null,
+          "evidence": []
+        },
+        {
+          "asset_id": "UAV-PDU-14",
+          "status": "warming_up",
+          "is_anomaly": true,
+          "rul_hours": null,
+          "health_index": null,
+          "evidence": []
+        }
+      ],
+      "23": [
+        {
+          "asset_id": "SHIP-CONV-01",
+          "status": "ready",
+          "is_anomaly": false,
+          "rul_hours": 0.6515,
+          "health_index": 57.6,
+          "evidence": [
+            {
+              "sensor": "vibration_g",
+              "observed": 0.13442,
+              "reference": 0.15009,
+              "deviation_sigma": 1.108
+            },
+            {
+              "sensor": "frequency_hz",
+              "observed": 49.99682,
+              "reference": 50.00039,
+              "deviation_sigma": 1.064
+            },
+            {
+              "sensor": "temperature_c",
+              "observed": 55.34332,
+              "reference": 55.00256,
+              "deviation_sigma": 1.058
+            }
+          ]
+        },
+        {
+          "asset_id": "SHIP-CONV-02",
+          "status": "ready",
+          "is_anomaly": false,
+          "rul_hours": 0.6553,
+          "health_index": 58.7,
+          "evidence": [
+            {
+              "sensor": "frequency_hz",
+              "observed": 50.00473,
+              "reference": 50.00039,
+              "deviation_sigma": 1.128
+            },
+            {
+              "sensor": "vibration_g",
+              "observed": 0.15553,
+              "reference": 0.15009,
+              "deviation_sigma": 1.087
+            },
+            {
+              "sensor": "voltage_v",
+              "observed": 399.99067,
+              "reference": 400.02746,
+              "deviation_sigma": 0.979
+            }
+          ]
+        },
+        {
+          "asset_id": "SHIP-THRUST-01",
+          "status": "ready",
+          "is_anomaly": true,
+          "rul_hours": 0.6333,
+          "health_index": 41.6,
+          "evidence": [
+            {
+              "sensor": "voltage_v",
+              "observed": 399.15853,
+              "reference": 400.02746,
+              "deviation_sigma": 1.174
+            },
+            {
+              "sensor": "temperature_c",
+              "observed": 55.3079,
+              "reference": 55.00256,
+              "deviation_sigma": 1.014
+            },
+            {
+              "sensor": "current_a",
+              "observed": 121.0828,
+              "reference": 120.02417,
+              "deviation_sigma": 0.999
+            }
+          ]
+        },
+        {
+          "asset_id": "UAV-PDU-07",
+          "status": "ready",
+          "is_anomaly": false,
+          "rul_hours": 0.6537,
+          "health_index": 58.5,
+          "evidence": [
+            {
+              "sensor": "voltage_v",
+              "observed": 47.45759,
+              "reference": 48.00388,
+              "deviation_sigma": 1.219
+            },
+            {
+              "sensor": "current_a",
+              "observed": 34.37553,
+              "reference": 34.97836,
+              "deviation_sigma": 1.179
+            },
+            {
+              "sensor": "frequency_hz",
+              "observed": 400.66438,
+              "reference": 399.99692,
+              "deviation_sigma": 1.064
+            }
+          ]
+        },
+        {
+          "asset_id": "UAV-PDU-11",
+          "status": "ready",
+          "is_anomaly": false,
+          "rul_hours": 0.6571,
+          "health_index": 61.5,
+          "evidence": [
+            {
+              "sensor": "temperature_c",
+              "observed": 41.69695,
+              "reference": 42.0085,
+              "deviation_sigma": 1.246
+            },
+            {
+              "sensor": "voltage_v",
+              "observed": 47.8631,
+              "reference": 48.00388,
+              "deviation_sigma": 1.24
+            },
+            {
+              "sensor": "current_a",
+              "observed": 36.86917,
+              "reference": 34.97836,
+              "deviation_sigma": 1.159
+            }
+          ]
+        },
+        {
+          "asset_id": "UAV-PDU-14",
+          "status": "ready",
+          "is_anomaly": true,
+          "rul_hours": 0.6531,
+          "health_index": 33.0,
+          "evidence": [
+            {
+              "sensor": "frequency_hz",
+              "observed": 400.90964,
+              "reference": 399.99692,
+              "deviation_sigma": 1.056
+            },
+            {
+              "sensor": "temperature_c",
+              "observed": 41.54041,
+              "reference": 42.0085,
+              "deviation_sigma": 0.975
+            },
+            {
+              "sensor": "load_factor",
+              "observed": 0.62488,
+              "reference": 0.55009,
+              "deviation_sigma": 0.92
+            }
+          ]
+        }
+      ],
+      "399": [
+        {
+          "asset_id": "SHIP-CONV-01",
+          "status": "ready",
+          "is_anomaly": false,
+          "rul_hours": 0.6368,
+          "health_index": 57.6,
+          "evidence": [
+            {
+              "sensor": "voltage_v",
+              "observed": 401.08083,
+              "reference": 400.02746,
+              "deviation_sigma": 1.172
+            },
+            {
+              "sensor": "frequency_hz",
+              "observed": 50.03657,
+              "reference": 50.00039,
+              "deviation_sigma": 1.005
+            },
+            {
+              "sensor": "current_a",
+              "observed": 118.74752,
+              "reference": 120.02417,
+              "deviation_sigma": 0.938
+            }
+          ]
+        },
+        {
+          "asset_id": "SHIP-CONV-02",
+          "status": "ready",
+          "is_anomaly": true,
+          "rul_hours": 0.0224,
+          "health_index": 0,
+          "evidence": [
+            {
+              "sensor": "voltage_v",
+              "observed": 314.74474,
+              "reference": 400.02746,
+              "deviation_sigma": 53.429
+            },
+            {
+              "sensor": "current_a",
+              "observed": 141.01391,
+              "reference": 120.02417,
+              "deviation_sigma": 8.453
+            },
+            {
+              "sensor": "temperature_c",
+              "observed": 54.76392,
+              "reference": 55.00256,
+              "deviation_sigma": 1.124
+            }
+          ]
+        },
+        {
+          "asset_id": "SHIP-THRUST-01",
+          "status": "ready",
+          "is_anomaly": true,
+          "rul_hours": 0.0645,
+          "health_index": 0.0,
+          "evidence": [
+            {
+              "sensor": "vibration_g",
+              "observed": 1.15505,
+              "reference": 0.15009,
+              "deviation_sigma": 84.05
+            },
+            {
+              "sensor": "voltage_v",
+              "observed": 400.41054,
+              "reference": 400.02746,
+              "deviation_sigma": 1.076
+            },
+            {
+              "sensor": "temperature_c",
+              "observed": 54.09361,
+              "reference": 55.00256,
+              "deviation_sigma": 0.957
+            }
+          ]
+        },
+        {
+          "asset_id": "UAV-PDU-07",
+          "status": "ready",
+          "is_anomaly": false,
+          "rul_hours": 0.628,
+          "health_index": 59.5,
+          "evidence": [
+            {
+              "sensor": "current_a",
+              "observed": 35.26286,
+              "reference": 34.97836,
+              "deviation_sigma": 1.344
+            },
+            {
+              "sensor": "temperature_c",
+              "observed": 42.1085,
+              "reference": 42.0085,
+              "deviation_sigma": 1.161
+            },
+            {
+              "sensor": "vibration_g",
+              "observed": 0.3072,
+              "reference": 0.35033,
+              "deviation_sigma": 1.032
+            }
+          ]
+        },
+        {
+          "asset_id": "UAV-PDU-11",
+          "status": "ready",
+          "is_anomaly": true,
+          "rul_hours": 0.0492,
+          "health_index": 0.0,
+          "evidence": [
+            {
+              "sensor": "temperature_c",
+              "observed": 80.79596,
+              "reference": 42.0085,
+              "deviation_sigma": 57.409
+            },
+            {
+              "sensor": "current_a",
+              "observed": 44.0968,
+              "reference": 34.97836,
+              "deviation_sigma": 6.607
+            },
+            {
+              "sensor": "voltage_v",
+              "observed": 48.37827,
+              "reference": 48.00388,
+              "deviation_sigma": 1.31
+            }
+          ]
+        },
+        {
+          "asset_id": "UAV-PDU-14",
+          "status": "ready",
+          "is_anomaly": true,
+          "rul_hours": 0.6276,
+          "health_index": 0,
+          "evidence": [
+            {
+              "sensor": "frequency_hz",
+              "observed": 424.31683,
+              "reference": 399.99692,
+              "deviation_sigma": 43.717
+            },
+            {
+              "sensor": "temperature_c",
+              "observed": 41.62185,
+              "reference": 42.0085,
+              "deviation_sigma": 0.997
+            },
+            {
+              "sensor": "current_a",
+              "observed": 34.67954,
+              "reference": 34.97836,
+              "deviation_sigma": 0.985
+            }
+          ]
+        }
+      ],
+      "400": [
+        {
+          "asset_id": "SHIP-CONV-01",
+          "status": "warming_up",
+          "is_anomaly": null,
+          "rul_hours": null,
+          "health_index": null,
+          "evidence": []
+        },
+        {
+          "asset_id": "SHIP-CONV-02",
+          "status": "warming_up",
+          "is_anomaly": null,
+          "rul_hours": null,
+          "health_index": null,
+          "evidence": []
+        },
+        {
+          "asset_id": "SHIP-THRUST-01",
+          "status": "warming_up",
+          "is_anomaly": null,
+          "rul_hours": null,
+          "health_index": null,
+          "evidence": []
+        },
+        {
+          "asset_id": "UAV-PDU-07",
+          "status": "warming_up",
+          "is_anomaly": null,
+          "rul_hours": null,
+          "health_index": null,
+          "evidence": []
+        },
+        {
+          "asset_id": "UAV-PDU-11",
+          "status": "warming_up",
+          "is_anomaly": null,
+          "rul_hours": null,
+          "health_index": null,
+          "evidence": []
+        },
+        {
+          "asset_id": "UAV-PDU-14",
+          "status": "warming_up",
+          "is_anomaly": null,
+          "rul_hours": null,
+          "health_index": null,
+          "evidence": []
+        }
+      ]
+    }
+  }
+}
