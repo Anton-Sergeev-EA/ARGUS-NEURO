@@ -29,3 +29,7 @@ artifacts/run-*/
 artifacts/revalidated-*/
 artifacts/active.json
 artifacts/active.json.tmp
+
+# Local assistant instruction files
+[Cc][Ll][Aa][Uu][Dd][Ee].[Mm][Dd]
+[Cc][Ll][Aa][Uu][Dd].[Mm][Dd]
