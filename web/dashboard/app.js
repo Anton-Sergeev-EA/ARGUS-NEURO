@@ -31,6 +31,7 @@ const I18N = {
     sensor_reference_deviation: "Отклонение датчиков от здорового эталона",
     detector_disagreement: "Выводы спектрального и временного детекторов различаются",
     no_anomaly_detected: "По доступным данным аномалия не выявлена",
+    pageTitle: "ARGUS-NEURO · Консоль состояния парка", language: "Язык", fleetCards: "Карточки активов",
   },
   en: {
     subtitle: "Evidence-driven diagnostics for marine and unmanned-system power electronics",
@@ -60,10 +61,199 @@ const I18N = {
     sensor_reference_deviation: "Sensors deviate from the healthy reference",
     detector_disagreement: "Spectral and temporal detectors disagree",
     no_anomaly_detected: "No anomaly identified in the available data",
+    pageTitle: "ARGUS-NEURO · Fleet Health Console", language: "Language", fleetCards: "Fleet asset cards",
+  },
+  zh: {
+    subtitle: "基于证据的电力电子诊断 · 船舶与无人系统平台",
+    avgHealth: "平均健康指数", assetsMonitored: "受监测资产", activeAnomalies: "活跃异常",
+    backendMode: "推理模式", alertsTitle: "异常日志", noAlerts: "尚未记录任何异常",
+    footerLine: "ARGUS-NEURO · 诊断演示。用于真实设备前需经过独立验证。",
+    health: "健康指数", rul: "剩余寿命 · 合成刻度", tier1: "频谱", tier2: "趋势",
+    ok: "正常", anomaly: "异常", connecting: "连接中…", online: "已连接",
+    disconnected: "连接中断", demo: "浏览器演示", stale: "数据已过时",
+    warming_up: "收集历史数据", ready: "就绪", degraded: "受限模式", invalid_data: "数据错误",
+    modelLive: "ML + DL", modelHeuristic: "受限诊断", modelOffline: "示意",
+    reconnect: "连接服务器", startDemo: "启动浏览器演示",
+    awaiting: "等待数据。演示仅在您选择后启动。",
+    serverSimulation: "来源：服务器模拟 · 未接入设备数据",
+    browserSimulation: "来源：浏览器演示 · 示意数据，无模型和真实测量",
+    lastUpdate: "更新于", secondsAgo: "秒前", noData: "无数据",
+    samples: "历史", evidence: "偏差证据", reference: "基准", sigma: "窗口 σ",
+    noEvidence: "无偏差证据", passport: "决策档案", modelVersion: "模型版本",
+    disagreement: "检测器结论不一致", syntheticRul: "基于合成数据的估计，并非实际运行小时数",
+    unavailableRul: "寿命估计不可用", unknown: "未确定",
+    missing_sensors: "缺少必需的传感器", non_finite_sensors: "传感器数值无效",
+    invalid_timestamp: "测量时间无效", non_monotonic_timestamp: "测量顺序错乱",
+    sampling_gap: "时间序列中断", invalid_waveform: "波形无效",
+    non_finite_model_output: "模型输出无效", models_unavailable: "模型不可用", insufficient_history: "历史数据不足",
+    reference_unavailable: "无健康基准", uncalibrated_rul: "寿命估计未在设备上校准",
+    spectral_anomaly: "频谱检测器发现异常", reconstruction_anomaly: "遥测特征异常",
+    sensor_reference_deviation: "传感器偏离健康基准",
+    detector_disagreement: "频谱检测器与时序检测器结论不一致",
+    no_anomaly_detected: "根据现有数据未发现异常",
+    pageTitle: "ARGUS-NEURO · 机队健康控制台", language: "语言", fleetCards: "资产卡片",
+  },
+  hi: {
+    subtitle: "साक्ष्य-आधारित पावर इलेक्ट्रॉनिक्स निदान · समुद्री और मानवरहित प्लेटफ़ॉर्म",
+    avgHealth: "औसत स्वास्थ्य सूचकांक", assetsMonitored: "निगरानी में परिसंपत्तियाँ", activeAnomalies: "सक्रिय विसंगतियाँ",
+    backendMode: "इन्फ़रेंस मोड", alertsTitle: "विसंगति लॉग", noAlerts: "अभी तक कोई विसंगति दर्ज नहीं हुई",
+    footerLine: "ARGUS-NEURO · निदान प्रदर्शन। वास्तविक उपकरण पर उपयोग के लिए स्वतंत्र सत्यापन आवश्यक है।",
+    health: "स्वास्थ्य सूचकांक", rul: "शेष जीवन · सिंथेटिक पैमाना", tier1: "स्पेक्ट्रम", tier2: "रुझान",
+    ok: "सामान्य", anomaly: "विसंगति", connecting: "कनेक्ट हो रहा है…", online: "कनेक्टेड",
+    disconnected: "कनेक्शन टूट गया", demo: "ब्राउज़र डेमो", stale: "डेटा पुराना है",
+    warming_up: "इतिहास एकत्र हो रहा है", ready: "तैयार", degraded: "सीमित मोड", invalid_data: "डेटा त्रुटि",
+    modelLive: "ML + DL", modelHeuristic: "सीमित निदान", modelOffline: "उदाहरण",
+    reconnect: "सर्वर से कनेक्ट करें", startDemo: "ब्राउज़र डेमो शुरू करें",
+    awaiting: "डेटा की प्रतीक्षा। डेमो केवल आपके चुनने पर शुरू होता है।",
+    serverSimulation: "स्रोत: सर्वर सिमुलेशन · उपकरण डेटा कनेक्ट नहीं है",
+    browserSimulation: "स्रोत: ब्राउज़र डेमो · मॉडल और वास्तविक माप के बिना उदाहरण",
+    lastUpdate: "अपडेट", secondsAgo: "सेकंड पहले", noData: "कोई डेटा नहीं",
+    samples: "इतिहास", evidence: "विचलन के साक्ष्य", reference: "संदर्भ", sigma: "विंडो σ",
+    noEvidence: "विचलन का कोई साक्ष्य नहीं", passport: "निर्णय पासपोर्ट", modelVersion: "मॉडल संस्करण",
+    disagreement: "डिटेक्टर असहमत हैं", syntheticRul: "सिंथेटिक अनुमान; वास्तविक परिचालन घंटे नहीं",
+    unavailableRul: "जीवन अनुमान उपलब्ध नहीं", unknown: "अज्ञात",
+    missing_sensors: "आवश्यक सेंसर अनुपस्थित हैं", non_finite_sensors: "सेंसर मान अमान्य हैं",
+    invalid_timestamp: "माप का समय अमान्य है", non_monotonic_timestamp: "माप क्रम से बाहर हैं",
+    sampling_gap: "माप इतिहास में अंतराल", invalid_waveform: "अमान्य तरंगरूप",
+    non_finite_model_output: "मॉडल का आउटपुट अमान्य है", models_unavailable: "मॉडल उपलब्ध नहीं", insufficient_history: "अपर्याप्त इतिहास",
+    reference_unavailable: "स्वस्थ संदर्भ उपलब्ध नहीं", uncalibrated_rul: "जीवन अनुमान उपकरण पर कैलिब्रेट नहीं है",
+    spectral_anomaly: "स्पेक्ट्रल डिटेक्टर ने विसंगति पाई", reconstruction_anomaly: "असामान्य टेलीमेट्री प्रोफ़ाइल",
+    sensor_reference_deviation: "सेंसर स्वस्थ संदर्भ से विचलित हैं",
+    detector_disagreement: "स्पेक्ट्रल और टेम्पोरल डिटेक्टर असहमत हैं",
+    no_anomaly_detected: "उपलब्ध डेटा में कोई विसंगति नहीं मिली",
+    pageTitle: "ARGUS-NEURO · फ़्लीट स्वास्थ्य कंसोल", language: "भाषा", fleetCards: "परिसंपत्ति कार्ड",
+  },
+  es: {
+    subtitle: "Diagnóstico basado en evidencias para electrónica de potencia · plataformas marinas y no tripuladas",
+    avgHealth: "Índice de salud medio", assetsMonitored: "Activos monitorizados", activeAnomalies: "Anomalías activas",
+    backendMode: "Modo de inferencia", alertsTitle: "Registro de anomalías", noAlerts: "Aún no se han registrado anomalías",
+    footerLine: "ARGUS-NEURO · Demostración de diagnóstico. Su uso en equipos reales requiere validación independiente.",
+    health: "Índice de salud", rul: "Vida restante · escala sintética", tier1: "Espectro", tier2: "Tendencia",
+    ok: "normal", anomaly: "anomalía", connecting: "conectando…", online: "conectado",
+    disconnected: "desconectado", demo: "demo en el navegador", stale: "datos obsoletos",
+    warming_up: "recopilando historial", ready: "listo", degraded: "modo limitado", invalid_data: "datos no válidos",
+    modelLive: "ML + DL", modelHeuristic: "diagnóstico limitado", modelOffline: "ilustración",
+    reconnect: "Conectar al servidor", startDemo: "Iniciar demo en el navegador",
+    awaiting: "Esperando datos. La demo solo se inicia cuando usted lo elige.",
+    serverSimulation: "Fuente: simulación del servidor · sin datos de equipos conectados",
+    browserSimulation: "Fuente: demo en el navegador · ilustración sin modelos ni mediciones reales",
+    lastUpdate: "Actualizado hace", secondsAgo: "s", noData: "sin datos",
+    samples: "Historial", evidence: "Evidencias de desviación", reference: "referencia", sigma: "σ de ventana",
+    noEvidence: "Sin evidencias de desviación", passport: "Pasaporte de decisión", modelVersion: "Versión del modelo",
+    disagreement: "Los detectores discrepan", syntheticRul: "Estimación sintética; no son horas de operación",
+    unavailableRul: "Estimación de vida no disponible", unknown: "desconocido",
+    missing_sensors: "Faltan sensores obligatorios", non_finite_sensors: "Valores de sensor no válidos",
+    invalid_timestamp: "Marca de tiempo no válida", non_monotonic_timestamp: "Mediciones fuera de orden",
+    sampling_gap: "Hueco en el historial de mediciones", invalid_waveform: "Forma de onda no válida",
+    non_finite_model_output: "Salida del modelo no válida", models_unavailable: "Modelos no disponibles", insufficient_history: "Historial insuficiente",
+    reference_unavailable: "Sin referencia sana", uncalibrated_rul: "La estimación de vida no está calibrada en equipos",
+    spectral_anomaly: "El detector espectral identificó una anomalía", reconstruction_anomaly: "Perfil de telemetría atípico",
+    sensor_reference_deviation: "Los sensores se desvían de la referencia sana",
+    detector_disagreement: "Los detectores espectral y temporal discrepan",
+    no_anomaly_detected: "No se identificó ninguna anomalía en los datos disponibles",
+    pageTitle: "ARGUS-NEURO · Consola de salud de la flota", language: "Idioma", fleetCards: "Tarjetas de activos",
+  },
+  fr: {
+    subtitle: "Diagnostic fondé sur des preuves pour l’électronique de puissance · plateformes marines et sans équipage",
+    avgHealth: "Indice de santé moyen", assetsMonitored: "Actifs surveillés", activeAnomalies: "Anomalies actives",
+    backendMode: "Mode d’inférence", alertsTitle: "Journal des anomalies", noAlerts: "Aucune anomalie enregistrée pour l’instant",
+    footerLine: "ARGUS-NEURO · Démonstration de diagnostic. Le déploiement sur un équipement réel exige une validation indépendante.",
+    health: "Indice de santé", rul: "Durée de vie restante · échelle synthétique", tier1: "Spectre", tier2: "Tendance",
+    ok: "normal", anomaly: "anomalie", connecting: "connexion…", online: "connecté",
+    disconnected: "déconnecté", demo: "démo dans le navigateur", stale: "données obsolètes",
+    warming_up: "collecte de l’historique", ready: "prêt", degraded: "mode limité", invalid_data: "données invalides",
+    modelLive: "ML + DL", modelHeuristic: "diagnostic limité", modelOffline: "illustration",
+    reconnect: "Se connecter au serveur", startDemo: "Lancer la démo dans le navigateur",
+    awaiting: "En attente de données. La démo ne démarre que sur votre choix.",
+    serverSimulation: "Source : simulation serveur · aucune donnée d’équipement connectée",
+    browserSimulation: "Source : démo dans le navigateur · illustration sans modèles ni mesures réelles",
+    lastUpdate: "Mis à jour il y a", secondsAgo: "s", noData: "aucune donnée",
+    samples: "Historique", evidence: "Preuves d’écart", reference: "référence", sigma: "σ de fenêtre",
+    noEvidence: "Aucune preuve d’écart", passport: "Passeport de décision", modelVersion: "Version du modèle",
+    disagreement: "Les détecteurs divergent", syntheticRul: "Estimation synthétique ; pas des heures de fonctionnement",
+    unavailableRul: "Estimation de durée de vie indisponible", unknown: "inconnu",
+    missing_sensors: "Capteurs obligatoires manquants", non_finite_sensors: "Valeurs de capteur invalides",
+    invalid_timestamp: "Horodatage de mesure invalide", non_monotonic_timestamp: "Mesures dans le désordre",
+    sampling_gap: "Interruption de la série temporelle", invalid_waveform: "Forme d’onde invalide",
+    non_finite_model_output: "Sortie du modèle invalide", models_unavailable: "Modèles indisponibles", insufficient_history: "Historique insuffisant",
+    reference_unavailable: "Référence saine indisponible", uncalibrated_rul: "Durée de vie non étalonnée sur équipement",
+    spectral_anomaly: "Le détecteur spectral a identifié une anomalie", reconstruction_anomaly: "Profil de télémétrie inhabituel",
+    sensor_reference_deviation: "Les capteurs s’écartent de la référence saine",
+    detector_disagreement: "Les détecteurs spectral et temporel divergent",
+    no_anomaly_detected: "Aucune anomalie identifiée dans les données disponibles",
+    pageTitle: "ARGUS-NEURO · Console de santé de la flotte", language: "Langue", fleetCards: "Cartes des actifs",
+  },
+  de: {
+    subtitle: "Evidenzbasierte Diagnose für Leistungselektronik · maritime und unbemannte Plattformen",
+    avgHealth: "Durchschnittlicher Zustandsindex", assetsMonitored: "Überwachte Anlagen", activeAnomalies: "Aktive Anomalien",
+    backendMode: "Inferenzmodus", alertsTitle: "Anomalieprotokoll", noAlerts: "Bisher keine Anomalien erfasst",
+    footerLine: "ARGUS-NEURO · Diagnosedemonstration. Der Einsatz an realen Anlagen erfordert eine unabhängige Validierung.",
+    health: "Zustandsindex", rul: "Restlebensdauer · synthetische Skala", tier1: "Spektrum", tier2: "Trend",
+    ok: "normal", anomaly: "Anomalie", connecting: "Verbindung wird hergestellt…", online: "verbunden",
+    disconnected: "Verbindung getrennt", demo: "Browser-Demo", stale: "veraltete Daten",
+    warming_up: "Verlauf wird gesammelt", ready: "bereit", degraded: "eingeschränkter Modus", invalid_data: "ungültige Daten",
+    modelLive: "ML + DL", modelHeuristic: "eingeschränkte Diagnose", modelOffline: "Illustration",
+    reconnect: "Mit Server verbinden", startDemo: "Browser-Demo starten",
+    awaiting: "Warten auf Daten. Die Demo startet nur auf Ihre Auswahl.",
+    serverSimulation: "Quelle: Serversimulation · keine Anlagendaten verbunden",
+    browserSimulation: "Quelle: Browser-Demo · Illustration ohne Modelle und reale Messungen",
+    lastUpdate: "Aktualisiert vor", secondsAgo: "s", noData: "keine Daten",
+    samples: "Verlauf", evidence: "Abweichungsnachweise", reference: "Referenz", sigma: "Fenster-σ",
+    noEvidence: "Keine Abweichungsnachweise", passport: "Entscheidungspass", modelVersion: "Modellversion",
+    disagreement: "Detektoren widersprechen sich", syntheticRul: "Synthetische Schätzung; keine Betriebsstunden",
+    unavailableRul: "Lebensdauerschätzung nicht verfügbar", unknown: "unbekannt",
+    missing_sensors: "Erforderliche Sensoren fehlen", non_finite_sensors: "Ungültige Sensorwerte",
+    invalid_timestamp: "Ungültiger Messzeitpunkt", non_monotonic_timestamp: "Messungen in falscher Reihenfolge",
+    sampling_gap: "Lücke im Messverlauf", invalid_waveform: "Ungültige Wellenform",
+    non_finite_model_output: "Ungültige Modellausgabe", models_unavailable: "Modelle nicht verfügbar", insufficient_history: "Unzureichender Verlauf",
+    reference_unavailable: "Keine gesunde Referenz verfügbar", uncalibrated_rul: "Lebensdauerschätzung nicht an Anlagen kalibriert",
+    spectral_anomaly: "Spektraldetektor hat eine Anomalie erkannt", reconstruction_anomaly: "Ungewöhnliches Telemetrieprofil",
+    sensor_reference_deviation: "Sensoren weichen von der gesunden Referenz ab",
+    detector_disagreement: "Spektral- und Zeitreihendetektor widersprechen sich",
+    no_anomaly_detected: "In den verfügbaren Daten wurde keine Anomalie erkannt",
+    pageTitle: "ARGUS-NEURO · Flottenzustandskonsole", language: "Sprache", fleetCards: "Anlagenkarten",
+  },
+  it: {
+    subtitle: "Diagnostica basata su evidenze per l’elettronica di potenza · piattaforme marine e senza equipaggio",
+    avgHealth: "Indice di salute medio", assetsMonitored: "Asset monitorati", activeAnomalies: "Anomalie attive",
+    backendMode: "Modalità di inferenza", alertsTitle: "Registro anomalie", noAlerts: "Nessuna anomalia registrata finora",
+    footerLine: "ARGUS-NEURO · Dimostrazione diagnostica. L’uso su apparecchiature reali richiede una validazione indipendente.",
+    health: "Indice di salute", rul: "Vita residua · scala sintetica", tier1: "Spettro", tier2: "Tendenza",
+    ok: "normale", anomaly: "anomalia", connecting: "connessione…", online: "connesso",
+    disconnected: "disconnesso", demo: "demo nel browser", stale: "dati obsoleti",
+    warming_up: "raccolta storico", ready: "pronto", degraded: "modalità limitata", invalid_data: "dati non validi",
+    modelLive: "ML + DL", modelHeuristic: "diagnostica limitata", modelOffline: "illustrazione",
+    reconnect: "Connetti al server", startDemo: "Avvia demo nel browser",
+    awaiting: "In attesa di dati. La demo si avvia solo su tua scelta.",
+    serverSimulation: "Fonte: simulazione server · nessun dato di apparecchiature collegato",
+    browserSimulation: "Fonte: demo nel browser · illustrazione senza modelli né misure reali",
+    lastUpdate: "Aggiornato", secondsAgo: "s fa", noData: "nessun dato",
+    samples: "Storico", evidence: "Evidenze di deviazione", reference: "riferimento", sigma: "σ finestra",
+    noEvidence: "Nessuna evidenza di deviazione", passport: "Passaporto della decisione", modelVersion: "Versione del modello",
+    disagreement: "I rilevatori sono discordi", syntheticRul: "Stima sintetica; non ore di funzionamento",
+    unavailableRul: "Stima della vita non disponibile", unknown: "sconosciuto",
+    missing_sensors: "Sensori obbligatori mancanti", non_finite_sensors: "Valori dei sensori non validi",
+    invalid_timestamp: "Orario di misura non valido", non_monotonic_timestamp: "Misure fuori sequenza",
+    sampling_gap: "Interruzione nella serie temporale", invalid_waveform: "Forma d’onda non valida",
+    non_finite_model_output: "Output del modello non valido", models_unavailable: "Modelli non disponibili", insufficient_history: "Storico insufficiente",
+    reference_unavailable: "Riferimento sano non disponibile", uncalibrated_rul: "Stima della vita non calibrata su apparecchiature",
+    spectral_anomaly: "Il rilevatore spettrale ha individuato un’anomalia", reconstruction_anomaly: "Profilo di telemetria insolito",
+    sensor_reference_deviation: "I sensori si discostano dal riferimento sano",
+    detector_disagreement: "I rilevatori spettrale e temporale sono discordi",
+    no_anomaly_detected: "Nessuna anomalia individuata nei dati disponibili",
+    pageTitle: "ARGUS-NEURO · Console di salute della flotta", language: "Lingua", fleetCards: "Schede degli asset",
   },
 };
-let currentLang = "ru";
-const t = (key) => I18N[currentLang][key] || key;
+// Russian is the primary language; the rest are ordered by number of speakers worldwide.
+const LANGUAGES = ["ru", "en", "zh", "hi", "es", "fr", "de", "it"];
+const LOCALES = { ru: "ru-RU", en: "en-US", zh: "zh-CN", hi: "hi-IN", es: "es-ES", fr: "fr-FR", de: "de-DE", it: "it-IT" };
+const LANG_STORAGE_KEY = "argus.lang";
+function loadSavedLang() {
+  try { const saved = typeof localStorage === "undefined" ? null : localStorage.getItem(LANG_STORAGE_KEY); return LANGUAGES.includes(saved) ? saved : "ru"; }
+  catch (_) { return "ru"; }
+}
+let currentLang = loadSavedLang();
+const t = (key) => I18N[currentLang][key] ?? I18N.ru[key] ?? key;
 const finite = (value) => typeof value === "number" && Number.isFinite(value);
 const number = (value, digits = 0) => finite(value) ? value.toFixed(digits) : "—";
 const HISTORY_LEN = 60;
@@ -80,16 +270,21 @@ let offlineStep = 0;
 
 function applyStaticTranslations() {
   document.documentElement.lang = currentLang;
+  document.title = t("pageTitle");
   document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.getAttribute("data-i18n")); });
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => { el.setAttribute("aria-label", t(el.getAttribute("data-i18n-aria"))); });
 }
-document.querySelectorAll(".lang-btn").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    currentLang = btn.dataset.lang;
-    document.querySelectorAll(".lang-btn").forEach((b) => b.classList.toggle("active", b === btn));
-    applyStaticTranslations();
-    render();
-  });
-});
+function setLanguage(lang) {
+  if (!LANGUAGES.includes(lang)) return;
+  currentLang = lang;
+  try { if (typeof localStorage !== "undefined") localStorage.setItem(LANG_STORAGE_KEY, lang); } catch (_) { /* Storage may be blocked. */ }
+  document.getElementById("langSelect").value = lang;
+  applyStaticTranslations();
+  render();
+}
+const langSelect = document.getElementById("langSelect");
+langSelect.value = currentLang;
+langSelect.addEventListener("change", () => setLanguage(langSelect.value));
 
 function ingestTick(tick) {
   if (!tick || tick.type !== "tick" || !Array.isArray(tick.assets)) return;
@@ -297,7 +492,7 @@ function renderAlerts() {
     const li = document.createElement("li"), message = document.createElement("span"), timestamp = document.createElement("span");
     message.textContent = alert.asset_id ? `${t("anomaly")}: ${alert.asset_id}` : String(alert.message || "");
     timestamp.className = "ts";
-    const date = new Date(alert.timestamp); timestamp.textContent = Number.isNaN(date.getTime()) ? "—" : date.toLocaleTimeString(currentLang === "ru" ? "ru-RU" : "en-US");
+    const date = new Date(alert.timestamp); timestamp.textContent = Number.isNaN(date.getTime()) ? "—" : date.toLocaleTimeString(LOCALES[currentLang]);
     li.append(message, timestamp); list.appendChild(li);
   }
 }

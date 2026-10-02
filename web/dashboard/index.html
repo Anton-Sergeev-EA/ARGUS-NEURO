@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ARGUS-NEURO :: Fleet Health Console</title>
+<title>ARGUS-NEURO · Консоль состояния парка</title>
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -21,13 +21,22 @@
         </div>
       </div>
       <div class="header-controls">
-        <div class="lang-switch" role="group" aria-label="language">
-          <button type="button" class="lang-btn active" data-lang="ru">RU</button>
-          <button type="button" class="lang-btn" data-lang="en">EN</button>
-        </div>
+        <label class="lang-switch">
+          <span class="visually-hidden" data-i18n="language">Язык</span>
+          <select id="langSelect">
+            <option value="ru" lang="ru">Русский</option>
+            <option value="en" lang="en">English</option>
+            <option value="zh" lang="zh">中文</option>
+            <option value="hi" lang="hi">हिन्दी</option>
+            <option value="es" lang="es">Español</option>
+            <option value="fr" lang="fr">Français</option>
+            <option value="de" lang="de">Deutsch</option>
+            <option value="it" lang="it">Italiano</option>
+          </select>
+        </label>
         <div class="conn-status" id="connStatus">
           <span class="dot" id="connDot"></span>
-          <span id="connLabel">connecting…</span>
+          <span id="connLabel" data-i18n="connecting">подключение…</span>
         </div>
       </div>
     </header>
@@ -60,7 +69,7 @@
     </section>
 
     <main>
-      <section class="fleet-grid" id="fleetGrid" aria-label="Fleet asset cards"></section>
+      <section class="fleet-grid" id="fleetGrid" data-i18n-aria="fleetCards" aria-label="Карточки активов"></section>
 
       <aside class="alerts-panel">
         <h2 data-i18n="alertsTitle">Журнал аномалий</h2>
