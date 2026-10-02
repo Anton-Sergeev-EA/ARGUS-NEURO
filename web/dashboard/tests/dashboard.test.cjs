@@ -70,3 +70,25 @@ test('warmup nulls, stale feed and untrusted labels render safely', () => {
   assert.equal(h.run('isStale()'), true);
   assert.equal(h.run('offlineTimer'), null);
 });
+
+test('russian is the default and every language has a complete dictionary', () => {
+  const h = harness();
+  assert.equal(h.run('currentLang'), 'ru');
+  assert.deepEqual(h.run('JSON.stringify(LANGUAGES)'), JSON.stringify(['ru', 'en', 'zh', 'hi', 'es', 'fr', 'de', 'it']));
+  const keys = h.run('JSON.stringify(Object.keys(I18N.ru).sort())');
+  for (const lang of ['en', 'zh', 'hi', 'es', 'fr', 'de', 'it']) {
+    assert.equal(h.run(`JSON.stringify(Object.keys(I18N.${lang}).sort())`), keys, lang);
+  }
+});
+
+test('language selector switches labels and ignores unknown languages', () => {
+  const h = harness();
+  const select = h.ids.get('langSelect');
+  assert.equal(select.value, 'ru');
+  select.value = 'de';
+  select.handlers.change();
+  assert.equal(h.run('currentLang'), 'de');
+  assert.equal(h.run("t('online')"), 'verbunden');
+  h.run("setLanguage('xx')");
+  assert.equal(h.run('currentLang'), 'de');
+});
