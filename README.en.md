@@ -1,5 +1,30 @@
 # ARGUS-NEURO
 
+**Evidence-driven predictive-health research platform for power electronics — C++20 signal processing, Python ML, ONNX artifacts, explicit data-quality states, and synthetic RUL evaluation.**
+
+> **Portfolio signal:** Industrial AI / predictive maintenance / edge-oriented ML engineering. The current evidence is synthetic by design; this repository does **not** claim field-validated failure prediction or real-equipment RUL accuracy.
+
+## Engineering evidence at a glance
+
+- Native **C++20 + pybind11** signal core with 11 statistical/spectral features and explicit NumPy parity contracts.
+- Calibrated spectral baseline, **LSTM autoencoder**, healthy-reference deviation channel, and **GRU RUL** model.
+- Training separates trajectories before scaling/window generation and records model/data provenance in generated reports.
+- **ONNX export/parity validation** plus checksums and bundle metadata before model activation.
+- Explicit `warming_up`, `ready`, `invalid_data`, and `degraded` states instead of silently inventing predictions.
+- FastAPI/WebSocket fleet monitor with bounded slow-client behaviour and transport health separated from model availability.
+- CI verifies Python lint/formatting, C++ Release tests, native and NumPy execution paths, dashboard contracts, retraining, and ONNX parity.
+- Reliability documentation states what is computationally tested, what remains heuristic, and what would be required before field deployment.
+
+## What a reviewer should inspect first
+
+1. [Reliability contract](docs/RELIABILITY.md) — guarantees, abstention behaviour, artifact integrity, and deployment boundaries.
+2. [C++ signal core](cpp_core/src/signal_features.cpp) and [pybind11 seam](cpp_core/src/bindings.cpp).
+3. [Inference engine](python/argus/inference/engine.py) — evidence, provenance, quality gates, and synthetic RUL semantics.
+4. [Training pipeline](python/argus/training/) and generated reports under [artifacts](artifacts/).
+5. [Reproducibility experiment](experiments/2026-09-30_reliability/).
+
+---
+
 **Evidence-driven diagnostics for power electronics: C++20 signal processing, Python ML models, and a live fleet dashboard.**
 
 [Русский](README.md) · **English** · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md)
