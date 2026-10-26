@@ -33,3 +33,4 @@ artifacts/active.json.tmp
 # Local battery measurements, reports and trained weights
 artifacts/battery-local/
 artifacts/battery-benchmark-*/
+.hypothesis/
