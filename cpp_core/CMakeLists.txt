@@ -1,10 +1,14 @@
 add_library(argus_core_lib STATIC
     src/signal_features.cpp
+    src/battery_curves.cpp
 )
 target_include_directories(argus_core_lib PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 target_compile_features(argus_core_lib PUBLIC cxx_std_20)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(argus_core_lib PRIVATE -Wall -Wextra -Wpedantic)
+endif()
 # Must be position-independent: this static lib is also linked into the
 # pybind11 shared module below.
 set_target_properties(argus_core_lib PROPERTIES POSITION_INDEPENDENT_CODE ON)
@@ -15,6 +19,11 @@ if(BUILD_TESTING)
     target_link_libraries(argus_core_tests PRIVATE argus_core_lib)
     target_compile_features(argus_core_tests PUBLIC cxx_std_20)
     add_test(NAME argus_core_tests COMMAND argus_core_tests)
+
+    add_executable(argus_battery_curve_tests tests/test_battery_curves.cpp)
+    target_link_libraries(argus_battery_curve_tests PRIVATE argus_core_lib)
+    target_compile_features(argus_battery_curve_tests PUBLIC cxx_std_20)
+    add_test(NAME argus_battery_curve_tests COMMAND argus_battery_curve_tests)
 endif()
 
 # Python extension module (built only when pybind11 is available).
