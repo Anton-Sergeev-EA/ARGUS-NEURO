@@ -143,3 +143,22 @@ def test_soh_is_invariant_to_units_of_capacity(curve, factor) -> None:
     assert assess_battery(base)["soh_pct"] == pytest.approx(
         assess_battery(scaled)["soh_pct"], abs=0.011
     )
+
+
+def test_cell_intervals_are_calibrated_and_pack_intervals_are_not() -> None:
+    x = np.arange(40) * 10.0
+    y = 100 - 0.05 * x + np.random.default_rng(3).normal(0, 0.2, 40)
+    pack = assess_battery(build(x, y))["rul"]
+    assert pack["interval_kind"].startswith("descriptive")
+    request = build(x, y)
+    request.profile.measurement_scope = "cell"
+    cell = assess_battery(request)["rul"]
+    assert cell["interval_kind"] == "empirically_calibrated_cell_level"
+    raw_low, raw_high = cell["calibration"]["uncalibrated_interval"]
+    assert (
+        cell["equivalent_cycles"][0]
+        <= raw_low
+        <= raw_high
+        <= cell["equivalent_cycles"][1]
+    )
+    assert cell["calibration"]["leave_one_cell_out_coverage"] >= 0.85

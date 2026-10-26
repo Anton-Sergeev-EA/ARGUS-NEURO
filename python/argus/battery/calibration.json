@@ -1,0 +1,13 @@
+{
+ "scope": "cell",
+ "method": "split_conformal_relative_midpoint_error",
+ "nominal_coverage": 0.9,
+ "relative_radius": 0.7,
+ "unit_spacings": 5,
+ "cells": 31,
+ "forecast_points": 340,
+ "leave_one_cell_out_coverage": 0.9,
+ "raw_interval_coverage": 0.218,
+ "evidence": "docs/assets/backtest.json",
+ "note": "NASA PCoE and CALB laboratory cells; not validated for EV packs."
+}
