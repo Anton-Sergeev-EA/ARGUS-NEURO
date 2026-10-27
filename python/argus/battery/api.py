@@ -3,9 +3,11 @@
 from __future__ import annotations
 import asyncio
 from pathlib import Path
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import ValidationError
 from argus.battery.assessment import assess_battery
+from argus.battery.changes import compare_reports
+from argus.battery.ratelimit import limit_requests
 from argus.battery.data import csv_origin, records_from_csv
 from argus.battery.schema import BatteryRequest
 from argus.battery.public_data import (
@@ -81,13 +83,13 @@ async def parse_request(request: Request) -> BatteryRequest:
         ) from exc
 
 
-@router.post("/analyze")
+@router.post("/analyze", dependencies=[Depends(limit_requests)])
 async def analyze(request: Request) -> dict:
     model = await parse_request(request)
     return await asyncio.to_thread(assess_request, model)
 
 
-@router.post("/save")
+@router.post("/save", dependencies=[Depends(limit_requests)])
 async def save(request: Request) -> dict:
     model = await parse_request(request)
     report = await asyncio.to_thread(assess_request, model)
@@ -102,7 +104,22 @@ async def history(battery_id: str) -> list[dict]:
     return await asyncio.to_thread(BatteryStore(STORE_PATH).list, battery_id)
 
 
-@router.post("/import-csv")
+@router.get("/history/{battery_id}/changes")
+async def changes(battery_id: str) -> dict:
+    """Compare the two newest saved reports of one battery."""
+    if len(battery_id) > 80:
+        raise HTTPException(422, detail="invalid_battery_id")
+    saved = await asyncio.to_thread(BatteryStore(STORE_PATH).list, battery_id)
+    if len(saved) < 2:
+        raise HTTPException(404, detail="need_two_saved_reports")
+    try:
+        result = compare_reports(saved[1]["assessment"], saved[0]["assessment"])
+    except ValueError as exc:
+        raise HTTPException(422, detail="reports_not_comparable") from exc
+    return {**result, "from": saved[1]["saved_at"], "to": saved[0]["saved_at"]}
+
+
+@router.post("/import-csv", dependencies=[Depends(limit_requests)])
 async def import_csv(request: Request) -> dict:
     try:
         text = (await bounded_body(request)).decode("utf-8-sig")
