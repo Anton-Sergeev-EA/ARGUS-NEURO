@@ -24,6 +24,7 @@ from argus.battery.schema import BatteryRequest
 from argus.training.reproducibility import package_versions, seed_training
 
 WINDOW = 8
+MAX_LINEAR_CYCLES = 1000.0
 
 
 def threshold_event(history: BatteryRequest) -> float | None:
@@ -110,6 +111,45 @@ def stack_group(histories: list[BatteryRequest]) -> tuple[np.ndarray, np.ndarray
             "a split has no observed threshold-crossing training targets; censored histories are not failures"
         )
     return x, y
+
+
+def linear_window_prediction(x: np.ndarray, threshold_pct: float) -> np.ndarray:
+    """Cycles to the threshold from a straight line through each window (x in raw units)."""
+    out = np.empty(len(x))
+    for k, window in enumerate(x):
+        soh = window[:, 0] * 100
+        axis = window[:, 1] * 100
+        slope = np.polyfit(axis, soh, 1)[0]
+        out[k] = (
+            np.clip((soh[-1] - threshold_pct) / -slope, 0, MAX_LINEAR_CYCLES)
+            if slope < -1e-6
+            else MAX_LINEAR_CYCLES
+        )
+    return out
+
+
+def evaluate_linear(group: list[BatteryRequest]) -> dict[str, Any]:
+    metrics = []
+    for h in group:
+        x, y, _ = samples(h)
+        if not len(y):
+            continue
+        error = linear_window_prediction(x, h.profile.service_threshold_pct) - y * 100
+        metrics.append(
+            {
+                "battery_id": h.profile.battery_id,
+                "windows": len(y),
+                "mae_cycles": float(np.abs(error).mean()),
+                "rmse_cycles": float(np.sqrt(np.mean(error**2))),
+            }
+        )
+    return {
+        "battery_count": len(metrics),
+        "per_battery": metrics,
+        "macro_mae_cycles": float(np.mean([m["mae_cycles"] for m in metrics]))
+        if metrics
+        else None,
+    }
 
 
 def calibrate(scores: list[float], coverage: float = 0.9) -> dict[str, Any]:
@@ -278,6 +318,8 @@ def run_benchmark(
                 scores.append(float(abs(predict(winner, x[:1])[0] - y[0] * 100)))
         calibration = calibrate(scores)
         tests = {name: evaluate(name, split["test"]) for name in models}
+        # Naive reference: straight-line extrapolation of the same eight-point window.
+        tests["linear_window"] = evaluate_linear(split["test"])
         covered, widths = [], []
         radius = calibration["radius_cycles"]
         if radius is not None:
