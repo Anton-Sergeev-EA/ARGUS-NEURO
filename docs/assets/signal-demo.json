@@ -1,0 +1,39 @@
+{
+  "source": "synthetic",
+  "seed": 42,
+  "sample_rate_hz": 2048.0,
+  "samples_per_window": 2048,
+  "backend": "native_cpp",
+  "python_version": "3.12.3",
+  "numpy_version": "2.5.3",
+  "backend_matches_numpy": true,
+  "cases": {
+    "healthy": {
+      "mean": -0.0010707060385560603,
+      "rms": 0.7067712748236307,
+      "std_dev": 0.706770463803065,
+      "peak": 1.0607832331028788,
+      "crest_factor": 1.5008861719338964,
+      "kurtosis": -1.497378438342937,
+      "skewness": -0.0005849335729767728,
+      "zero_crossing_rate": 0.04833984375,
+      "dominant_frequency_hz": 50.0,
+      "spectral_centroid_hz": 253.95228971265936,
+      "spectral_energy": 0.24976227668129664
+    },
+    "added_250hz": {
+      "mean": -0.001070706038556174,
+      "rms": 0.9058924016902112,
+      "std_dev": 0.9058917689374582,
+      "peak": 1.8573971646770162,
+      "crest_factor": 2.0503507493952817,
+      "kurtosis": -0.7816102789268702,
+      "skewness": -0.0017143972735120573,
+      "zero_crossing_rate": 0.10498046875,
+      "dominant_frequency_hz": 50.0,
+      "spectral_centroid_hz": 252.739088992589,
+      "spectral_energy": 0.4103199809434148
+    }
+  },
+  "scope": "Feature illustration only; no fault classifier or field validation."
+}

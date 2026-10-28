@@ -16,7 +16,7 @@ ARGUS-NEURO ist ein funktionsfähiger Forschungsprototyp für maritime Umrichter
 - **Uneinigkeit der Detektoren.** Das Dashboard zeigt, wenn Spektral-, Rekonstruktions- und Referenzdetektor uneins sind. Ein einzelner positiver Detektor kann ohne Mehrheitsentscheid einen Alarm auslösen.
 - **Konsistente Merkmale in nativem Code und NumPy.** Die 11 statistischen und spektralen Merkmale nutzen einen gemeinsamen FFT-Vertrag mit Nullauffüllung. Die pybind11-Erweiterung unterstützt Arrays mit Schrittweite und in umgekehrter Reihenfolge und gibt nach dem Kopieren der Eingabe den GIL frei.
 - **Verbindungsbewusste Überwachung.** Das Dashboard markiert getrennte oder veraltete Datenströme, behält den letzten Snapshot und versucht die Verbindung erneut. Im Browser erzeugte Telemetrie startet nur durch eine ausdrückliche Demo-Aktion und trägt eine eigene Quellenkennzeichnung.
-- **Oberfläche in acht Sprachen.** Russisch (Standard), Englisch, Chinesisch, Hindi, Spanisch, Französisch, Deutsch und Italienisch; die gewählte Sprache wird im Browser gespeichert.
+- **Oberfläche in neun Sprachen.** Englisch (Standard), Russisch (zweite Auswahl), Chinesisch, Hindi, Spanisch, Französisch, Deutsch, Japanisch und Italienisch; die Auswahl wird gespeichert.
 
 Dies sind umgesetzte Produktentscheidungen, keine Behauptungen weltweiter Neuheit oder validierter industrieller Leistungsfähigkeit.
 
@@ -123,7 +123,7 @@ Der Zustandsindex ist ein heuristischer Anzeigewert, keine Ausfallwahrscheinlich
 
 | Endpunkt | Verhalten |
 |---|---|
-| `GET /` | Dashboard in acht Sprachen (Standard RU, außerdem EN, ZH, HI, ES, FR, DE, IT) |
+| `GET /` | Batterie-Startseite; Geräte: `/equipment.html`. Neun Sprachen, EN als Standard. |
 | `GET /api/health` | Zustand des Generators, Alter des Snapshots, Kennzeichen für geladene Modelle, Clientanzahl und Generatorfehler |
 | `GET /api/fleet` | Letzter vollständiger Flotten-Snapshot; liefert vor dem ersten Snapshot 503 |
 | `WS /ws/telemetry` | Anfangs-Snapshot, falls vorhanden, danach Flottenaktualisierungen |

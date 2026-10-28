@@ -16,7 +16,7 @@ ARGUS-NEURO est un prototype de recherche fonctionnel pour les convertisseurs ma
 - **Désaccord entre détecteurs.** Le tableau de bord indique lorsque les détecteurs spectral, de reconstruction et par référence divergent. Un seul détecteur positif peut déclencher une alerte, sans vote majoritaire.
 - **Caractéristiques cohérentes en natif et en NumPy.** Les 11 caractéristiques statistiques et spectrales utilisent un contrat FFT commun avec remplissage par zéros. L’extension pybind11 prend en charge les tableaux à pas et inversés et libère le GIL après la copie de l’entrée.
 - **Surveillance tenant compte de la connexion.** Le tableau de bord signale les flux déconnectés ou obsolètes, conserve le dernier instantané et retente la connexion. La télémétrie générée dans le navigateur ne démarre que par une action de démonstration explicite et porte une étiquette de source distincte.
-- **Interface en huit langues.** Russe (par défaut), anglais, chinois, hindi, espagnol, français, allemand et italien ; la langue choisie est mémorisée dans le navigateur.
+- **Interface en neuf langues.** Anglais (principal), russe (deuxième), chinois, hindi, espagnol, français, allemand, japonais et italien ; le choix est mémorisé.
 
 Il s’agit de choix produit implémentés, et non de revendications de nouveauté mondiale ou de performances industrielles validées.
 
@@ -123,7 +123,7 @@ L’indice de santé est un score heuristique d’affichage, pas une probabilit�
 
 | Point d’accès | Comportement |
 |---|---|
-| `GET /` | Tableau de bord en huit langues (RU par défaut, ainsi que EN, ZH, HI, ES, FR, DE, IT) |
+| `GET /` | Accueil batterie ; équipements : `/equipment.html`. Neuf langues, EN par défaut. |
 | `GET /api/health` | État du générateur, âge de l’instantané, indicateur de modèles chargés, nombre de clients et erreur du générateur |
 | `GET /api/fleet` | Dernier instantané complet de la flotte ; renvoie 503 avant le premier instantané |
 | `WS /ws/telemetry` | Instantané initial s’il existe, puis mises à jour de la flotte |

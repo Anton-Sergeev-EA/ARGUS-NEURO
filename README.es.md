@@ -16,7 +16,7 @@ ARGUS-NEURO es un prototipo de investigación funcional para convertidores marin
 - **Discrepancia entre detectores.** El panel muestra cuándo discrepan los detectores espectral, de reconstrucción y de referencia. Un solo detector positivo puede generar una alerta sin necesidad de votación por mayoría.
 - **Características coherentes en C++ y NumPy.** Las 11 características estadísticas y espectrales usan un contrato común de FFT con relleno de ceros. La extensión pybind11 admite arreglos con paso e invertidos y libera el GIL tras copiar la entrada.
 - **Monitorización consciente de la conexión.** El panel marca los flujos desconectados u obsoletos, conserva la última instantánea y reintenta la conexión. La telemetría generada en el navegador solo se inicia mediante una acción de demostración explícita y tiene una etiqueta de origen propia.
-- **Interfaz en ocho idiomas.** Ruso (predeterminado), inglés, chino, hindi, español, francés, alemán e italiano; el idioma elegido se recuerda en el navegador.
+- **Interfaz en nueve idiomas.** Inglés (principal), ruso (segundo), chino, hindi, español, francés, alemán, japonés e italiano; la selección se guarda.
 
 Son decisiones de producto implementadas, no afirmaciones de novedad mundial ni de rendimiento industrial validado.
 
@@ -123,7 +123,7 @@ El índice de salud es una puntuación heurística de visualización, no una pro
 
 | Punto de acceso | Comportamiento |
 |---|---|
-| `GET /` | Panel en ocho idiomas (RU por defecto, además EN, ZH, HI, ES, FR, DE, IT) |
+| `GET /` | Página de batería; equipos: `/equipment.html`. Nueve idiomas, EN predeterminado. |
 | `GET /api/health` | Estado del generador, antigüedad de la instantánea, indicador de modelos cargados, número de clientes y error del generador |
 | `GET /api/fleet` | Última instantánea completa de la flota; devuelve 503 antes de la primera instantánea |
 | `WS /ws/telemetry` | Instantánea inicial si existe, seguida de actualizaciones de la flota |

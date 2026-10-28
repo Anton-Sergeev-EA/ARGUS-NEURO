@@ -16,7 +16,7 @@ ARGUS-NEURO è un prototipo di ricerca funzionante per convertitori marini e uni
 - **Disaccordo tra rilevatori.** La dashboard mostra quando i rilevatori spettrale, di ricostruzione e basato sui riferimenti sono in disaccordo. Un solo rilevatore positivo può generare un allarme senza voto a maggioranza.
 - **Caratteristiche coerenti tra codice nativo e NumPy.** Le 11 caratteristiche statistiche e spettrali usano un contratto FFT comune con riempimento di zeri. L’estensione pybind11 supporta array con passo e invertiti e rilascia il GIL dopo aver copiato l’input.
 - **Monitoraggio consapevole della connessione.** La dashboard segnala i flussi disconnessi o obsoleti, conserva l’ultima istantanea e ritenta la connessione. La telemetria generata nel browser parte solo con un’azione dimostrativa esplicita e ha un’etichetta di origine separata.
-- **Interfaccia in otto lingue.** Russo (predefinito), inglese, cinese, hindi, spagnolo, francese, tedesco e italiano; la lingua scelta viene ricordata nel browser.
+- **Interfaccia in nove lingue.** Inglese (principale), russo (secondo), cinese, hindi, spagnolo, francese, tedesco, giapponese e italiano; la scelta viene salvata.
 
 Si tratta di scelte di prodotto implementate, non di affermazioni di novità mondiale o di prestazioni industriali convalidate.
 
@@ -123,7 +123,7 @@ L’indice di salute è un punteggio euristico di visualizzazione, non una proba
 
 | Endpoint | Comportamento |
 |---|---|
-| `GET /` | Dashboard in otto lingue (RU predefinito, oltre a EN, ZH, HI, ES, FR, DE, IT) |
+| `GET /` | Pagina batteria; apparecchiature: `/equipment.html`. Nove lingue, EN predefinito. |
 | `GET /api/health` | Stato del generatore, età dell’istantanea, indicatore dei modelli caricati, numero di client ed errore del generatore |
 | `GET /api/fleet` | Ultima istantanea completa della flotta; restituisce 503 prima della prima istantanea |
 | `WS /ws/telemetry` | Istantanea iniziale se disponibile, seguita dagli aggiornamenti della flotta |

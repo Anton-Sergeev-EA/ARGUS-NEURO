@@ -33,6 +33,16 @@
 
 ARGUS-NEURO is a working research prototype for marine converters and UAV power-distribution units. The current application runs a six-asset **synthetic fleet**. It does not ingest real equipment telemetry or establish real-world remaining useful life.
 
+## EV battery analysis
+
+The landing page accepts controlled capacity histories, separates SOH from SOC, and provides a capacity trend, conditional life projection and manufacturer-based care recommendations. CSV import, opt-in local history and JSON export are supported. No OBD/CAN or charging control. [Method, API and limits](docs/BATTERY.md). Without personal measurements, select one of four measured NASA laboratory cells: [public-data preparation](docs/PUBLIC_BATTERY_DATA.md).
+
+## Start with a small reproducible example
+
+**[When the dominant frequency misses a signal change](docs/SIGNAL_DEMO.md)** — two synthetic windows, 11 features, and C++/NumPy parity checks. No training or server required. The walkthrough is in Russian; commands, JSON output, and the figure are language-independent.
+
+[![RMS and energy change while dominant frequency stays the same](docs/assets/signal-demo.png)](docs/SIGNAL_DEMO.md)
+
 ## Implemented capabilities
 
 - **Decision passports.** Assessments include a content-derived ID, a model-bundle fingerprint, sensor evidence, and explanations. These identify the evaluated content and models; they are not digital signatures or proof of a fault's cause.
@@ -41,7 +51,7 @@ ARGUS-NEURO is a working research prototype for marine converters and UAV power-
 - **Detector disagreement.** The dashboard shows when spectral, reconstruction, and reference-based detectors disagree. A positive detector can raise an alert without requiring a majority vote.
 - **Consistent native and NumPy features.** The 11 statistical/spectral features use a shared zero-padded FFT contract. The pybind11 extension supports strided/reversed arrays and releases the GIL after copying its input.
 - **Connection-aware monitoring.** The dashboard marks disconnected or stale feeds, retains the last snapshot, and retries the connection. Browser-generated telemetry starts only through an explicit demo action and has a separate source label.
-- **Eight-language interface.** Russian (default), English, Chinese, Hindi, Spanish, French, German, and Italian; the chosen language is remembered in the browser.
+- **Nine-language interface.** English (primary), Russian (second), Chinese, Hindi, Spanish, French, German, Japanese and Italian; both pages remember the same language preference.
 
 These are implemented product choices, not claims of worldwide novelty or validated industrial performance.
 
@@ -148,7 +158,7 @@ The health index is a heuristic display score, not a failure probability. The da
 
 | Endpoint | Behavior |
 |---|---|
-| `GET /` | Dashboard in eight languages (RU default, EN, ZH, HI, ES, FR, DE, IT) |
+| `GET /` | Battery landing page; equipment: `/equipment.html`. Nine languages, EN default. |
 | `GET /api/health` | Producer state, snapshot age, loaded-model flag, client count, and producer error |
 | `GET /api/fleet` | Last completed fleet snapshot; returns 503 before the first snapshot |
 | `WS /ws/telemetry` | Initial snapshot when available, followed by fleet updates |
