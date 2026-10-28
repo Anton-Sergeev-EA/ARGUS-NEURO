@@ -1,12 +1,62 @@
 # ARGUS-NEURO
 
-**基于证据的电力电子诊断：C++20 信号处理、Python 机器学习模型与实时机队监控面板。**
+**电池状态分析与电力电子诊断：C++20、Python、ML/DL 和可运行的网页界面。**
 
-[Русский](README.md) · [English](README.en.md) · **中文** · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md)
+[English](README.en.md) · [Русский](README.md) · **中文** · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [Italiano](README.it.md)
 
 [诊断契约（英文）](docs/RELIABILITY.md) · [评估记录（英文）](experiments/2026-09-30_reliability/notes.md)
 
-ARGUS-NEURO 是一个可运行的研究原型，面向船舶变流器和无人机配电单元。当前应用运行一个由六台资产组成的**合成机队**。它不接入真实设备遥测数据，也不确定真实的剩余使用寿命。
+ARGUS-NEURO 将电池容量分析与电力电子设备诊断研究结合在一起。主页支持受控容量测试与 NASA 公开单体实测数据，`/equipment.html` 监控六台合成设备。电池寿命属于有条件的趋势推算；设备诊断投入现场前仍需独立验证。
+
+## 从测量到可解释的电池报告
+
+- 容量健康度 SOH 与当前电量 SOC 分开显示；未知 SOC 不会被编造。
+- 通过 CSV 导入相同条件下的完整容量测试，单位为 Ah；支持本地保存与 JSON 导出。
+- 无需自己的数据：提供 B0005、B0006、B0007、B0018 四个 NASA 实测单体，共 636 次放电测试。一次准备后，原始文件仅保存在本机缓存。
+- 预测到可配置容量阈值的条件性区间。历史不足、趋势不稳定或 BMS 警报可使系统拒绝给出数值。
+- 建议依据输入的制造商限制和报告的充电、存放条件。不连接 OBD/CAN，也不控制充电。
+
+[方法和 API（英文）](docs/BATTERY.md) · [NASA 来源、校验值与安装（英文）](docs/PUBLIC_BATTERY_DATA.md) · [C++/NumPy 示例（俄文）](docs/SIGNAL_DEMO.md)。
+
+## 快速启动电池页面
+
+在 Ubuntu 新安装环境中，从仓库根目录运行：
+
+```bash
+bash scripts/setup_env.sh
+PYTHONPATH="$PWD/python" .venv/bin/python -m argus.battery.public_data --download
+bash scripts/run_dashboard.sh
+```
+
+打开 [http://127.0.0.1:8000](http://127.0.0.1:8000)，选择 **B0018**、**40** 次观测并点击 **Load measured NASA history**。默认语言为英语，可在页面顶部切换中文。该流程无需训练模型。使用设备 ML/DL 诊断时，另行运行 `bash scripts/train_all.sh`，再访问 `/equipment.html`。
+
+## 实际运行界面截图
+
+截图于 2026 年 10 月 28 日从本机运行的程序采集，并非设计图。电池报告为中文；公共选择、趋势和设备截图使用英语。
+
+### 1. 没有个人 CSV 也能开始
+
+![选择 NASA 单体和观测次数](docs/screenshots/public-data-selection-en.jpg)
+
+选择一个单体及其已观测历史的前缀长度。之后的测量不会输入评估过程。
+
+### 2. B0018 实测报告
+
+![B0018 的 SOH、未知 SOC 与条件性寿命](docs/screenshots/battery-nasa-zh.jpg)
+
+前 40 次放电：**SOH 83.8%**，SOC 未知，到 70% 容量阈值的条件性推算为**另外 32–43.5 次受控放电测试**。卡片上方显示来源和限制。这是实验室单体，测试序号不会换算为汽车使用月数。
+
+### 3. 容量历史
+
+![实测容量与 70% 阈值](docs/screenshots/battery-trend-en.jpg)
+
+绿线为前 40 次实测，虚线为 70% 阈值。上方文字描述近期趋势使用的第 11–40 次测试的变化。SOH 不能证明电池安全。
+
+### 4. 实时设备监控
+
+![连接服务器的合成设备监控及 ML、DL 推理](docs/screenshots/equipment-live-en.jpg)
+
+六台模拟设备、**ML + DL** 推理、特征、偏差证据与异常日志。**Source: server simulation** 明确标示数据来源。剩余寿命采用合成尺度，不代表实际运行小时数。
 
 ## 已实现的功能
 
@@ -47,6 +97,8 @@ flowchart LR
 Python 直接依赖的版本固定在 [python/requirements.txt](python/requirements.txt) 中；[python/requirements-dev.txt](python/requirements-dev.txt) 额外安装 Ruff。这并不是完整的传递依赖锁定。训练过程会把主要数值计算库的版本记录到模型包报告中。
 
 ## 在 Ubuntu 上首次安装
+
+以下完整安装还会训练设备模型。仅使用电池分析时，请采用上面的快速启动步骤。
 
 在仓库根目录运行：
 
@@ -226,7 +278,7 @@ node --test web/dashboard/tests/*.test.cjs
 
 ## 当前边界与后续步骤
 
-真实遥测适配器、持久化历史、身份验证、租户隔离以及 C++ ONNX Runtime 推理桥接仍属于后续工作。现场验证的优先事项包括：带时间戳的数据采集、经工程标注的故障、用于测试的独立物理资产、可接受的误报率以及预警时间测量。在工业运行之前，还需要漂移监控以及长时间的网络/设备故障测试。
+真实遥测适配器、设备遥测历史的持久化存储、身份验证、租户隔离以及 C++ ONNX Runtime 推理桥接仍属于后续工作。现场验证的优先事项包括：带时间戳的数据采集、经工程标注的故障、用于测试的独立物理资产、可接受的误报率以及预警时间测量。在工业运行之前，还需要漂移监控以及长时间的网络/设备故障测试。
 
 ## 作者与许可证
 

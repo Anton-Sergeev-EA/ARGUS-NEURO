@@ -1,8 +1,8 @@
 # ARGUS-NEURO
 
-**Evidence-driven predictive-health research platform for power electronics — C++20 signal processing, Python ML, ONNX artifacts, explicit data-quality states, and synthetic RUL evaluation.**
+**Battery-health analysis and power-electronics diagnostics: C++20, Python, ML/DL and a working web interface.**
 
-> **Portfolio signal:** Industrial AI / predictive maintenance / edge-oriented ML engineering. The current evidence is synthetic by design; this repository does **not** claim field-validated failure prediction or real-equipment RUL accuracy.
+> **Portfolio signal:** Industrial AI / predictive maintenance / edge-oriented ML engineering. Equipment-fleet evaluation uses synthetic data; measured NASA cell histories are available separately. Neither route establishes field-validated EV-pack life or real-equipment failure-prediction accuracy.
 
 ## Engineering evidence at a glance
 
@@ -25,17 +25,61 @@
 
 ---
 
-**Evidence-driven diagnostics for power electronics: C++20 signal processing, Python ML models, and a live fleet dashboard.**
-
-[Русский](README.md) · **English** · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md)
+**English** · [Русский](README.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [Italiano](README.it.md)
 
 [Diagnostic contract](docs/RELIABILITY.md) · [Evaluation notes](experiments/2026-09-30_reliability/notes.md)
 
-ARGUS-NEURO is a working research prototype for marine converters and UAV power-distribution units. The current application runs a six-asset **synthetic fleet**. It does not ingest real equipment telemetry or establish real-world remaining useful life.
+ARGUS-NEURO combines battery-capacity analysis with power-electronics diagnostic research. The landing page accepts controlled battery tests and published NASA cell measurements; `/equipment.html` monitors a six-asset synthetic fleet. Battery life is a conditional trend projection, while equipment diagnostics require separate validation before field use.
 
-## EV battery analysis
+## Battery analysis: measurements to an explainable report
 
-The landing page accepts controlled capacity histories, separates SOH from SOC, and provides a capacity trend, conditional life projection and manufacturer-based care recommendations. CSV import, opt-in local history and JSON export are supported. No OBD/CAN or charging control. [Method, API and limits](docs/BATTERY.md). Without personal measurements, select one of four measured NASA laboratory cells: [public-data preparation](docs/PUBLIC_BATTERY_DATA.md).
+- Capacity-based SOH and present SOC are separate. An unknown SOC stays unknown.
+- Import full controlled capacity tests in Ah through CSV with comparable test conditions. Save reports locally or export JSON.
+- Start without personal data using four measured NASA cells: B0005, B0006, B0007 and B0018, with 636 discharge tests in total. Source files stay in a local cache after one-time preparation.
+- Life to a configurable capacity threshold is a conditional range. Short histories, unstable trends and active BMS alerts can withhold the numerical forecast.
+- Care recommendations use supplied manufacturer limits and reported charging/storage conditions. There is no OBD/CAN connection or charging control.
+
+[Battery method and API](docs/BATTERY.md) · [NASA source, checksums and setup](docs/PUBLIC_BATTERY_DATA.md) · [Small C++/NumPy example](docs/SIGNAL_DEMO.md).
+
+## Quick start: battery page
+
+For a new Ubuntu installation, from the repository root:
+
+```bash
+bash scripts/setup_env.sh
+PYTHONPATH="$PWD/python" .venv/bin/python -m argus.battery.public_data --download
+bash scripts/run_dashboard.sh
+```
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000), choose **B0018**, keep **40** observations and select **Load measured NASA history**. English is the default; the language selector is at the top. This route needs no model training. For model-backed equipment diagnostics, separately run `bash scripts/train_all.sh` and open `/equipment.html`.
+
+## Screenshots from the running application
+
+Captured on 28 October 2026 from the locally running application. These are actual application screens, not mockups. The battery report is available below in the language of this README; shared overview, trend and fleet screenshots use English.
+
+### 1. Start without uploading a personal CSV
+
+![Published NASA cell and observation-count selection](docs/screenshots/public-data-selection-en.jpg)
+
+Select one of four cells and the observed prefix length. Only that prefix enters the assessment; later measurements are not passed to the predictor.
+
+### 2. Measured B0018 cell report
+
+![B0018 report with SOH, unknown SOC and conditional life](docs/screenshots/battery-nasa-en.jpg)
+
+First 40 discharge tests: **83.8% SOH**, unknown SOC and a conditional **32–43.5 additional discharge-test** projection to the configured 70% capacity threshold. Source and limitations appear above the cards. This is a laboratory cell; its test index is not converted to EV operating months.
+
+### 3. Capacity history
+
+![Measured capacity history and 70-percent threshold](docs/screenshots/battery-trend-en.jpg)
+
+The green line shows the first 40 measured tests; the dashed line is the 70% threshold. The text above the plot describes change over tests 11–40 used by the recent trend. Capacity-based SOH is not a battery safety assessment.
+
+### 4. Live equipment monitoring
+
+![Connected synthetic fleet dashboard with ML and DL inference](docs/screenshots/equipment-live-en.jpg)
+
+The dashboard is connected to the server simulator: six assets, **ML + DL** inference, features, deviation evidence and an anomaly log. **Source: server simulation** identifies the data; remaining life uses a synthetic scale rather than real operating hours.
 
 ## Start with a small reproducible example
 
@@ -82,6 +126,8 @@ The project has been exercised on Ubuntu/Linux with CPython 3.12, GCC 13, CMake 
 Direct Python dependency versions are pinned in [python/requirements.txt](python/requirements.txt); [python/requirements-dev.txt](python/requirements-dev.txt) additionally installs Ruff. This is not a complete transitive dependency lock. Training records the versions of its main numerical libraries in the bundle reports.
 
 ## First setup on Ubuntu
+
+The full setup below also trains the equipment models. For the battery workflow alone, use the quick start above.
 
 Run from the repository root:
 
@@ -261,7 +307,7 @@ These are dated results, not promised outcomes for other environments or real eq
 
 ## Current boundaries and next steps
 
-Real telemetry adapters, durable history, authentication, tenant isolation, and a C++ ONNX Runtime inference bridge remain future work. Priorities for field validation are timestamped acquisition, engineering-labelled faults, independent physical assets for testing, acceptable false-alarm rates, and warning-time measurements. Drift monitoring and long-duration network/device failure tests are also needed before industrial operation.
+Real telemetry adapters, durable equipment telemetry history, authentication, tenant isolation, and a C++ ONNX Runtime inference bridge remain future work. Priorities for field validation are timestamped acquisition, engineering-labelled faults, independent physical assets for testing, acceptable false-alarm rates, and warning-time measurements. Drift monitoring and long-duration network/device failure tests are also needed before industrial operation.
 
 ## Author and license
 

@@ -1,12 +1,62 @@
 # ARGUS-NEURO
 
-**Diagnóstico basado en evidencias para electrónica de potencia: procesamiento de señales en C++20, modelos de ML en Python y un panel de flota en tiempo real.**
+**Estado de baterías y diagnóstico de electrónica de potencia: C++20, Python, ML/DL e interfaz web funcional.**
 
-[Русский](README.md) · [English](README.en.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · **Español** · [Français](README.fr.md) · [Deutsch](README.de.md) · [Italiano](README.it.md)
+[English](README.en.md) · [Русский](README.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · **Español** · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [Italiano](README.it.md)
 
 [Contrato de diagnóstico (en inglés)](docs/RELIABILITY.md) · [Notas de evaluación (en inglés)](experiments/2026-09-30_reliability/notes.md)
 
-ARGUS-NEURO es un prototipo de investigación funcional para convertidores marinos y unidades de distribución de energía de UAV. La aplicación actual ejecuta una **flota sintética** de seis activos. No recibe telemetría de equipos reales ni determina la vida útil remanente real.
+ARGUS-NEURO combina el análisis de capacidad de baterías con la investigación de diagnóstico de electrónica de potencia. La página principal admite pruebas controladas y mediciones publicadas de celdas NASA; `/equipment.html` supervisa una flota sintética de seis activos. La vida de la batería es una proyección condicional de tendencia y el uso en campo requiere validación independiente.
+
+## Análisis de batería e informes explicables
+
+- SOH basado en capacidad y SOC actual se muestran por separado. El SOC desconocido no se inventa.
+- Importe pruebas completas de capacidad en Ah mediante CSV con condiciones comparables. Guarde informes localmente o exporte JSON.
+- Sin datos propios: cuatro celdas medidas de NASA, B0005, B0006, B0007 y B0018, con 636 pruebas de descarga. Los archivos originales quedan en una caché local.
+- La vida hasta un umbral configurable es un intervalo condicional. Un historial corto, una tendencia inestable o una alarma BMS pueden impedir la predicción numérica.
+- Las recomendaciones usan límites del fabricante y condiciones comunicadas de carga y almacenamiento. No hay conexión OBD/CAN ni control de carga.
+
+[Método y API, inglés](docs/BATTERY.md) · [Fuente NASA, comprobación y preparación, inglés](docs/PUBLIC_BATTERY_DATA.md) · [Ejemplo C++/NumPy, ruso](docs/SIGNAL_DEMO.md).
+
+## Inicio rápido: pantalla de batería
+
+Instalación nueva en Ubuntu, desde la raíz del repositorio:
+
+```bash
+bash scripts/setup_env.sh
+PYTHONPATH="$PWD/python" .venv/bin/python -m argus.battery.public_data --download
+bash scripts/run_dashboard.sh
+```
+
+Abra [http://127.0.0.1:8000](http://127.0.0.1:8000), elija **B0018**, mantenga **40** observaciones y pulse **Load measured NASA history**. El idioma inicial es inglés; puede elegir español arriba. Esta ruta no necesita entrenar modelos. Para el diagnóstico ML/DL de equipos, ejecute además `bash scripts/train_all.sh` y abra `/equipment.html`.
+
+## Capturas de la aplicación en funcionamiento
+
+Capturadas localmente el 28 de octubre de 2026; no son maquetas. El informe de batería está en español; las vistas compartidas de selección, tendencia y equipos están en inglés.
+
+### 1. Empezar sin CSV propio
+
+![Selección de celda NASA y número de observaciones](docs/screenshots/public-data-selection-en.jpg)
+
+Elija una celda y la longitud del historial observado. Solo ese inicio se usa para evaluar; no se introducen mediciones posteriores.
+
+### 2. Informe medido de B0018
+
+![B0018: SOH, SOC desconocido y vida condicional](docs/screenshots/battery-nasa-es.jpg)
+
+Primeras 40 descargas: **SOH 83,8 %**, SOC desconocido y proyección condicional de **32–43,5 pruebas adicionales** hasta el umbral del 70 %. La fuente y las limitaciones aparecen sobre las tarjetas. Es una celda de laboratorio, sin conversión a meses de uso del vehículo.
+
+### 3. Historial de capacidad
+
+![Capacidad medida y umbral del 70 por ciento](docs/screenshots/battery-trend-en.jpg)
+
+La línea verde muestra las primeras 40 mediciones y la discontinua el umbral del 70 %. El texto describe el cambio entre pruebas 11–40 de la tendencia reciente. SOH no evalúa la seguridad.
+
+### 4. Supervisión de equipos en vivo
+
+![Panel conectado de flota sintética con inferencia ML y DL](docs/screenshots/equipment-live-en.jpg)
+
+Seis activos simulados, **ML + DL**, características, evidencias de desviación y registro de anomalías. **Source: server simulation** identifica el origen. La vida restante usa una escala sintética, no horas reales de funcionamiento.
 
 ## Funcionalidades implementadas
 
@@ -47,6 +97,8 @@ El proyecto se ha probado en Ubuntu/Linux con CPython 3.12, GCC 13, CMake 3.28 y
 Las versiones de las dependencias directas de Python están fijadas en [python/requirements.txt](python/requirements.txt); [python/requirements-dev.txt](python/requirements-dev.txt) instala además Ruff. No es un bloqueo completo de dependencias transitivas. El entrenamiento registra las versiones de sus principales bibliotecas numéricas en los informes del paquete.
 
 ## Primera instalación en Ubuntu
+
+La instalación completa siguiente también entrena los modelos de equipos. Para analizar solo baterías, utilice el inicio rápido anterior.
 
 Ejecute desde la raíz del repositorio:
 
@@ -226,7 +278,7 @@ Son resultados fechados, no resultados prometidos para otros entornos ni para eq
 
 ## Límites actuales y próximos pasos
 
-Los adaptadores de telemetría real, el historial persistente, la autenticación, el aislamiento entre inquilinos y un puente de inferencia ONNX Runtime en C++ siguen siendo trabajo futuro. Las prioridades para la validación en campo son la adquisición con marcas de tiempo, averías etiquetadas por ingeniería, activos físicos independientes para las pruebas, tasas de falsas alarmas aceptables y la medición del tiempo de anticipación. Antes de la operación industrial también se necesitan monitorización de la deriva y pruebas de larga duración de fallos de red y de dispositivos.
+Los adaptadores de telemetría real, el historial persistente de telemetría de equipos, la autenticación, el aislamiento entre inquilinos y un puente de inferencia ONNX Runtime en C++ siguen siendo trabajo futuro. Las prioridades para la validación en campo son la adquisición con marcas de tiempo, averías etiquetadas por ingeniería, activos físicos independientes para las pruebas, tasas de falsas alarmas aceptables y la medición del tiempo de anticipación. Antes de la operación industrial también se necesitan monitorización de la deriva y pruebas de larga duración de fallos de red y de dispositivos.
 
 ## Autor y licencia
 

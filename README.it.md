@@ -1,12 +1,62 @@
 # ARGUS-NEURO
 
-**Diagnostica basata su evidenze per l’elettronica di potenza: elaborazione del segnale in C++20, modelli di ML in Python e una dashboard della flotta in tempo reale.**
+**Stato delle batterie e diagnostica dell’elettronica di potenza: C++20, Python, ML/DL e interfaccia web funzionante.**
 
-[Русский](README.md) · [English](README.en.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · **Italiano**
+[English](README.en.md) · [Русский](README.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · **Italiano**
 
 [Contratto diagnostico (in inglese)](docs/RELIABILITY.md) · [Note di valutazione (in inglese)](experiments/2026-09-30_reliability/notes.md)
 
-ARGUS-NEURO è un prototipo di ricerca funzionante per convertitori marini e unità di distribuzione dell’energia di UAV. L’applicazione attuale gestisce una **flotta sintetica** di sei asset. Non acquisisce telemetria da apparecchiature reali e non determina la vita utile residua reale.
+ARGUS-NEURO combina l’analisi della capacità delle batterie con la ricerca sulla diagnostica dell’elettronica di potenza. La pagina principale usa prove controllate e misure pubblicate di celle NASA; `/equipment.html` monitora sei unità sintetiche. La vita della batteria è una proiezione condizionata della tendenza; l’impiego sul campo richiede una validazione separata.
+
+## Analisi della batteria e rapporto spiegabile
+
+- SOH della capacità e SOC attuale sono distinti. Un SOC sconosciuto non viene inventato.
+- Importazione CSV di prove complete in Ah in condizioni confrontabili, rapporti locali ed esportazione JSON.
+- Senza dati propri: quattro celle NASA, B0005, B0006, B0007 e B0018, per 636 prove di scarica. Le fonti restano nella cache locale dopo la preparazione.
+- Proiezione condizionata fino a una soglia configurabile. Storico breve, tendenza instabile o allarme BMS possono impedire una previsione numerica.
+- Consigli basati sui limiti del costruttore e sulle condizioni dichiarate di ricarica e stoccaggio. Nessuna connessione OBD/CAN o comando di ricarica.
+
+[Metodo e API, inglese](docs/BATTERY.md) · [Fonte NASA e preparazione, inglese](docs/PUBLIC_BATTERY_DATA.md) · [Esempio C++/NumPy, russo](docs/SIGNAL_DEMO.md).
+
+## Avvio rapido: batteria
+
+Nuova installazione Ubuntu, dalla radice del repository:
+
+```bash
+bash scripts/setup_env.sh
+PYTHONPATH="$PWD/python" .venv/bin/python -m argus.battery.public_data --download
+bash scripts/run_dashboard.sh
+```
+
+Aprire [http://127.0.0.1:8000](http://127.0.0.1:8000), scegliere **B0018**, **40** osservazioni e **Load measured NASA history**. L’inglese è predefinito; selezionare l’italiano in alto. Questo percorso non richiede addestramento. Per la diagnostica ML/DL delle apparecchiature eseguire separatamente `bash scripts/train_all.sh` e aprire `/equipment.html`.
+
+## Schermate dell’applicazione in funzione
+
+Acquisite localmente il 28 ottobre 2026, non sono bozze. Il rapporto è in italiano; le viste condivise di selezione, andamento e apparecchiature sono in inglese.
+
+### 1. Iniziare senza un proprio CSV
+
+![Selezione della cella NASA e del numero di osservazioni](docs/screenshots/public-data-selection-en.jpg)
+
+Scegliere una cella e l’inizio dello storico osservato. Le misure successive non entrano nella valutazione.
+
+### 2. Rapporto misurato di B0018
+
+![B0018: SOH, SOC sconosciuto e vita condizionata](docs/screenshots/battery-nasa-it.jpg)
+
+Prime 40 prove: **SOH 83,8 %**, SOC sconosciuto e proiezione condizionata di **32–43,5 prove aggiuntive** prima della soglia del 70 %. Fonte e limiti sono visibili sopra le schede. È una cella di laboratorio; non si converte il suo indice in mesi di utilizzo del veicolo.
+
+### 3. Storico della capacità
+
+![Capacità misurata e soglia del 70 per cento](docs/screenshots/battery-trend-en.jpg)
+
+Verde: prime 40 misure; tratteggio: soglia del 70 %. Il testo descrive il cambiamento nelle prove 11–40 della tendenza recente. SOH non valuta la sicurezza.
+
+### 4. Monitoraggio delle apparecchiature in tempo reale
+
+![Flotta sintetica collegata con inferenza ML e DL](docs/screenshots/equipment-live-en.jpg)
+
+Sei unità simulate, **ML + DL**, caratteristiche, evidenze degli scostamenti e registro anomalie. **Source: server simulation** identifica l’origine. La vita residua usa una scala sintetica, non ore operative reali.
 
 ## Funzionalità implementate
 
@@ -47,6 +97,8 @@ Il progetto è stato provato su Ubuntu/Linux con CPython 3.12, GCC 13, CMake 3.2
 Le versioni delle dipendenze Python dirette sono fissate in [python/requirements.txt](python/requirements.txt); [python/requirements-dev.txt](python/requirements-dev.txt) installa in aggiunta Ruff. Non è un blocco completo delle dipendenze transitive. L’addestramento registra le versioni delle principali librerie numeriche nei report del pacchetto.
 
 ## Prima installazione su Ubuntu
+
+La configurazione completa seguente addestra anche i modelli delle apparecchiature. Per la sola analisi delle batterie, utilizzare l’avvio rapido sopra.
 
 Eseguire dalla radice del repository:
 
@@ -226,7 +278,7 @@ Sono risultati datati, non risultati promessi per altri ambienti o per apparecch
 
 ## Limiti attuali e prossimi passi
 
-Adattatori per telemetria reale, storico persistente, autenticazione, isolamento tra tenant e un ponte di inferenza ONNX Runtime in C++ restano lavoro futuro. Le priorità per la convalida sul campo sono l’acquisizione con timestamp, guasti etichettati dall’ingegneria, asset fisici indipendenti per i test, tassi di falsi allarmi accettabili e la misura del tempo di preavviso. Prima dell’esercizio industriale servono inoltre il monitoraggio della deriva e test di lunga durata sui guasti di rete e dei dispositivi.
+Adattatori per telemetria reale, storico persistente della telemetria delle apparecchiature, autenticazione, isolamento tra tenant e un ponte di inferenza ONNX Runtime in C++ restano lavoro futuro. Le priorità per la convalida sul campo sono l’acquisizione con timestamp, guasti etichettati dall’ingegneria, asset fisici indipendenti per i test, tassi di falsi allarmi accettabili e la misura del tempo di preavviso. Prima dell’esercizio industriale servono inoltre il monitoraggio della deriva e test di lunga durata sui guasti di rete e dei dispositivi.
 
 ## Autore e licenza
 

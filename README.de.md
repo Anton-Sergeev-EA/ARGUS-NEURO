@@ -1,12 +1,62 @@
 # ARGUS-NEURO
 
-**Evidenzbasierte Diagnose für Leistungselektronik: Signalverarbeitung in C++20, ML-Modelle in Python und ein Live-Flotten-Dashboard.**
+**Batteriezustand und Diagnose von Leistungselektronik: C++20, Python, ML/DL und eine funktionsfähige Weboberfläche.**
 
-[Русский](README.md) · [English](README.en.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Français](README.fr.md) · **Deutsch** · [Italiano](README.it.md)
+[English](README.en.md) · [Русский](README.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Français](README.fr.md) · **Deutsch** · [日本語](README.ja.md) · [Italiano](README.it.md)
 
 [Diagnosevertrag (Englisch)](docs/RELIABILITY.md) · [Evaluierungsnotizen (Englisch)](experiments/2026-09-30_reliability/notes.md)
 
-ARGUS-NEURO ist ein funktionsfähiger Forschungsprototyp für maritime Umrichter und Stromverteilungseinheiten von UAVs. Die aktuelle Anwendung betreibt eine **synthetische Flotte** aus sechs Anlagen. Sie verarbeitet keine Telemetrie realer Geräte und ermittelt keine reale Restnutzungsdauer.
+ARGUS-NEURO verbindet die Analyse der Batteriekapazität mit der Forschung zur Diagnose von Leistungselektronik. Die Startseite verarbeitet kontrollierte Kapazitätstests und veröffentlichte NASA-Zellmessungen; `/equipment.html` überwacht eine synthetische Flotte aus sechs Anlagen. Die Batterielebensdauer ist eine bedingte Trendprojektion; vor dem Feldeinsatz ist eine gesonderte Validierung nötig.
+
+## Batterieanalyse und nachvollziehbare Berichte
+
+- Kapazitätsbasierter SOH und aktueller SOC werden getrennt. Ein unbekannter Ladezustand bleibt unbekannt.
+- CSV-Import vollständiger Kapazitätstests in Ah bei vergleichbaren Bedingungen, lokale Berichte und JSON-Export.
+- Ohne eigene Messungen stehen vier NASA-Zellen bereit: B0005, B0006, B0007 und B0018, insgesamt 636 Entladetests. Quelldaten bleiben nach einmaliger Vorbereitung lokal.
+- Die Restlebensdauer bis zur gewählten Kapazitätsgrenze ist ein bedingter Bereich. Bei kurzer Historie, instabilem Trend oder BMS-Alarm wird kein Zahlenwert ausgegeben.
+- Empfehlungen berücksichtigen Herstellergrenzen und gemeldete Lade- und Lagerbedingungen. Keine OBD/CAN-Verbindung oder Ladesteuerung.
+
+[Methode und API, Englisch](docs/BATTERY.md) · [NASA-Quelle und Prüfsummen, Englisch](docs/PUBLIC_BATTERY_DATA.md) · [C++/NumPy-Beispiel, Russisch](docs/SIGNAL_DEMO.md).
+
+## Schnellstart: Batterieseite
+
+Neue Ubuntu-Installation, aus dem Repository-Verzeichnis:
+
+```bash
+bash scripts/setup_env.sh
+PYTHONPATH="$PWD/python" .venv/bin/python -m argus.battery.public_data --download
+bash scripts/run_dashboard.sh
+```
+
+Öffnen Sie [http://127.0.0.1:8000](http://127.0.0.1:8000), wählen Sie **B0018**, **40** Beobachtungen und **Load measured NASA history**. Englisch ist Standard; oben lässt sich Deutsch auswählen. Dafür ist kein Modelltraining nötig. Für die ML/DL-Gerätediagnose zusätzlich `bash scripts/train_all.sh` ausführen und `/equipment.html` öffnen.
+
+## Aufnahmen der laufenden Anwendung
+
+Am 28. Oktober 2026 lokal aufgenommen, keine Entwürfe. Der Batteriebericht ist deutsch; gemeinsame Auswahl-, Verlaufs- und Geräteansichten sind englisch.
+
+### 1. Ohne eigene CSV beginnen
+
+![Auswahl einer veröffentlichten NASA-Zelle und der Historienlänge](docs/screenshots/public-data-selection-en.jpg)
+
+Zelle und beobachtete Testanzahl wählen. Nur dieser Anfang der Historie fließt in die Bewertung ein; spätere Messungen werden nicht verwendet.
+
+### 2. Messbericht für B0018
+
+![B0018: SOH, unbekannter SOC und bedingte Restlebensdauer](docs/screenshots/battery-nasa-de.jpg)
+
+Erste 40 Entladetests: **83,8 % SOH**, unbekannter SOC und bedingt **32–43,5 weitere Entladetests** bis zur 70-%-Kapazitätsgrenze. Quelle und Grenzen stehen über den Karten. Eine Laborzelle wird nicht als Fahrzeugpack oder in Fahrzeug-Betriebsmonaten ausgewertet.
+
+### 3. Kapazitätsverlauf
+
+![Gemessene Kapazität und gewählte 70-Prozent-Grenze](docs/screenshots/battery-trend-en.jpg)
+
+Grün: die ersten 40 Messungen; gestrichelt: die 70-%-Grenze. Die Beschriftung bezieht sich auf Tests 11–40 des jüngsten Trends. SOH bewertet keine Sicherheit.
+
+### 4. Laufende Geräteüberwachung
+
+![Verbundene synthetische Flotte mit ML- und DL-Inferenz](docs/screenshots/equipment-live-en.jpg)
+
+Sechs simulierte Anlagen, **ML + DL**, Merkmale, Abweichungsnachweise und Alarmprotokoll. **Source: server simulation** benennt die Quelle. Die Lebensdaueranzeige verwendet eine synthetische Skala, keine realen Betriebsstunden.
 
 ## Umgesetzte Funktionen
 
@@ -47,6 +97,8 @@ Das Projekt wurde unter Ubuntu/Linux mit CPython 3.12, GCC 13, CMake 3.28 und No
 Die Versionen der direkten Python-Abhängigkeiten sind in [python/requirements.txt](python/requirements.txt) festgelegt; [python/requirements-dev.txt](python/requirements-dev.txt) installiert zusätzlich Ruff. Das ist keine vollständige Sperre der transitiven Abhängigkeiten. Das Training protokolliert die Versionen seiner wichtigsten numerischen Bibliotheken in den Paketberichten.
 
 ## Ersteinrichtung unter Ubuntu
+
+Die vollständige Einrichtung unten trainiert auch die Anlagenmodelle. Für die Batterieanalyse allein genügt der Schnellstart oben.
 
 Im Wurzelverzeichnis des Repositorys ausführen:
 
@@ -226,7 +278,7 @@ Dies sind datierte Ergebnisse, keine zugesagten Ergebnisse für andere Umgebunge
 
 ## Aktuelle Grenzen und nächste Schritte
 
-Adapter für echte Telemetrie, dauerhafte Verlaufsspeicherung, Authentifizierung, Mandantentrennung und eine C++-Inferenzbrücke für ONNX Runtime bleiben künftige Arbeit. Prioritäten für die Feldvalidierung sind zeitgestempelte Erfassung, ingenieurmäßig gekennzeichnete Fehler, unabhängige physische Anlagen für Tests, akzeptable Fehlalarmraten und die Messung der Vorwarnzeit. Vor dem industriellen Betrieb sind außerdem Drift-Überwachung und Langzeittests zu Netzwerk- und Geräteausfällen erforderlich.
+Adapter für echte Telemetrie, dauerhafte Speicherung des Telemetrieverlaufs von Anlagen, Authentifizierung, Mandantentrennung und eine C++-Inferenzbrücke für ONNX Runtime bleiben künftige Arbeit. Prioritäten für die Feldvalidierung sind zeitgestempelte Erfassung, ingenieurmäßig gekennzeichnete Fehler, unabhängige physische Anlagen für Tests, akzeptable Fehlalarmraten und die Messung der Vorwarnzeit. Vor dem industriellen Betrieb sind außerdem Drift-Überwachung und Langzeittests zu Netzwerk- und Geräteausfällen erforderlich.
 
 ## Autor und Lizenz
 

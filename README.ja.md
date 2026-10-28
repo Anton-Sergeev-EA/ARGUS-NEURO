@@ -1,0 +1,159 @@
+# ARGUS-NEURO
+
+**バッテリー状態分析と電力電子診断：C++20、Python、ML/DL、動作する Web インターフェース。**
+
+[English](README.en.md) · [Русский](README.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · **日本語** · [Italiano](README.it.md)
+
+ARGUS-NEURO は、バッテリー容量分析と電力電子機器の診断研究を統合したプロトタイプです。ホーム画面は管理された容量試験と NASA の公開セル実測値を扱い、`/equipment.html` は6台の合成機器を監視します。バッテリー寿命は条件付きの傾向推定であり、実機での使用には別途検証が必要です。
+
+## 測定値から説明可能なバッテリーレポートへ
+
+- 容量に基づく SOH と現在の充電率 SOC を分離します。未知の SOC は推測で埋めません。
+- 比較可能な条件で行った完全容量試験を Ah 単位の CSV から読み込み、ローカル保存や JSON 出力ができます。
+- 自分の測定値がなくても、NASA の B0005、B0006、B0007、B0018 の4セル、計636回の放電試験を使用できます。原データは一度準備すると本機のキャッシュに残ります。
+- 設定した容量しきい値までの寿命を条件付きの範囲として表示します。履歴不足、不安定な傾向、BMS 警報では数値の提示を見送ります。
+- 助言は入力されたメーカー制限と申告された充電・保管条件に基づきます。OBD/CAN 接続や充電制御はありません。
+
+[方法と API（英語）](docs/BATTERY.md) · [NASA 出典・チェックサム・準備（英語）](docs/PUBLIC_BATTERY_DATA.md) · [C++/NumPy の例（ロシア語）](docs/SIGNAL_DEMO.md)。
+
+## バッテリー画面のクイックスタート
+
+Ubuntu の新規環境で、リポジトリのルートから実行します。
+
+```bash
+bash scripts/setup_env.sh
+PYTHONPATH="$PWD/python" .venv/bin/python -m argus.battery.public_data --download
+bash scripts/run_dashboard.sh
+```
+
+[http://127.0.0.1:8000](http://127.0.0.1:8000) を開き、**B0018**、**40**回の観測、**Load measured NASA history** を選択します。初期言語は英語です。上部で日本語に切り替えられます。この処理にモデル学習は不要です。機器の ML/DL 診断には別途 `bash scripts/train_all.sh` を実行し、`/equipment.html` を開いてください。
+
+## 動作中のアプリケーション画面
+
+2026年10月28日にローカル実行中の画面を撮影しました。モックアップではありません。バッテリーレポートは日本語、共通の選択・推移・機器画面は英語です。
+
+### 1. 個人の CSV がなくても開始
+
+![NASA セルと観測済み試験回数の選択](docs/screenshots/public-data-selection-en.jpg)
+
+セルと観測履歴の先頭部分を選択します。それより後の測定値は評価に渡されません。
+
+### 2. B0018 の実測レポート
+
+![B0018：SOH、不明な SOC、条件付きの残存寿命](docs/screenshots/battery-nasa-ja.jpg)
+
+最初の40回：**SOH 83.8%**、SOC は不明、70%容量しきい値まで**追加32–43.5回の管理された放電試験**という条件付き推定です。カードの上に出典と制約があります。実験室の単一セルであり、試験番号を自動車の使用月数に換算しません。
+
+### 3. 容量の推移
+
+![実測容量と70パーセントのしきい値](docs/screenshots/battery-trend-en.jpg)
+
+緑線は最初の40測定、破線は70%のしきい値です。上の文章は直近の傾向で使う試験11–40の変化を示します。SOH は安全性の評価ではありません。
+
+### 4. 機器のライブ監視
+
+![ML・DL推論を使用する合成機器の接続済みパネル](docs/screenshots/equipment-live-en.jpg)
+
+6台の模擬機器、**ML + DL**、特徴量、偏差の根拠、異常ログを表示します。**Source: server simulation** がデータの由来です。残存寿命は合成尺度であり、実際の稼働時間ではありません。
+
+## 機器診断の実装
+
+- **C++20 / NumPy の同じ11特徴量。** FFT のゼロ埋め、正規化、DC 除外を共通化しています。pybind11 はストライド付き配列と逆順配列に対応します。
+- **複数の診断経路。** スペクトルの Isolation Forest、LSTM 再構成、正常時のセンサー基準、合成データで学習した GRU の寿命推定を利用します。
+- **根拠と識別情報。** 評価 ID、モデル版、センサー偏差、検出器の不一致、データ品質を返します。ID は電子署名や故障原因の証明ではありません。
+- **無理な予測を避ける状態。** 履歴不足、欠損、非有限値、時刻の逆転、測定間隔の欠落、モデル不整合を区別します。
+- **接続状態の監視。** 切断と古いデータを表示し、最後のスナップショットを保持して再接続します。ブラウザーデモは明示操作で開始します。
+- **9言語。** 英語、ロシア語、中国語、ヒンディー語、スペイン語、フランス語、ドイツ語、日本語、イタリア語。初期言語は英語、ロシア語は2番目で、両画面が同じ選択を保存します。
+
+## 構成とデータの範囲
+
+```mermaid
+flowchart LR
+    CAP[容量履歴 / NASA セル] --> CHECK[条件と出所の確認]
+    CHECK --> TREND[SOH / 条件付きの傾向推定]
+    TREND --> BATT[バッテリー画面]
+    SIM[合成機器のテレメトリ] --> CPP[C++20 / NumPy の特徴量]
+    CPP --> ML[スペクトル / LSTM / 正常基準 / GRU]
+    ML --> API[FastAPI / WebSocket]
+    API --> FLEET[機器画面]
+```
+
+バッテリー経路は容量の傾向推定であり、機器経路の GRU を EV パック用に流用していません。NASA の単一セル測定と合成機器データを混合せず、出所を表示します。
+
+機器経路の6チャネルは `voltage_v`、`current_a`、`temperature_c`、`vibration_g`、`frequency_hz`、`load_factor` の順です。24回の連続測定が必要で、サーバー更新は約1.5秒と処理時間、模擬測定間隔は5秒です。400測定の周期境界で履歴をリセットします。これらは実機の寿命尺度ではありません。
+
+## 要件・モデル学習
+
+検証環境：Linux/Ubuntu、CPython 3.12、GCC 13、CMake 3.28。ネイティブ拡張には C++20 と Python 開発用ヘッダーが必要です。Node.js は画面テストでのみ使用し、通常実行には不要です。直接依存は [requirements.txt](python/requirements.txt)、開発依存は [requirements-dev.txt](python/requirements-dev.txt) で固定されています。
+
+```bash
+bash scripts/setup_env.sh
+bash scripts/train_all.sh
+bash scripts/run_dashboard.sh
+```
+
+上記は機器の ML/DL 経路を含むセットアップです。学習は新しいローカルバンドルを作り、モデル、正規化、正常基準、ONNX の構造と数値一致を検証してから有効にします。失敗時には以前の有効バンドルを維持します。新しいモデルを利用するにはサーバーを再起動します。信頼できるモデルファイルのみを読み込んでください。
+
+学習・検証・テストは、窓生成と正規化より前に軌跡単位で分けます。スケーラーは学習データ、閾値は検証データ、最終指標は独立テストから得ます。保存済みの数値やベースラインは [評価記録](experiments/2026-09-30_reliability/notes.md) を参照してください。単一の合成実験は実機精度の証明ではありません。
+
+| 設定 | 初期値 / 用途 |
+|---|---|
+| `ARGUS_HOST` | `127.0.0.1`、待ち受けアドレス |
+| `ARGUS_PORT` | `8000`、HTTP/WebSocket ポート |
+| `ARGUS_PYTHON` | プロジェクトの `.venv/bin/python`、なければ `python3` |
+| `ARGUS_ARTIFACTS_DIR` | 指定した信頼済みモデルディレクトリを優先 |
+| `OMP_NUM_THREADS`, `MKL_NUM_THREADS` | 学習・起動スクリプトでは未指定時に `1` |
+
+認証や利用者間の分離は実装していません。ホストの変更だけで公開サービスにできるわけではありません。
+
+## 状態と API
+
+| 機器評価の状態 | 意味 |
+|---|---|
+| `warming_up` | 入力は有効ですが24測定に達していません |
+| `ready` | 対応するモデルと基準で診断経路を実行済み |
+| `invalid_data` | 測定値、波形、時刻が入力検証に失敗 |
+| `degraded` | モデルまたは基準が利用できない、あるいは出力が不正 |
+
+`ready` は実機精度の保証ではありません。`is_anomaly=null` は未知であり、正常という意味ではありません。誤った測定値や時刻の欠落は機器履歴をリセットします。センサー偏差は原因診断ではなく、健全性指数も故障確率ではありません。
+
+| ルート | 用途 |
+|---|---|
+| `GET /` | バッテリー画面 |
+| `GET /equipment.html` | 合成機器の監視画面 |
+| `GET /api/battery/datasets` | 公開データの固定カタログとローカル可用性 |
+| `GET /api/battery/datasets/{dataset_id}?observations=40` | 観測済み履歴の先頭部分と出所 |
+| `GET /api/battery/example` | 明示的に選ぶ合成 EV 例 |
+| `POST /api/battery/import-csv` | CSV の検証と読み込み |
+| `POST /api/battery/analyze` | SOH、傾向、条件付き寿命、助言 |
+| `POST /api/battery/save` | 明示的なローカル保存 |
+| `GET /api/battery/history/{battery_id}` | 当該バッテリーの保存済みレポート、最大50件 |
+| `GET /api/health` | 生成処理とスナップショットの鮮度。異常時503 |
+| `GET /api/fleet` | 最新の完了済み機器スナップショット。未生成時503 |
+| `WS /ws/telemetry` | 初期スナップショットと更新ストリーム |
+| `GET /docs` | HTTP API の対話的ドキュメント |
+
+通信正常とモデル利用可能性は別です。`model_backed`、時刻、評価状態を確認してください。遅い WebSocket クライアントにはタイムアウトと1件の待機キューを用い、中間更新を省略することがあります。永続イベントログではありません。
+
+## 検証コマンド
+
+```bash
+source .venv/bin/activate
+bash scripts/build_cpp_core.sh
+ctest --test-dir build --output-on-failure
+PYTHONPATH="$PWD/python:$PWD/build/cpp_core" OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m pytest python/tests -q
+PYTHONPATH="$PWD/python" OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m pytest python/tests -q
+ruff check python
+ruff format --check python
+node --test web/dashboard/tests/*.test.cjs
+```
+
+C++/NumPy の数値一致、入力拒否、バッテリーの条件付き予測、CSV、ローカル保存、公開データの整合性、翻訳辞書と接続状態を検査します。
+
+## 制約とライセンス
+
+バッテリー SOH だけで安全性を判定できません。容量閾値は用途ごとの設定であり、80%は共通の安全・保証限界ではありません。NASA の原データはローカル研究キャッシュに置き、コード配布には含めません。カタログではライセンスが指定されていないため、ソフトウェアのライセンスをデータへ適用しません。
+
+機器診断の精度と寿命尺度は合成データに基づきます。公開セルの傾向推定は車両パックの検証済み寿命予測ではありません。現場導入には対象機器の独立データでの校正と検証が必要です。
+
+ソフトウェアのライセンスは [LICENSE](LICENSE) を参照してください。
