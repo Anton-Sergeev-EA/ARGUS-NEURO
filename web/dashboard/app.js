@@ -244,16 +244,26 @@ const I18N = {
     pageTitle: "ARGUS-NEURO · Console di salute della flotta", language: "Lingua", fleetCards: "Schede degli asset",
   },
 };
-// Russian is the primary language; the rest are ordered by number of speakers worldwide.
-const LANGUAGES = ["ru", "en", "zh", "hi", "es", "fr", "de", "it"];
-const LOCALES = { ru: "ru-RU", en: "en-US", zh: "zh-CN", hi: "hi-IN", es: "es-ES", fr: "fr-FR", de: "de-DE", it: "it-IT" };
+I18N.ja = {"subtitle": "電力電子機器の根拠に基づく診断 · 船舶・無人機プラットフォーム", "avgHealth": "平均健全性指数", "assetsMonitored": "監視対象機器", "activeAnomalies": "検出中の異常", "backendMode": "推論モード", "alertsTitle": "異常ログ", "noAlerts": "異常はまだ記録されていません", "footerLine": "ARGUS-NEURO · 診断デモ。実機への適用には独立した検証が必要です。", "health": "健全性指数", "rul": "残存寿命 · 合成尺度", "tier1": "スペクトル", "tier2": "傾向", "ok": "正常", "anomaly": "異常", "connecting": "接続中…", "online": "接続済み", "disconnected": "切断", "demo": "ブラウザーデモ", "stale": "古いデータ", "warming_up": "履歴を蓄積中", "ready": "準備完了", "degraded": "制限モード", "invalid_data": "無効なデータ", "modelLive": "ML + DL", "modelHeuristic": "限定診断", "modelOffline": "参考表示", "reconnect": "サーバーに接続", "startDemo": "ブラウザーデモを開始", "awaiting": "データ待機中。デモは選択時のみ開始します。", "serverSimulation": "出典：サーバーシミュレーション · 実機データ未接続", "browserSimulation": "出典：ブラウザーデモ · モデルや実測値を使わない参考表示", "lastUpdate": "更新", "secondsAgo": "秒前", "noData": "データなし", "samples": "履歴", "evidence": "偏差の根拠", "reference": "基準", "sigma": "ウィンドウσ", "noEvidence": "偏差の根拠なし", "passport": "評価記録", "modelVersion": "モデル版", "disagreement": "検出器の判定が不一致", "syntheticRul": "合成データによる推定。実際の稼働時間ではありません", "unavailableRul": "寿命推定不可", "unknown": "不明", "missing_sensors": "必要なセンサーがありません", "non_finite_sensors": "センサー値が無効です", "invalid_timestamp": "測定時刻が無効です", "non_monotonic_timestamp": "測定順序が不正です", "sampling_gap": "測定履歴に欠落があります", "invalid_waveform": "波形が無効です", "non_finite_model_output": "モデル出力が無効です", "models_unavailable": "モデルが利用できません", "insufficient_history": "履歴不足", "reference_unavailable": "正常時の基準がありません", "uncalibrated_rul": "寿命推定は実機で校正されていません", "spectral_anomaly": "スペクトル検出器が異常を検出", "reconstruction_anomaly": "通常と異なるテレメトリ", "sensor_reference_deviation": "センサーが正常基準から偏差", "detector_disagreement": "スペクトルと時系列の判定が不一致", "no_anomaly_detected": "利用可能なデータに異常は検出されません", "pageTitle": "ARGUS-NEURO · 機器状態コンソール", "language": "言語", "fleetCards": "機器カード"};
+// English first, Russian second; remaining languages follow approximate total speaker reach.
+I18N.en.battery = "Battery diagnostics";
+I18N.ru.battery = "Диагностика батареи";
+I18N.zh.battery = "电池诊断";
+I18N.hi.battery = "बैटरी निदान";
+I18N.es.battery = "Diagnóstico de batería";
+I18N.fr.battery = "Diagnostic de batterie";
+I18N.de.battery = "Batteriediagnose";
+I18N.ja.battery = "バッテリー診断";
+I18N.it.battery = "Diagnostica batteria";
+const LANGUAGES = ["en", "ru", "zh", "hi", "es", "fr", "de", "ja", "it"];
+const LOCALES = { ru: "ru-RU", en: "en-US", zh: "zh-CN", hi: "hi-IN", es: "es-ES", fr: "fr-FR", de: "de-DE", ja: "ja-JP", it: "it-IT" };
 const LANG_STORAGE_KEY = "argus.lang";
 function loadSavedLang() {
-  try { const saved = typeof localStorage === "undefined" ? null : localStorage.getItem(LANG_STORAGE_KEY); return LANGUAGES.includes(saved) ? saved : "ru"; }
-  catch (_) { return "ru"; }
+  try { const saved = typeof localStorage === "undefined" ? null : localStorage.getItem(LANG_STORAGE_KEY); return LANGUAGES.includes(saved) ? saved : "en"; }
+  catch (_) { return "en"; }
 }
 let currentLang = loadSavedLang();
-const t = (key) => I18N[currentLang][key] ?? I18N.ru[key] ?? key;
+const t = (key) => I18N[currentLang][key] ?? I18N.en[key] ?? key;
 const finite = (value) => typeof value === "number" && Number.isFinite(value);
 const number = (value, digits = 0) => finite(value) ? value.toFixed(digits) : "—";
 const HISTORY_LEN = 60;

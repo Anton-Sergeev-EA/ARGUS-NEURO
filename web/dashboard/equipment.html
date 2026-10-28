@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ARGUS-NEURO · Fleet Health Console</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+          <circle cx="24" cy="24" r="21" class="brand-ring" />
+          <circle cx="24" cy="24" r="6" class="brand-eye" />
+          <path d="M24 3 L24 10 M24 38 L24 45 M3 24 L10 24 M38 24 L45 24" class="brand-spokes" />
+        </svg>
+        <div class="brand-text">
+          <h1>ARGUS<span class="accent">-NEURO</span></h1>
+          <p class="subtitle" data-i18n="subtitle">Evidence-driven diagnostics for marine and unmanned-system power electronics</p>
+        </div>
+      </div>
+      <div class="header-controls"><a href="/" data-i18n="battery">Battery diagnostics</a>
+        <label class="lang-switch">
+          <span class="visually-hidden" data-i18n="language">Language</span>
+          <select id="langSelect"><option value="en" lang="en">English</option><option value="ru" lang="ru">Русский</option><option value="zh" lang="zh">中文</option><option value="hi" lang="hi">हिन्दी</option><option value="es" lang="es">Español</option><option value="fr" lang="fr">Français</option><option value="de" lang="de">Deutsch</option><option value="ja" lang="ja">日本語</option><option value="it" lang="it">Italiano</option></select>
+        </label>
+        <div class="conn-status" id="connStatus">
+          <span class="dot" id="connDot"></span>
+          <span id="connLabel" data-i18n="connecting">connecting…</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="source-banner" id="sourceBanner" aria-live="polite">
+      <div><strong id="sourceLabel"></strong><span id="freshnessLabel"></span></div>
+      <div class="feed-controls">
+        <button type="button" id="reconnectBtn" data-i18n="reconnect">Connect to server</button>
+        <button type="button" id="demoBtn" data-i18n="startDemo">Start browser demo</button>
+      </div>
+    </section>
+
+    <section class="fleet-summary" id="fleetSummary">
+      <div class="summary-card">
+        <span class="summary-value" id="summaryAvgHealth">--</span>
+        <span class="summary-label" data-i18n="avgHealth">Average health index</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-value" id="summaryAssetCount">--</span>
+        <span class="summary-label" data-i18n="assetsMonitored">Assets monitored</span>
+      </div>
+      <div class="summary-card warn">
+        <span class="summary-value" id="summaryAnomalyCount">--</span>
+        <span class="summary-label" data-i18n="activeAnomalies">Active anomalies</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-value" id="summaryBackend">--</span>
+        <span class="summary-label" data-i18n="backendMode">Inference mode</span>
+      </div>
+    </section>
+
+    <main>
+      <section class="fleet-grid" id="fleetGrid" data-i18n-aria="fleetCards" aria-label="Fleet asset cards"></section>
+
+      <aside class="alerts-panel">
+        <h2 data-i18n="alertsTitle">Anomaly log</h2>
+        <ul id="alertsList" class="alerts-list">
+          <li class="alert-empty" data-i18n="noAlerts">No anomalies recorded yet</li>
+        </ul>
+      </aside>
+    </main>
+
+    <footer class="app-footer">
+      <span data-i18n="footerLine">ARGUS-NEURO · Diagnostic demonstration. Deployment on real equipment requires independent validation.</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

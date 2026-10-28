@@ -1,89 +1,38 @@
 <!doctype html>
-<html lang="ru">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ARGUS-NEURO · Консоль состояния парка</title>
-<link rel="stylesheet" href="styles.css" />
-</head>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ARGUS-NEURO · Battery diagnostics</title><link rel="stylesheet" href="battery.css"></head>
 <body>
-  <div class="app">
-    <header class="app-header">
-      <div class="brand">
-        <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
-          <circle cx="24" cy="24" r="21" class="brand-ring" />
-          <circle cx="24" cy="24" r="6" class="brand-eye" />
-          <path d="M24 3 L24 10 M24 38 L24 45 M3 24 L10 24 M38 24 L45 24" class="brand-spokes" />
-        </svg>
-        <div class="brand-text">
-          <h1>ARGUS<span class="accent">-NEURO</span></h1>
-          <p class="subtitle" data-i18n="subtitle">Прогнозная диагностика силовой электроники · морские и беспилотные платформы</p>
-        </div>
-      </div>
-      <div class="header-controls">
-        <label class="lang-switch">
-          <span class="visually-hidden" data-i18n="language">Язык</span>
-          <select id="langSelect">
-            <option value="ru" lang="ru">Русский</option>
-            <option value="en" lang="en">English</option>
-            <option value="zh" lang="zh">中文</option>
-            <option value="hi" lang="hi">हिन्दी</option>
-            <option value="es" lang="es">Español</option>
-            <option value="fr" lang="fr">Français</option>
-            <option value="de" lang="de">Deutsch</option>
-            <option value="it" lang="it">Italiano</option>
-          </select>
-        </label>
-        <div class="conn-status" id="connStatus">
-          <span class="dot" id="connDot"></span>
-          <span id="connLabel" data-i18n="connecting">подключение…</span>
-        </div>
-      </div>
-    </header>
-
-    <section class="source-banner" id="sourceBanner" aria-live="polite">
-      <div><strong id="sourceLabel"></strong><span id="freshnessLabel"></span></div>
-      <div class="feed-controls">
-        <button type="button" id="reconnectBtn" data-i18n="reconnect">Подключиться к серверу</button>
-        <button type="button" id="demoBtn" data-i18n="startDemo">Запустить демо в браузере</button>
-      </div>
-    </section>
-
-    <section class="fleet-summary" id="fleetSummary">
-      <div class="summary-card">
-        <span class="summary-value" id="summaryAvgHealth">--</span>
-        <span class="summary-label" data-i18n="avgHealth">Средний индекс здоровья</span>
-      </div>
-      <div class="summary-card">
-        <span class="summary-value" id="summaryAssetCount">--</span>
-        <span class="summary-label" data-i18n="assetsMonitored">Активов под наблюдением</span>
-      </div>
-      <div class="summary-card warn">
-        <span class="summary-value" id="summaryAnomalyCount">--</span>
-        <span class="summary-label" data-i18n="activeAnomalies">Активные аномалии</span>
-      </div>
-      <div class="summary-card">
-        <span class="summary-value" id="summaryBackend">--</span>
-        <span class="summary-label" data-i18n="backendMode">Режим инференса</span>
-      </div>
-    </section>
-
-    <main>
-      <section class="fleet-grid" id="fleetGrid" data-i18n-aria="fleetCards" aria-label="Карточки активов"></section>
-
-      <aside class="alerts-panel">
-        <h2 data-i18n="alertsTitle">Журнал аномалий</h2>
-        <ul id="alertsList" class="alerts-list">
-          <li class="alert-empty" data-i18n="noAlerts">Аномалий пока не зафиксировано</li>
-        </ul>
-      </aside>
-    </main>
-
-    <footer class="app-footer">
-      <span data-i18n="footerLine">ARGUS-NEURO &mdash; платформа прогнозной диагностики и мониторинга состояния силовой электроники (C++/Python, ML + DL)</span>
-    </footer>
-  </div>
-
-  <script src="app.js"></script>
-</body>
-</html>
+<header><a class="brand" href="/">ARGUS<span>-NEURO</span></a><nav aria-label="Navigation"><a href="equipment.html" data-text="equipment">Equipment diagnostics</a><label><span data-text="language">Language</span> <select id="language"><option value="en" lang="en">English</option><option value="ru" lang="ru">Русский</option><option value="zh" lang="zh">中文</option><option value="hi" lang="hi">हिन्दी</option><option value="es" lang="es">Español</option><option value="fr" lang="fr">Français</option><option value="de" lang="de">Deutsch</option><option value="ja" lang="ja">日本語</option><option value="it" lang="it">Italiano</option></select></label></nav></header>
+<main>
+<section class="intro"><p class="eyebrow" data-text="eyebrow">BATTERY · UNDERSTANDABLE DIAGNOSTICS</p><h1 data-text="title">How is your battery doing?</h1><p data-text="intro">See how much capacity remains, how it changes and what deserves attention. Charge and wear are different.</p><p class="note" data-text="scope">Start with a history of comparable capacity tests. This software is not connected to your vehicle and does not control charging.</p></section>
+<section class="panel" aria-labelledby="public-title"><h2 id="public-title" data-text="publicTitle">No measurements of your own? Start with published data</h2><p class="note" data-text="publicIntro">Measured NASA laboratory cells. This is not a diagnosis of your vehicle or a whole EV battery pack.</p><div class="fields"><label><span data-text="publicCell">Laboratory cell</span><select id="public-cell"><option value="nasa-B0005">NASA · B0005</option><option value="nasa-B0006">NASA · B0006</option><option value="nasa-B0007">NASA · B0007</option><option value="nasa-B0018">NASA · B0018</option></select></label><label><span data-text="observations">Observed discharge tests to use</span><input type="number" id="public-count" value="40" min="8" max="2000" step="1"></label></div><div class="actions"><button type="button" id="public-example" data-text="publicLoad">Load measured NASA history</button></div></section>
+<section class="panel" aria-labelledby="input-title"><h2 id="input-title" data-text="inputTitle">1. Add battery data</h2>
+<form id="battery-form">
+<div class="fields">
+<label><span data-text="batteryName">Battery name</span><input id="battery-id" value="My battery" required maxlength="80"></label>
+<label><span data-text="application">Application</span><select id="application"><option value="ev" data-text="ev">Vehicle</option><option value="uav" data-text="uav">UAV</option><option value="equipment" data-text="other">Other equipment</option></select></label>
+<label><span data-text="reference">Reference capacity, Ah</span><input id="reference" type="number" min="0.001" max="100000" step="any" required placeholder="100"><small data-text="referenceHelp">From the datasheet or initial controlled capacity test, not the current charge percentage.</small></label>
+<label><span data-text="threshold">Capacity service threshold, %</span><input id="threshold" type="number" min="40" max="95" value="80" step="any" required><small data-text="thresholdHelp">A setting for your application. 80% is an example, not a universal safety limit.</small></label>
+<label><span data-text="chemistry">Battery chemistry</span><select id="chemistry"><option value="unknown" data-text="unknown">Unknown</option><option value="nmc">NMC</option><option value="nca">NCA</option><option value="lfp">LiFePO₄ / LFP</option><option value="li-ion">Li-ion</option></select></label>
+<label><span data-text="rate">Equivalent full cycles per month</span><input id="rate" type="number" min="0.01" max="1000" step="any"><small data-text="rateHelp">Optional. Two 50% discharges approximately equal one full cycle.</small></label>
+</div>
+<div class="upload"><label for="capacity-file" data-text="upload">Capacity history: upload CSV</label><input id="capacity-file" type="file" accept=".csv,text/csv"><p data-text="csvHelp">Columns: equivalent_cycles, capacity_ah, condition_id; optional temperature_c. Use full controlled capacity tests, not partial discharge throughput.</p><a href="battery-example.csv" download data-text="template">Download illustrative sample table</a><p id="file-status" role="status" data-text="noFile">No history added yet</p></div>
+<label><span data-text="condition">Name of comparable capacity test conditions</span><input id="condition" value="same-control-test" maxlength="120" required><small data-text="conditionHelp">Must match condition_id. Measurements under other conditions are excluded.</small></label>
+<details><summary data-text="bmsDetails">Vehicle readings and manufacturer limits — optional</summary><div class="fields">
+<label><span data-text="soc">Current charge, %</span><input id="soc" type="number" min="0" max="100" step="any"></label>
+<label><span data-text="temperature">Battery temperature, °C</span><input id="temperature" type="number" min="-80" max="150" step="any"></label>
+<label><span data-text="spread">Cell voltage spread, mV</span><input id="spread" type="number" min="0" max="5000" step="any"></label>
+<label><span data-text="limitSource">Limit source: your model’s manual</span><input id="limit-source" maxlength="500"></label>
+<label><span data-text="minTemp">Minimum charging temperature, °C</span><input id="min-temp" type="number" min="-60" max="100" step="any"></label>
+<label><span data-text="maxTemp">Maximum charging temperature, °C</span><input id="max-temp" type="number" min="-60" max="100" step="any"></label>
+<label><span data-text="spreadLimit">Allowed cell voltage spread, mV</span><input id="spread-limit" type="number" min="0.01" max="2000" step="any"></label>
+</div><label class="check"><input type="checkbox" id="charging"><span data-text="charging">Battery is currently charging</span></label><label class="check"><input type="checkbox" id="alarm"><span data-text="alarm">Vehicle or BMS reports a battery fault</span></label><label class="check"><input type="checkbox" id="hot-storage"><span data-text="hotStorage">Battery often remains highly charged in hot storage</span></label><label class="check"><input type="checkbox" id="fast-charging"><span data-text="fastCharging">Frequently uses DC fast charging</span></label></details>
+<div class="actions"><button type="submit" id="analyze" data-text="analyze">Show battery condition</button><button type="button" class="secondary" id="example" data-text="example">Explore an illustrative example</button></div>
+</form><p id="message" role="status" aria-live="polite"></p></section>
+<section id="results" hidden aria-labelledby="result-title"><h2 id="result-title" data-text="resultTitle">2. Condition and next actions</h2><p id="origin" class="note"></p><div id="dataset-info" class="note"></div><div class="cards"><article><h3 data-text="capacityTitle">Remaining capacity</h3><p class="big" id="soh-value"></p><p id="soh-note"></p></article><article><h3 data-text="socTitle">Current charge</h3><p class="big" id="soc-value"></p><p data-text="socNote">Available charge now, not battery wear.</p></article><article><h3 data-text="rulTitle">Preliminary remaining life</h3><p class="big" id="rul-value"></p><p id="rul-note"></p></article></div>
+<div id="safety" class="note"></div><section class="panel"><h3 data-text="historyTitle">How capacity changes</h3><p id="trend-note"></p><div id="chart"></div><p class="note" data-text="chartHelp">The line shows your capacity tests. The dashed line is the configured service threshold. SOH is not a safety assessment.</p><details><summary data-text="tableTitle">View measurements as a table</summary><div id="history-table"></div></details></section>
+<section class="panel"><h3 data-text="actionsTitle">What to do next</h3><div id="advice"></div></section>
+<div class="actions"><button id="save" class="secondary" data-text="save">Save report on this computer</button><button id="export" class="secondary" data-text="export">Download report</button><button id="saved" class="secondary" data-text="saved">Previously saved reports</button></div><div id="saved-list" aria-live="polite"></div>
+</section>
+<footer><p data-text="footer">ARGUS-NEURO · Evidence-based assessment and explainable guidance. Repair and operating decisions follow the manufacturer’s manual and diagnostic findings.</p></footer>
+</main><script src="battery-i18n.js"></script><script src="battery.js"></script></body></html>
