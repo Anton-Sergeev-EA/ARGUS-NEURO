@@ -30,6 +30,6 @@ artifacts/revalidated-*/
 artifacts/active.json
 artifacts/active.json.tmp
 
-# Local assistant instruction files
-[Cc][Ll][Aa][Uu][Dd][Ee].[Mm][Dd]
-[Cc][Ll][Aa][Uu][Dd].[Mm][Dd]
+# Local battery measurements, reports and trained weights
+artifacts/battery-local/
+artifacts/battery-benchmark-*/

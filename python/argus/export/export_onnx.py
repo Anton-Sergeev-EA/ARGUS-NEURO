@@ -17,6 +17,28 @@ from argus.simulator.telemetry_simulator import SENSOR_COLUMNS
 from argus.training.datasets import WINDOW_LEN
 
 
+def strip_export_traces(model: onnx.ModelProto) -> None:
+    """Remove debug stack traces containing build-machine paths, including subgraphs."""
+    from google.protobuf.message import Message
+
+    def visit(message: Message) -> None:
+        if "metadata_props" in message.DESCRIPTOR.fields_by_name:
+            kept = [
+                (entry.key, entry.value)
+                for entry in message.metadata_props
+                if not entry.key.endswith("stack_trace")
+            ]
+            message.ClearField("metadata_props")
+            for key, value in kept:
+                message.metadata_props.add(key=key, value=value)
+        for field, value in message.ListFields():
+            if field.type == field.TYPE_MESSAGE:
+                for child in list(value) if field.is_repeated else [value]:
+                    visit(child)
+
+    visit(model)
+
+
 def _export(
     model: torch.nn.Module, directory: Path, stem: str, output: str
 ) -> tuple[Path, float]:
@@ -39,6 +61,9 @@ def _export(
         dynamo=True,
         external_data=False,
     )
+    exported = onnx.load(path)
+    strip_export_traces(exported)
+    onnx.save(exported, path)
     onnx.checker.check_model(str(path), full_check=True)
     evaluator = ReferenceEvaluator(str(path))
     max_error = 0.0

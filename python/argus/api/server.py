@@ -17,6 +17,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from argus.battery.api import router as battery_router
 from argus.inference import HealthInferenceEngine
 from argus.simulator import AssetSimulator, AssetType, FaultType
 from argus.simulator.telemetry_simulator import SENSOR_COLUMNS
@@ -285,6 +286,9 @@ async def ws_telemetry(websocket: WebSocket) -> None:
         pass
     finally:
         await state.manager.disconnect(websocket)
+
+
+app.include_router(battery_router)
 
 
 if DASHBOARD_DIR.exists():
