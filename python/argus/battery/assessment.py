@@ -5,7 +5,9 @@ import hashlib
 import json
 from typing import Any
 import numpy as np
+from argus.battery.calibration import calibrate_interval
 from argus.battery.config import DEFAULT_CONFIG, ProjectionConfig
+from argus.battery.degradation import bootstrap_crossings, select_model
 from argus.battery.schema import BatteryRequest
 
 AGING_SOURCE = "https://afdc.energy.gov/fuels/electricity-benefits"
@@ -79,6 +81,46 @@ def recommendations(request: BatteryRequest) -> list[dict[str, Any]]:
             "vehicle_or_battery_manual",
         )
     return advice
+
+
+def curved_projection(
+    result: dict[str, Any],
+    model: str,
+    scores: dict[str, float],
+    tx: np.ndarray,
+    ty: np.ndarray,
+    profile: Any,
+    config: ProjectionConfig,
+) -> dict[str, Any]:
+    """Interval for a curved fade that validated better than a straight line."""
+    times, _ = bootstrap_crossings(model, tx, ty, profile.service_threshold_pct, config)
+    result["trend"]["model"] = model
+    result["trend"]["model_validation_mae_pct_points"] = {
+        k: round(v, 3) for k, v in scores.items() if np.isfinite(v)
+    }
+    result["trend"]["method"] = "validated_curve_with_moving_block_residual_bootstrap"
+    finite = np.isfinite(times)
+    # A defensible interval needs the upper quantile to be reached inside the horizon.
+    if finite.mean() < config.interval_high:
+        result["rul"]["status"] = "beyond_observed_horizon"
+        return result
+    low, high = np.quantile(times[finite], [config.interval_low, config.interval_high])
+    cycles = [round(float(low), 1), round(float(high), 1)]
+    result["rul"] = {
+        "status": "conditional_estimate",
+        "equivalent_cycles": cycles,
+        "months": [round(v / profile.equivalent_cycles_per_month, 1) for v in cycles]
+        if profile.equivalent_cycles_per_month
+        else None,
+        "method": f"{model}_capacity_projection",
+        "interval_kind": "descriptive_5_to_95_percentile_not_guaranteed_coverage",
+        "assumptions": [
+            "same_future_usage",
+            "comparable_capacity_tests",
+            "no_new_failure_mode",
+        ],
+    }
+    return result
 
 
 def assess_battery(
@@ -196,7 +238,11 @@ def assess_battery(
         "to_equivalent_cycles": float(tx[-1]),
         "acceleration": acceleration,
         "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+        "model": "linear",
     }
+    model, scores = select_model(tx, ty, config)
+    if model != "linear":
+        return curved_projection(result, model, scores, tx, ty, p, config)
     if high_slope >= config.decline_slope or acceleration:
         result["rul"]["status"] = (
             "changing_trend" if acceleration else "no_reliable_decline"
@@ -212,6 +258,9 @@ def assess_battery(
         result["rul"]["status"] = "beyond_observed_horizon"
         return result
     cycles = [round(float(lo), 1), round(float(hi), 1)]
+    calibration = None
+    if p.measurement_scope == "cell" and config.calibrate_cells:
+        cycles, calibration = calibrate_interval(cycles, tx)
     result["rul"] = {
         "status": "conditional_estimate",
         "equivalent_cycles": cycles,
@@ -219,12 +268,16 @@ def assess_battery(
         if p.equivalent_cycles_per_month
         else None,
         "method": "capacity_trend_projection",
-        "interval_kind": "descriptive_5_to_95_percentile_not_guaranteed_coverage",
+        "interval_kind": "empirically_calibrated_cell_level"
+        if calibration
+        else "descriptive_5_to_95_percentile_not_guaranteed_coverage",
         "assumptions": [
             "same_future_usage",
             "comparable_capacity_tests",
             "no_new_failure_mode",
         ],
     }
+    if calibration:
+        result["rul"]["calibration"] = calibration
     json.dumps(result, allow_nan=False)
     return result

@@ -12,6 +12,7 @@
    "from_equivalent_cycles": 91.0,
    "loss_pct_points_per_100_cycles": 23.725,
    "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "model": "linear",
    "status": "declining",
    "to_equivalent_cycles": 120.0
   }
@@ -29,6 +30,7 @@
    "from_equivalent_cycles": 11.0,
    "loss_pct_points_per_100_cycles": 4.356,
    "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "model": "linear",
    "status": "unclear",
    "to_equivalent_cycles": 40.0
   }
@@ -37,8 +39,8 @@
   "capacity_state": "above_service_threshold",
   "rul": {
    "equivalent_cycles": [
-    24.3,
-    26.3
+    7.6,
+    43.0
    ],
    "status": "conditional_estimate"
   },
@@ -49,6 +51,7 @@
    "from_equivalent_cycles": 51.0,
    "loss_pct_points_per_100_cycles": 32.313,
    "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "model": "linear",
    "status": "declining",
    "to_equivalent_cycles": 80.0
   }
@@ -80,6 +83,7 @@
    "from_equivalent_cycles": 11.0,
    "loss_pct_points_per_100_cycles": 25.176,
    "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "model": "linear",
    "status": "declining",
    "to_equivalent_cycles": 40.0
   }
@@ -88,8 +92,8 @@
   "capacity_state": "above_service_threshold",
   "rul": {
    "equivalent_cycles": [
-    4.9,
-    9.5
+    2.2,
+    12.2
    ],
    "status": "conditional_estimate"
   },
@@ -100,6 +104,7 @@
    "from_equivalent_cycles": 51.0,
    "loss_pct_points_per_100_cycles": 42.999,
    "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "model": "linear",
    "status": "declining",
    "to_equivalent_cycles": 80.0
   }
@@ -108,8 +113,8 @@
   "capacity_state": "above_service_threshold",
   "rul": {
    "equivalent_cycles": [
-    27.8,
-    35.8
+    9.5,
+    54.1
    ],
    "status": "conditional_estimate"
   },
@@ -120,6 +125,7 @@
    "from_equivalent_cycles": 91.0,
    "loss_pct_points_per_100_cycles": 16.937,
    "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "model": "linear",
    "status": "declining",
    "to_equivalent_cycles": 120.0
   }
@@ -137,6 +143,7 @@
    "from_equivalent_cycles": 11.0,
    "loss_pct_points_per_100_cycles": 6.331,
    "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "model": "linear",
    "status": "declining",
    "to_equivalent_cycles": 40.0
   }
@@ -145,8 +152,8 @@
   "capacity_state": "above_service_threshold",
   "rul": {
    "equivalent_cycles": [
-    36.9,
-    40.0
+    11.5,
+    65.4
    ],
    "status": "conditional_estimate"
   },
@@ -157,6 +164,7 @@
    "from_equivalent_cycles": 51.0,
    "loss_pct_points_per_100_cycles": 28.332,
    "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "model": "linear",
    "status": "declining",
    "to_equivalent_cycles": 80.0
   }
@@ -179,8 +187,8 @@
   "capacity_state": "above_service_threshold",
   "rul": {
    "equivalent_cycles": [
-    32.0,
-    43.5
+    11.3,
+    64.2
    ],
    "status": "conditional_estimate"
   },
@@ -191,6 +199,7 @@
    "from_equivalent_cycles": 11.0,
    "loss_pct_points_per_100_cycles": 30.39,
    "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "model": "linear",
    "status": "declining",
    "to_equivalent_cycles": 40.0
   }
@@ -199,8 +208,8 @@
   "capacity_state": "above_service_threshold",
   "rul": {
    "equivalent_cycles": [
-    3.9,
-    9.3
+    2.0,
+    11.2
    ],
    "status": "conditional_estimate"
   },
@@ -211,6 +220,7 @@
    "from_equivalent_cycles": 51.0,
    "loss_pct_points_per_100_cycles": 35.561,
    "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "model": "linear",
    "status": "declining",
    "to_equivalent_cycles": 80.0
   }
