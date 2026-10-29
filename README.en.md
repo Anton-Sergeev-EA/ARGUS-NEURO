@@ -71,7 +71,7 @@ Select one of four cells and the observed prefix length. Only that prefix enters
 
 ![B0018 report with SOH, unknown SOC and conditional life](docs/screenshots/battery-nasa-en.jpg)
 
-First 40 discharge tests: **83.8% SOH**, unknown SOC and a conditional **32–43.5 additional discharge-test** projection to the configured 70% capacity threshold. Source and limitations appear above the cards. This is a laboratory cell; its test index is not converted to EV operating months.
+First 40 discharge tests: **83.8% SOH**, unknown SOC and a conditional **11.3–64.2 additional discharge-test** projection to the configured 70% capacity threshold. Source and limitations appear above the cards. This is a laboratory cell; its test index is not converted to EV operating months.
 
 ### 3. Capacity history
 

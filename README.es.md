@@ -48,7 +48,7 @@ Elija una celda y la longitud del historial observado. Solo ese inicio se usa pa
 
 ![B0018: SOH, SOC desconocido y vida condicional](docs/screenshots/battery-nasa-es.jpg)
 
-Primeras 40 descargas: **SOH 83,8 %**, SOC desconocido y proyección condicional de **32–43,5 pruebas adicionales** hasta el umbral del 70 %. La fuente y las limitaciones aparecen sobre las tarjetas. Es una celda de laboratorio, sin conversión a meses de uso del vehículo.
+Primeras 40 descargas: **SOH 83,8 %**, SOC desconocido y proyección condicional de **11,3–64,2 pruebas adicionales** hasta el umbral del 70 %. La fuente y las limitaciones aparecen sobre las tarjetas. Es una celda de laboratorio, sin conversión a meses de uso del vehículo.
 
 ### 3. Historial de capacidad
 
