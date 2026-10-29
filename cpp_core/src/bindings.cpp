@@ -10,6 +10,7 @@
 #include <cstring>
 #include <vector>
 
+#include "argus_core/battery_curves.hpp"
 #include "argus_core/signal_features.hpp"
 
 namespace py = pybind11;
@@ -91,4 +92,55 @@ PYBIND11_MODULE(argus_core, m) {
         py::arg("samples"),
         "Return the single-sided FFT magnitude spectrum of the input "
         "(zero-padded to the next power of two).");
+
+    py::class_<argus_core::IncrementalCapacity>(m, "IncrementalCapacity")
+        .def_readonly("voltage_v", &argus_core::IncrementalCapacity::voltage_v)
+        .def_readonly("dq_dv_ah_per_v",
+                       &argus_core::IncrementalCapacity::dq_dv_ah_per_v)
+        .def_readonly("peak_voltage_v",
+                       &argus_core::IncrementalCapacity::peak_voltage_v)
+        .def_readonly("peak_height_ah_per_v",
+                       &argus_core::IncrementalCapacity::peak_height_ah_per_v)
+        .def_readonly("peak_width_v",
+                       &argus_core::IncrementalCapacity::peak_width_v)
+        .def_readonly("area_ah", &argus_core::IncrementalCapacity::area_ah);
+
+    m.def(
+        "incremental_capacity",
+        [](const SampleArray& voltage, const SampleArray& capacity,
+           std::size_t bins, std::size_t smooth_window) {
+            const auto v = ndarray_to_vector(voltage);
+            const auto q = ndarray_to_vector(capacity);
+            py::gil_scoped_release release;
+            return argus_core::incremental_capacity(v, q, bins, smooth_window);
+        },
+        py::arg("voltage_v"), py::arg("capacity_ah"), py::arg("bins") = 160,
+        py::arg("smooth_window") = 5,
+        "Incremental-capacity (dQ/dV) curve and dominant-peak features of a "
+        "charge record.");
+
+    m.def(
+        "time_between_voltages",
+        [](const SampleArray& time, const SampleArray& voltage, double v_low,
+           double v_high) {
+            const auto t = ndarray_to_vector(time);
+            const auto v = ndarray_to_vector(voltage);
+            py::gil_scoped_release release;
+            return argus_core::time_between_voltages(t, v, v_low, v_high);
+        },
+        py::arg("time_s"), py::arg("voltage_v"), py::arg("v_low"),
+        py::arg("v_high"),
+        "Seconds for the voltage to rise from v_low to v_high, or None.");
+
+    m.def(
+        "estimate_dcir",
+        [](const SampleArray& current, const SampleArray& voltage,
+           double min_step_a) {
+            const auto i = ndarray_to_vector(current);
+            const auto v = ndarray_to_vector(voltage);
+            py::gil_scoped_release release;
+            return argus_core::estimate_dcir(i, v, min_step_a);
+        },
+        py::arg("current_a"), py::arg("voltage_v"), py::arg("min_step_a") = 0.5,
+        "DC internal resistance (ohm) from the largest current step, or None.");
 }
