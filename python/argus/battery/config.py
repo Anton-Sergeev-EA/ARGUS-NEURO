@@ -30,6 +30,19 @@ class ProjectionConfig:
     acceleration_ratio: float = 1.5
     # A forecast further than this many observed spans ahead is withheld.
     horizon_spans: float = 5.0
+    # Curve family. "linear" is the default because the multi-cell backtest did not show
+    # a reliable gain from "auto" (curved model chosen by held-out error).
+    model: str = "linear"
+    # Curved fits need this many points in the window to be considered.
+    nonlinear_min_records: int = 16
+    min_fit_points: int = 8
+    # Rolling-origin shares of the window used to validate on the newest points.
+    validation_origins: tuple[float, ...] = (0.6, 0.75)
+    # A curved model must cut the held-out error by this fraction to replace linear.
+    required_improvement: float = 0.25
+    nonlinear_replicates: int = 200
+    # Widen laboratory-cell intervals with the backtest-derived conformal radius.
+    calibrate_cells: bool = True
     # Capacity above this share of the reference suggests a wrong reference.
     reference_error_soh_pct: float = 110.0
 
