@@ -400,6 +400,16 @@ if (typeof document !== 'undefined') {
     });
   }
 
+  async function showChange(node) {
+    try {
+      const change = await call('history/' + encodeURIComponent(state.last.battery_id) + '/changes');
+      const names = {improved: 'changeImproved', declined: 'changeDeclined', unchanged: 'changeUnchanged'};
+      if (!names[change.capacity_direction]) return;
+      const points = change.soh_change_points.toLocaleString(state.lang, {signDisplay: 'exceptZero'});
+      addText(node, 'p', t('changeLead') + ' ' + t(names[change.capacity_direction]) + ' (' + points + ' ' + t('points') + ').', 'note');
+    } catch { /* fewer than two comparable reports: nothing to add */ }
+  }
+
   /* ----- events ----- */
 
   $('language').addEventListener('change', () => {
@@ -493,6 +503,7 @@ if (typeof document !== 'undefined') {
       node.replaceChildren();
       if (!list.length) addText(node, 'p', t('savedEmpty'));
       list.forEach(r => addText(node, 'p', r.saved_at + ' · ' + (r.assessment.soh_pct ?? t('missing')) + '% · ' + r.assessment.battery_id));
+      if (list.length > 1) await showChange(node);
     } catch { message('error'); }
   });
 

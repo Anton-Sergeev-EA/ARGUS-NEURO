@@ -10,6 +10,8 @@ from argus.battery.config import DEFAULT_CONFIG, ProjectionConfig
 from argus.battery.degradation import bootstrap_crossings, select_model
 from argus.battery.schema import BatteryRequest
 
+# 2: adds trend.model, calibrated cell intervals and rul.calibration.
+REPORT_SCHEMA_VERSION = 2
 AGING_SOURCE = "https://afdc.energy.gov/fuels/electricity-benefits"
 
 
@@ -140,7 +142,7 @@ def assess_battery(
         warnings.append("check_reference_capacity")
     advice = recommendations(request)
     result: dict[str, Any] = {
-        "schema_version": 1,
+        "schema_version": REPORT_SCHEMA_VERSION,
         "battery_id": p.battery_id,
         "application": p.application,
         "cycle_axis": p.cycle_axis,
