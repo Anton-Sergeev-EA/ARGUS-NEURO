@@ -10,6 +10,7 @@ from argus.battery.changes import compare_reports
 from argus.battery.ratelimit import limit_requests
 from argus.battery.data import csv_origin, records_from_csv
 from argus.battery.schema import BatteryRequest
+from argus.battery.second_opinion import second_opinion
 from argus.battery.public_data import (
     catalogue,
     load_public_history,
@@ -35,6 +36,8 @@ def assess_request(model: BatteryRequest) -> dict:
     except ValueError as exc:
         raise HTTPException(422, detail="public_measurements_modified") from exc
     report = assess_battery(model)
+    # A learned estimate is an extra, clearly labelled field; it never replaces the rest.
+    report["second_opinion"] = second_opinion(model)
     if source is not None:
         report["dataset"] = source
     return report

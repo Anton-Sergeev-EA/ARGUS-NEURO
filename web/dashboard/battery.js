@@ -223,6 +223,7 @@ if (typeof document !== 'undefined') {
     $('soh-note').textContent = t('capacityNote');
     $('soc-value').textContent = data.soc_pct === null ? t('missing') : data.soc_pct.toLocaleString(state.lang) + '%';
     renderRemainingLife(data);
+    renderSecondOpinion(data);
     $('safety').textContent = t(data.safety_state === 'attention' ? 'safetyAlert' : 'safety');
     $('safety').className = data.safety_state === 'attention' ? 'warning' : 'note';
     renderTrend(data);
@@ -239,6 +240,16 @@ if (typeof document !== 'undefined') {
       ? formatRange(rul.equivalent_cycles, state.lang) + ' ' + unit : t('missing');
     const months = rul.months ? ' ' + formatRange(rul.months, state.lang) + ' ' + t('months') + '.' : '';
     $('rul-note').textContent = t(rul.status === 'conditional_estimate' ? 'estimate' : rul.status) + months;
+  }
+
+  function renderSecondOpinion(data) {
+    const node = $('second-opinion');
+    const opinion = data.second_opinion;
+    node.hidden = !opinion || opinion.status !== 'ok';
+    if (node.hidden) return;
+    const unit = t(data.cycle_axis === 'equivalent_cycles' ? 'cycles' : 'tests');
+    const value = opinion.interval_cycles ? formatRange(opinion.interval_cycles, state.lang) : '≈ ' + opinion.equivalent_cycles.toLocaleString(state.lang);
+    node.textContent = t('secondOpinion') + ' ' + value + ' ' + unit + '.';
   }
 
   function renderTrend(data) {
