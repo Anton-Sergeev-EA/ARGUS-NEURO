@@ -41,6 +41,10 @@ ARGUS-NEURO combines battery-capacity analysis with power-electronics diagnostic
 
 [Battery method and API](docs/BATTERY.md) · [NASA source, checksums and setup](docs/PUBLIC_BATTERY_DATA.md) · [Small C++/NumPy example](docs/SIGNAL_DEMO.md).
 
+[Backtest on 31 cells](docs/BACKTEST.md) · [Voltage-curve indicators in C++](docs/CURVES.md) · [Methodology](docs/METHODOLOGY.md)
+
+The plain remaining-life interval covered the truth in only 22% of forecasts against a nominal 90%. After calibration it covers 90% on cells it has not seen. This applies to laboratory cells, not EV packs.
+
 ## Quick start: battery page
 
 For a new Ubuntu installation, from the repository root:

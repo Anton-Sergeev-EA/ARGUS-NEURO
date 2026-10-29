@@ -18,6 +18,10 @@ ARGUS-NEURO verbindet die Analyse der Batteriekapazität mit der Forschung zur D
 
 [Methode und API, Englisch](docs/BATTERY.md) · [NASA-Quelle und Prüfsummen, Englisch](docs/PUBLIC_BATTERY_DATA.md) · [C++/NumPy-Beispiel, Russisch](docs/SIGNAL_DEMO.md).
 
+[Backtest auf 31 Zellen, Englisch](docs/BACKTEST.md) · [Spannungskurven-Indikatoren in C++, Englisch](docs/CURVES.md) · [Methodik, Englisch](docs/METHODOLOGY.md)
+
+Das einfache Restlebensdauer-Intervall traf die Wahrheit nur in 22 % der Prognosen bei nominal 90 %. Nach der Kalibrierung trifft es 90 % bei unbekannten Zellen. Das gilt für Laborzellen, nicht für EV-Packs.
+
 ## Schnellstart: Batterieseite
 
 Neue Ubuntu-Installation, aus dem Repository-Verzeichnis:
