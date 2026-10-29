@@ -24,15 +24,21 @@ jobs:
         run: |
           ruff check python
           ruff format --check python
-      - name: Release build and CTest
+      - name: Release build (warnings are errors) and CTest
         run: |
-          bash scripts/build_cpp_core.sh
+          ARGUS_CMAKE_ARGS="-DARGUS_WERROR=ON" bash scripts/build_cpp_core.sh
           ctest --test-dir build --output-on-failure
+      - name: Static analysis of the native core
+        run: |
+          sudo apt-get install -y --no-install-recommends clang-tidy
+          clang-tidy -p build cpp_core/src/*.cpp --quiet
+      - name: Documentation stays consistent
+        run: python scripts/check_docs.py
       - name: Native Python contracts
         run: |
           export PYTHONPATH="${PWD}/python:${PWD}/build/cpp_core"
           python -c "from argus.features import using_native_core; assert using_native_core()"
-          python -m pytest python/tests -q
+          python -m pytest python/tests -q --cov=argus --cov-report=term-missing --cov-fail-under=70
       - name: NumPy fallback contracts
         run: |
           export PYTHONPATH="${PWD}/python"

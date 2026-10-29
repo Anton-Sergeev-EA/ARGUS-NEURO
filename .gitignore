@@ -34,3 +34,4 @@ artifacts/active.json.tmp
 artifacts/battery-local/
 artifacts/battery-benchmark-*/
 .hypothesis/
+.coverage
