@@ -56,21 +56,26 @@ def discharge_capacities(workbook: Path) -> dict[str, tuple[float, np.ndarray]]:
 
 
 def to_history(
-    cell: str, ambient_c: float, capacity: np.ndarray, threshold_pct: float = 80.0
+    cell: str,
+    ambient_c: float,
+    capacity: np.ndarray,
+    threshold_pct: float = 80.0,
+    prefix: str = "CALB",
+    chemistry: str = "nmc",
 ) -> BatteryRequest:
     capacity = capacity[capacity > 0]
     reference = float(np.median(capacity[:3]))
     stride = max(1, int(np.ceil(len(capacity) / MAX_POINTS)))
     cycles = np.arange(1, len(capacity) + 1)[::stride]
     values = capacity[::stride]
-    condition = f"calb-1c-full-depth-{ambient_c:g}c"
+    condition = f"{prefix.lower()}-full-depth-{ambient_c:g}c"
     return BatteryRequest.model_validate(
         {
             "data_origin": "laboratory",
             "profile": {
-                "battery_id": f"CALB-{cell}",
+                "battery_id": f"{prefix}-{cell}",
                 "application": "ev",
-                "chemistry": "nmc",
+                "chemistry": chemistry,
                 "measurement_scope": "cell",
                 "cycle_axis": "equivalent_cycles",
                 "reference_capacity_ah": reference,
