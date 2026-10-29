@@ -199,3 +199,17 @@ def test_http_analysis_import_and_errors() -> None:
             assert response.status_code == 413
 
     asyncio.run(scenario())
+
+
+def test_linear_window_baseline_recovers_a_straight_fade() -> None:
+    from argus.battery.training import MAX_LINEAR_CYCLES, linear_window_prediction
+
+    axis = np.arange(8) * 10.0
+    soh = 100 - 0.05 * axis  # 0.05 points per cycle
+    window = np.stack([soh / 100, axis / 100, np.zeros(8), np.zeros(8)], axis=1)
+    predicted = linear_window_prediction(window[None], 90.0)
+    last_soh = soh[-1]
+    assert predicted[0] == pytest.approx((last_soh - 90.0) / 0.05)
+    flat = window.copy()
+    flat[:, 0] = 0.95
+    assert linear_window_prediction(flat[None], 90.0)[0] == MAX_LINEAR_CYCLES

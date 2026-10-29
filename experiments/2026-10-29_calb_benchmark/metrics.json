@@ -1,0 +1,124 @@
+{
+ "split": {
+  "train": [
+   "CALB-B247",
+   "CALB-A188",
+   "CALB-B250",
+   "CALB-B253",
+   "CALB-B173",
+   "CALB-A187",
+   "CALB-B222",
+   "CALB-T25-1",
+   "CALB-A182",
+   "CALB-B174",
+   "CALB-B228",
+   "CALB-A184",
+   "CALB-T25-2"
+  ],
+  "validation": [
+   "CALB-A183",
+   "CALB-B223",
+   "CALB-A185",
+   "CALB-B255",
+   "CALB-B229"
+  ],
+  "calibration": [
+   "CALB-B230",
+   "CALB-B175",
+   "CALB-B248",
+   "CALB-B249",
+   "CALB-B256"
+  ],
+  "test": [
+   "CALB-A190",
+   "CALB-B227",
+   "CALB-B224",
+   "CALB-A189",
+   "CALB-B254"
+  ]
+ },
+ "seeds": [
+  3,
+  5,
+  11
+ ],
+ "selected_by_validation": [
+  "gru",
+  "tcn",
+  "gru"
+ ],
+ "test_macro_mae_cycles": {
+  "median": {
+   "macro_mae_cycles_per_seed": [
+    319.03,
+    319.03,
+    319.03
+   ],
+   "mean": 319.03
+  },
+  "ridge": {
+   "macro_mae_cycles_per_seed": [
+    132.0,
+    132.0,
+    132.0
+   ],
+   "mean": 132.0
+  },
+  "gradient_boosting": {
+   "macro_mae_cycles_per_seed": [
+    50.73,
+    50.73,
+    50.73
+   ],
+   "mean": 50.73
+  },
+  "gru": {
+   "macro_mae_cycles_per_seed": [
+    50.17,
+    52.81,
+    50.62
+   ],
+   "mean": 51.2
+  },
+  "tcn": {
+   "macro_mae_cycles_per_seed": [
+    46.35,
+    48.27,
+    46.03
+   ],
+   "mean": 46.88
+  },
+  "linear_window": {
+   "macro_mae_cycles_per_seed": [
+    95.89,
+    95.89,
+    95.89
+   ],
+   "mean": 95.89
+  }
+ },
+ "dataset_sha256": "197e9b6590fcba6591fa80a1108b32557f70685d5076dcc5d2df6d5ce3091f1f",
+ "versions": {
+  "numpy": "2.5.3",
+  "torch": "2.14.0+cpu",
+  "scikit-learn": "1.9.1",
+  "pandas": "3.0.5"
+ },
+ "censored": [
+  "CALB-T25-2"
+ ],
+ "target": {
+  "threshold_pct": 90.0,
+  "axis": "equivalent_cycles",
+  "scope": "cell",
+  "chemistry": "nmc"
+ },
+ "limitations": [
+  "laboratory_cells_not_ev_packs",
+  "censored_histories_excluded_from_supervised_rul_not_marked_as_failures",
+  "operating_protocol_shift_not_validated",
+  "intervals_only_at_first_eligible_prefix",
+  "no_automatic_deployment",
+  "fixed_test_set_shared_across_seeds_not_independent_replications"
+ ]
+}
