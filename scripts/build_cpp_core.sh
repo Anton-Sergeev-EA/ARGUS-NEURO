@@ -9,7 +9,7 @@ if [[ ! -x "$ARGUS_PYTHON" ]]; then ARGUS_PYTHON=python3; fi
 PYBIND11_CMAKE_DIR="$("$ARGUS_PYTHON" -m pybind11 --cmakedir)"
 
 mkdir -p build
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Dpybind11_DIR="${PYBIND11_CMAKE_DIR}" -DPython_EXECUTABLE="$(command -v "$ARGUS_PYTHON")"
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Dpybind11_DIR="${PYBIND11_CMAKE_DIR}" -DPython_EXECUTABLE="$(command -v "$ARGUS_PYTHON")" ${ARGUS_CMAKE_ARGS:-}
 cmake --build build -j"$(nproc)"
 
 echo

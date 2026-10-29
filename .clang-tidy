@@ -1,0 +1,10 @@
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  performance-*,
+  readability-container-size-empty,
+  readability-misleading-indentation,
+  modernize-use-nodiscard
+WarningsAsErrors: ''
+HeaderFilterRegex: 'argus_core/.*'

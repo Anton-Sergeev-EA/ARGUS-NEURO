@@ -6,8 +6,12 @@ target_include_directories(argus_core_lib PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 target_compile_features(argus_core_lib PUBLIC cxx_std_20)
+option(ARGUS_WERROR "Treat compiler warnings in the native core as errors" OFF)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(argus_core_lib PRIVATE -Wall -Wextra -Wpedantic)
+    if(ARGUS_WERROR)
+        target_compile_options(argus_core_lib PRIVATE -Werror)
+    endif()
 endif()
 # Must be position-independent: this static lib is also linked into the
 # pybind11 shared module below.
