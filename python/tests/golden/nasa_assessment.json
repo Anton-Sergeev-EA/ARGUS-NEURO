@@ -1,0 +1,218 @@
+{
+ "nasa-B0005:120": {
+  "capacity_state": "above_service_threshold",
+  "rul": {
+   "equivalent_cycles": null,
+   "status": "beyond_observed_horizon"
+  },
+  "soh_pct": 71.67,
+  "trend": {
+   "acceleration": null,
+   "change_pct_points": -6.523,
+   "from_equivalent_cycles": 91.0,
+   "loss_pct_points_per_100_cycles": 23.725,
+   "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "status": "declining",
+   "to_equivalent_cycles": 120.0
+  }
+ },
+ "nasa-B0005:40": {
+  "capacity_state": "above_service_threshold",
+  "rul": {
+   "equivalent_cycles": null,
+   "status": "no_reliable_decline"
+  },
+  "soh_pct": 88.65,
+  "trend": {
+   "acceleration": null,
+   "change_pct_points": -2.579,
+   "from_equivalent_cycles": 11.0,
+   "loss_pct_points_per_100_cycles": 4.356,
+   "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "status": "unclear",
+   "to_equivalent_cycles": 40.0
+  }
+ },
+ "nasa-B0005:80": {
+  "capacity_state": "above_service_threshold",
+  "rul": {
+   "equivalent_cycles": [
+    24.3,
+    26.3
+   ],
+   "status": "conditional_estimate"
+  },
+  "soh_pct": 78.25,
+  "trend": {
+   "acceleration": null,
+   "change_pct_points": -9.606,
+   "from_equivalent_cycles": 51.0,
+   "loss_pct_points_per_100_cycles": 32.313,
+   "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "status": "declining",
+   "to_equivalent_cycles": 80.0
+  }
+ },
+ "nasa-B0006:120": {
+  "capacity_state": "below_service_threshold",
+  "rul": {
+   "equivalent_cycles": [
+    0.0,
+    0.0
+   ],
+   "status": "threshold_reached"
+  },
+  "soh_pct": 69.21,
+  "trend": {
+   "status": "insufficient_history"
+  }
+ },
+ "nasa-B0006:40": {
+  "capacity_state": "above_service_threshold",
+  "rul": {
+   "equivalent_cycles": null,
+   "status": "beyond_observed_horizon"
+  },
+  "soh_pct": 88.02,
+  "trend": {
+   "acceleration": null,
+   "change_pct_points": -9.256,
+   "from_equivalent_cycles": 11.0,
+   "loss_pct_points_per_100_cycles": 25.176,
+   "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "status": "declining",
+   "to_equivalent_cycles": 40.0
+  }
+ },
+ "nasa-B0006:80": {
+  "capacity_state": "above_service_threshold",
+  "rul": {
+   "equivalent_cycles": [
+    4.9,
+    9.5
+   ],
+   "status": "conditional_estimate"
+  },
+  "soh_pct": 74.44,
+  "trend": {
+   "acceleration": null,
+   "change_pct_points": -12.799,
+   "from_equivalent_cycles": 51.0,
+   "loss_pct_points_per_100_cycles": 42.999,
+   "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "status": "declining",
+   "to_equivalent_cycles": 80.0
+  }
+ },
+ "nasa-B0007:120": {
+  "capacity_state": "above_service_threshold",
+  "rul": {
+   "equivalent_cycles": [
+    27.8,
+    35.8
+   ],
+   "status": "conditional_estimate"
+  },
+  "soh_pct": 76.7,
+  "trend": {
+   "acceleration": null,
+   "change_pct_points": -4.602,
+   "from_equivalent_cycles": 91.0,
+   "loss_pct_points_per_100_cycles": 16.937,
+   "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "status": "declining",
+   "to_equivalent_cycles": 120.0
+  }
+ },
+ "nasa-B0007:40": {
+  "capacity_state": "above_service_threshold",
+  "rul": {
+   "equivalent_cycles": null,
+   "status": "beyond_observed_horizon"
+  },
+  "soh_pct": 90.57,
+  "trend": {
+   "acceleration": null,
+   "change_pct_points": -2.933,
+   "from_equivalent_cycles": 11.0,
+   "loss_pct_points_per_100_cycles": 6.331,
+   "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "status": "declining",
+   "to_equivalent_cycles": 40.0
+  }
+ },
+ "nasa-B0007:80": {
+  "capacity_state": "above_service_threshold",
+  "rul": {
+   "equivalent_cycles": [
+    36.9,
+    40.0
+   ],
+   "status": "conditional_estimate"
+  },
+  "soh_pct": 81.06,
+  "trend": {
+   "acceleration": null,
+   "change_pct_points": -8.462,
+   "from_equivalent_cycles": 51.0,
+   "loss_pct_points_per_100_cycles": 28.332,
+   "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "status": "declining",
+   "to_equivalent_cycles": 80.0
+  }
+ },
+ "nasa-B0018:120": {
+  "capacity_state": "below_service_threshold",
+  "rul": {
+   "equivalent_cycles": [
+    0.0,
+    0.0
+   ],
+   "status": "threshold_reached"
+  },
+  "soh_pct": 67.31,
+  "trend": {
+   "status": "insufficient_history"
+  }
+ },
+ "nasa-B0018:40": {
+  "capacity_state": "above_service_threshold",
+  "rul": {
+   "equivalent_cycles": [
+    32.0,
+    43.5
+   ],
+   "status": "conditional_estimate"
+  },
+  "soh_pct": 83.8,
+  "trend": {
+   "acceleration": null,
+   "change_pct_points": -6.804,
+   "from_equivalent_cycles": 11.0,
+   "loss_pct_points_per_100_cycles": 30.39,
+   "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "status": "declining",
+   "to_equivalent_cycles": 40.0
+  }
+ },
+ "nasa-B0018:80": {
+  "capacity_state": "above_service_threshold",
+  "rul": {
+   "equivalent_cycles": [
+    3.9,
+    9.3
+   ],
+   "status": "conditional_estimate"
+  },
+  "soh_pct": 72.39,
+  "trend": {
+   "acceleration": null,
+   "change_pct_points": -10.927,
+   "from_equivalent_cycles": 51.0,
+   "loss_pct_points_per_100_cycles": 35.561,
+   "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
+   "status": "declining",
+   "to_equivalent_cycles": 80.0
+  }
+ }
+}
