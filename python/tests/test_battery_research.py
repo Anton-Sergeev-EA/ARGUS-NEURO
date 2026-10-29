@@ -140,3 +140,20 @@ def test_benchmark_smoke_run_is_split_by_cell_and_reproducible(tmp_path: Path) -
     assert again["runs"][0]["test"]["ridge"] == report["runs"][0]["test"]["ridge"]
     with pytest.raises(ValueError):
         run_benchmark(dataset, tmp_path / "out3", seeds=[], epochs=2)
+
+
+def test_balanced_radius_stops_a_large_source_from_setting_the_radius() -> None:
+    def case(cell: str, error: float) -> dict:
+        return {"cell": cell, "truth": 100.0, "mid": 100.0 * (1 + error), "unit": 5.0}
+
+    big = [case(f"HUST-{i}", 0.05) for i in range(40)]  # 40 cells, small errors
+    small = [case(f"B000{i}", 0.80) for i in range(2)]  # 2 cells, large errors
+    plain = backtest.conformal_radius([backtest.relative_score(c) for c in big + small])
+    balanced = backtest.balanced_radius(big + small)
+    assert plain is not None and plain < 0.2
+    assert balanced is not None and balanced > 0.5
+    assert (
+        backtest.dataset_of("HUST-1-1") == "HUST"
+        and backtest.dataset_of("B0005") == "NASA"
+    )
+    assert backtest.balanced_radius([]) is None

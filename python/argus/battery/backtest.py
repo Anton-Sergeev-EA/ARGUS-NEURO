@@ -19,12 +19,14 @@ import numpy as np
 
 from argus.battery.assessment import assess_battery
 from argus.battery.calb import load_cache
+from argus.battery.hust import load_cache as load_hust
 from argus.battery.config import DEFAULT_CONFIG, ProjectionConfig
 from argus.battery.public_data import CELLS, DATA_DIR, load_public_history
 from argus.battery.schema import BatteryRequest
 
 NASA_THRESHOLDS = (80.0, 70.0)
 CALB_THRESHOLDS = (90.0, 85.0, 80.0)
+HUST_THRESHOLDS = CALB_THRESHOLDS
 MIN_FIRST_PREFIX = 24
 PREFIXES_PER_CELL = 12
 COVERAGE = 0.9
@@ -37,6 +39,7 @@ def histories() -> list[tuple[str, BatteryRequest, tuple[float, ...]]]:
             request, _ = load_public_history(f"nasa-{cell}", 2000)
             found.append((cell, request, NASA_THRESHOLDS))
     found += [(h.profile.battery_id, h, CALB_THRESHOLDS) for h in load_cache()]
+    found += [(h.profile.battery_id, h, HUST_THRESHOLDS) for h in load_hust()]
     return found
 
 
@@ -92,6 +95,41 @@ def conformal_radius(scores: list[float], coverage: float = COVERAGE) -> float |
     return float(sorted(scores)[rank - 1]) if n and rank <= n else None
 
 
+def balanced_radius(
+    cases: list[dict[str, Any]], coverage: float = COVERAGE
+) -> float | None:
+    """Conformal radius where every source dataset carries the same total weight.
+
+    Without this a source with many cells (77 of 108 here) sets the radius and the
+    others are under-covered. Cells inside a dataset share its weight equally.
+    """
+    if not cases:
+        return None
+    per_cell: dict[str, list[float]] = {}
+    for case in cases:
+        per_cell.setdefault(case["cell"], []).append(relative_score(case))
+    sources = {dataset_of(cell) for cell in per_cell}
+    cells_in = {s: sum(dataset_of(c) == s for c in per_cell) for s in sources}
+    weighted = []
+    for cell, scores in per_cell.items():
+        weight = 1.0 / (len(sources) * cells_in[dataset_of(cell)] * len(scores))
+        weighted += [(score, weight) for score in scores]
+    weighted.sort()
+    total = sum(w for _, w in weighted)
+    target = coverage * (total + total / len(weighted))
+    running = 0.0
+    for score, weight in weighted:
+        running += weight
+        if running >= target:
+            return float(score)
+    return None
+
+
+def dataset_of(cell: str) -> str:
+    """NASA cells are bare ids (B0005); the other sources carry a prefix."""
+    return cell.split("-")[0] if "-" in cell else "NASA"
+
+
 def widen(case: dict[str, Any], radius: float) -> tuple[float, float]:
     half = radius * max(case["mid"], case["unit"])
     return max(0.0, case["mid"] - half), case["mid"] + half
@@ -130,9 +168,7 @@ def summarize(
     if leave_one_out and len(cells) >= 5:
         covered, widths = [], []
         for cell in cells:
-            radius = conformal_radius(
-                [relative_score(c) for c in made if c["cell"] != cell]
-            )
+            radius = balanced_radius([c for c in made if c["cell"] != cell])
             for case in (c for c in made if c["cell"] == cell):
                 if radius is None:
                     continue
@@ -145,9 +181,40 @@ def summarize(
         summary["calibrated_median_relative_width"] = (
             round(float(np.median(widths)), 3) if widths else None
         )
-    summary["full_sample_conformal_radius"] = conformal_radius(
-        [relative_score(c) for c in made]
-    )
+    sources = sorted({dataset_of(c["cell"]) for c in made})
+    if len(sources) >= 3:
+        covered = []
+        for source in sources:
+            radius = balanced_radius(
+                [c for c in made if dataset_of(c["cell"]) != source]
+            )
+            for case in (c for c in made if dataset_of(c["cell"]) == source):
+                if radius is not None:
+                    low, high = widen(case, radius)
+                    covered.append(low <= case["truth"] <= high)
+        summary["calibrated_coverage_leave_one_dataset_out"] = (
+            round(float(np.mean(covered)), 3) if covered else None
+        )
+        summary["coverage_by_dataset_left_out"] = {
+            source: round(
+                float(
+                    np.mean(
+                        [
+                            widen(c, r)[0] <= c["truth"] <= widen(c, r)[1]
+                            for c in made
+                            if dataset_of(c["cell"]) == source
+                        ]
+                    )
+                ),
+                3,
+            )
+            for source in sources
+            for r in [
+                balanced_radius([c for c in made if dataset_of(c["cell"]) != source])
+            ]
+            if r is not None
+        }
+    summary["full_sample_conformal_radius"] = balanced_radius(made)
     return summary
 
 
