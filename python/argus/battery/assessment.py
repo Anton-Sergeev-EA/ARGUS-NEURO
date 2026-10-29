@@ -5,6 +5,7 @@ import hashlib
 import json
 from typing import Any
 import numpy as np
+from argus.battery.config import DEFAULT_CONFIG, ProjectionConfig
 from argus.battery.schema import BatteryRequest
 
 AGING_SOURCE = "https://afdc.energy.gov/fuels/electricity-benefits"
@@ -80,7 +81,9 @@ def recommendations(request: BatteryRequest) -> list[dict[str, Any]]:
     return advice
 
 
-def assess_battery(request: BatteryRequest) -> dict[str, Any]:
+def assess_battery(
+    request: BatteryRequest, config: ProjectionConfig = DEFAULT_CONFIG
+) -> dict[str, Any]:
     p = request.profile
     records = [r for r in request.records if r.condition_id == p.reference_condition_id]
     excluded = len(request.records) - len(records)
@@ -91,7 +94,7 @@ def assess_battery(request: BatteryRequest) -> dict[str, Any]:
     warnings = []
     if excluded:
         warnings.append("incomparable_measurements_excluded")
-    if len(y) and float(y.max()) > 110:
+    if len(y) and float(y.max()) > config.reference_error_soh_pct:
         warnings.append("check_reference_capacity")
     advice = recommendations(request)
     result: dict[str, Any] = {
@@ -162,31 +165,31 @@ def assess_battery(request: BatteryRequest) -> dict[str, Any]:
     if result["safety_state"] == "attention":
         result["rul"]["status"] = "operating_alert"
         return result
-    if len(y) < 8 or x[-1] - x[0] < 10 or warnings:
+    if len(y) < config.min_records or x[-1] - x[0] < config.min_span_cycles or warnings:
         return result
-    tx, ty = x[-30:], y[-30:]
+    tx, ty = x[-config.window :], y[-config.window :]
     centered = tx - tx[-1]
     slope, intercept = np.polyfit(centered, ty, 1)
     residual = ty - (intercept + slope * centered)
-    rng = np.random.default_rng(41)
+    rng = np.random.default_rng(config.seed)
     block = max(2, int(np.sqrt(len(ty))))
     fits = []
-    for _ in range(400):
+    for _ in range(config.bootstrap_replicates):
         starts = rng.integers(
             0, len(ty) - block + 1, size=int(np.ceil(len(ty) / block))
         )
         noise = np.concatenate([residual[s : s + block] for s in starts])[: len(ty)]
         fits.append(np.polyfit(centered, intercept + slope * centered + noise, 1))
-    high_slope = np.quantile([f[0] for f in fits], 0.95)
+    high_slope = np.quantile([f[0] for f in fits], config.interval_high)
     acceleration = None
-    if len(ty) >= 16:
+    if len(ty) >= config.acceleration_min_records:
         half = len(ty) // 2
         early = np.polyfit(tx[:half], ty[:half], 1)[0]
         recent = np.polyfit(tx[half:], ty[half:], 1)[0]
-        if early < -0.001 and recent < early * 1.5:
+        if early < config.decline_slope and recent < early * config.acceleration_ratio:
             acceleration = "possible_acceleration"
     result["trend"] = {
-        "status": "declining" if high_slope < -0.001 else "unclear",
+        "status": "declining" if high_slope < config.decline_slope else "unclear",
         "loss_pct_points_per_100_cycles": round(float(-slope * 100), 3),
         "change_pct_points": round(float(ty[-1] - ty[0]), 3),
         "from_equivalent_cycles": float(tx[0]),
@@ -194,16 +197,18 @@ def assess_battery(request: BatteryRequest) -> dict[str, Any]:
         "acceleration": acceleration,
         "method": "recent_linear_trend_with_moving_block_residual_bootstrap",
     }
-    if high_slope >= -0.001 or acceleration:
+    if high_slope >= config.decline_slope or acceleration:
         result["rul"]["status"] = (
             "changing_trend" if acceleration else "no_reliable_decline"
         )
         return result
     predictions = [
-        (p.service_threshold_pct - f[1]) / f[0] for f in fits if f[0] < -0.001
+        (p.service_threshold_pct - f[1]) / f[0]
+        for f in fits
+        if f[0] < config.decline_slope
     ]
-    lo, hi = np.quantile(predictions, [0.05, 0.95])
-    if lo < 0 or hi > 5 * (tx[-1] - tx[0]):
+    lo, hi = np.quantile(predictions, [config.interval_low, config.interval_high])
+    if lo < 0 or hi > config.horizon_spans * (tx[-1] - tx[0]):
         result["rul"]["status"] = "beyond_observed_horizon"
         return result
     cycles = [round(float(lo), 1), round(float(hi), 1)]
