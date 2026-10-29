@@ -16,6 +16,10 @@ ARGUS-NEURO は、バッテリー容量分析と電力電子機器の診断研�
 
 [方法と API（英語）](docs/BATTERY.md) · [NASA 出典・チェックサム・準備（英語）](docs/PUBLIC_BATTERY_DATA.md) · [C++/NumPy の例（ロシア語）](docs/SIGNAL_DEMO.md)。
 
+[31 セルでのバックテスト（英語）](docs/BACKTEST.md) · [C++ による電圧曲線指標（英語）](docs/CURVES.md) · [方法論（英語）](docs/METHODOLOGY.md)
+
+単純な残存寿命の区間は、名目 90 % に対して予測の 22 % しか真値を含みませんでした。較正後は未知のセルで 90 % を満たします。対象は実験室セルであり、EV パックではありません。
+
 ## バッテリー画面のクイックスタート
 
 Ubuntu の新規環境で、リポジトリのルートから実行します。

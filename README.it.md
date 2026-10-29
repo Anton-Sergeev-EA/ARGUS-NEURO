@@ -18,6 +18,10 @@ ARGUS-NEURO combina l’analisi della capacità delle batterie con la ricerca su
 
 [Metodo e API, inglese](docs/BATTERY.md) · [Fonte NASA e preparazione, inglese](docs/PUBLIC_BATTERY_DATA.md) · [Esempio C++/NumPy, russo](docs/SIGNAL_DEMO.md).
 
+[Backtest su 31 celle, inglese](docs/BACKTEST.md) · [Indicatori delle curve di tensione in C++, inglese](docs/CURVES.md) · [Metodologia, inglese](docs/METHODOLOGY.md)
+
+L’intervallo semplice di vita residua conteneva il valore vero solo nel 22 % delle previsioni contro un 90 % nominale. Dopo la calibrazione copre il 90 % su celle mai viste. Vale per celle di laboratorio, non per pacchi di veicoli.
+
 ## Avvio rapido: batteria
 
 Nuova installazione Ubuntu, dalla radice del repository:

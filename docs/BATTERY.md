@@ -28,7 +28,9 @@ Choose a reference capacity in **Ah**, not kWh, and an identifier matching `cond
 
 The last 30 comparable observations are fitted with a linear capacity trend. Four hundred moving-block residual bootstrap fits (seed 41) provide descriptive 5th–95th percentile estimates of cycles until the configured capacity threshold.
 
-Numbers are withheld for short history, no reliable decline, accelerating degradation, an operating alert, or a projection more than five observed spans into the future. When the configured threshold is already reached, remaining cycles to that threshold are zero. The threshold is application-specific; 80% is a default example, not a universal safety or warranty limit.
+Numbers are withheld for short history, no reliable decline, accelerating degradation, an operating alert, or a projection more than five observed spans into the future.
+
+For laboratory cells (`measurement_scope=cell`) the interval is widened with a conformal radius learned from a 31-cell backtest, because the plain bootstrap interval covered the truth only 22% of the time; the calibrated interval covered 90% on cells it had not seen (leave-one-cell-out). Pack reports keep the plain interval and are labelled that way. Details and limits: [BACKTEST.md](BACKTEST.md), [METHODOLOGY.md](METHODOLOGY.md). Voltage-curve indicators (dQ/dV peak, voltage rise time) computed by the C++ core: [CURVES.md](CURVES.md). When the configured threshold is already reached, remaining cycles to that threshold are zero. The threshold is application-specific; 80% is a default example, not a universal safety or warranty limit.
 
 Calendar months are shown only when the input axis is equivalent full cycles and a monthly cycle rate is supplied. They are a usage scenario, not a separate calendar-aging model. This calculation does not include a calibrated temperature/chemistry aging model, survival censoring, future failures or changes in use. Bootstrap intervals do not establish field coverage; noiseless illustrative data can produce equal endpoints, shown as an approximate value in the UI.
 
@@ -60,9 +62,10 @@ Capacity-based SOH does not establish electrical, thermal or crash safety. There
 | `POST /api/battery/import-csv` | Validate CSV and preserve explicit synthetic provenance |
 | `POST /api/battery/analyze` | Capacity, trend, conditional life and care recommendations; no persistence |
 | `POST /api/battery/save` | Explicit local SQLite report storage |
-| `GET /api/battery/history/{battery_id}` | Up to 50 saved reports for this battery |
+| `GET /api/battery/history/{battery_id}` | Up to 50 saved reports for this battery, newest first |
+| `GET /api/battery/history/{battery_id}/changes` | Direction of capacity and remaining life between the two newest saved reports (no safety verdict) |
 
-The request schema is available in `/docs`. Manufacturer limits require a source. Reports include a content-derived assessment ID, source, comparable history and limitations. Export downloads the report JSON. Local history is stored in `artifacts/battery-local/history.sqlite3` and excluded from version control. No data is sent to external services by these routes. Use the application locally; it does not implement multi-user access controls.
+`analyze`, `save` and `import-csv` are limited to 60 requests per minute per client (`ARGUS_BATTERY_RATE_LIMIT`); excess requests receive `429` with `Retry-After`. Reports carry `schema_version` 2. Saving an identical report twice in a row stores it once; different reports build a timeline. The request schema is available in `/docs`. Manufacturer limits require a source. Reports include a content-derived assessment ID, source, comparable history and limitations. Export downloads the report JSON. Local history is stored in `artifacts/battery-local/history.sqlite3` and excluded from version control. No data is sent to external services by these routes. Use the application locally; it does not implement multi-user access controls.
 
 ## Verification
 

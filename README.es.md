@@ -18,6 +18,10 @@ ARGUS-NEURO combina el análisis de capacidad de baterías con la investigación
 
 [Método y API, inglés](docs/BATTERY.md) · [Fuente NASA, comprobación y preparación, inglés](docs/PUBLIC_BATTERY_DATA.md) · [Ejemplo C++/NumPy, ruso](docs/SIGNAL_DEMO.md).
 
+[Backtest en 31 celdas, inglés](docs/BACKTEST.md) · [Indicadores de curvas de tensión en C++, inglés](docs/CURVES.md) · [Metodología, inglés](docs/METHODOLOGY.md)
+
+El intervalo simple de vida restante acertó solo en el 22 % de las predicciones frente a un 90 % nominal. Tras la calibración cubre el 90 % en celdas no vistas. Se aplica a celdas de laboratorio, no a paquetes de vehículos.
+
 ## Inicio rápido: pantalla de batería
 
 Instalación nueva en Ubuntu, desde la raíz del repositorio:
