@@ -18,9 +18,9 @@ ARGUS-NEURO 将电池容量分析与电力电子设备诊断研究结合在一�
 
 [方法和 API（英文）](docs/BATTERY.md) · [NASA 来源、校验值与安装（英文）](docs/PUBLIC_BATTERY_DATA.md) · [C++/NumPy 示例（俄文）](docs/SIGNAL_DEMO.md)。
 
-[31 个电芯的回测（英文）](docs/BACKTEST.md) · [C++ 电压曲线指标（英文）](docs/CURVES.md) · [方法论（英文）](docs/METHODOLOGY.md)
+[108 个电芯的回测（英文）](docs/BACKTEST.md) · [C++ 电压曲线指标（英文）](docs/CURVES.md) · [方法论（英文）](docs/METHODOLOGY.md)
 
-简单的剩余寿命区间在名义 90% 下仅有 22% 的预测覆盖真值。校准后，在未见过的电芯上覆盖 90%。适用于实验室电芯，不适用于整车电池包。
+简单的剩余寿命区间在名义 90% 下仅有 12% 的预测覆盖真值。校准后，在未见过的电芯上覆盖 90%。适用于实验室电芯，不适用于整车电池包。
 
 ## 快速启动电池页面
 

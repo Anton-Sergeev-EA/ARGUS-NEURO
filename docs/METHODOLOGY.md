@@ -16,7 +16,7 @@ Every number in a battery report can be traced to a formula below, a parameter i
 
 ## 3. Calibrated interval for laboratory cells
 
-The raw bootstrap interval measures scatter around a line; real cells also change their rate of fade. In the backtest it contained the true remaining life in only 22% of forecasts. For `measurement_scope=cell` the interval is therefore widened: the midpoint `m` is kept and the half-width is `r × max(m, 5 × median spacing)`, with `r = 0.70`, the finite-sample conformal quantile `⌈(n+1)·0.9⌉` of the relative midpoint error over 340 forecasts on 31 cells. Leave-one-cell-out coverage is 90%. See [BACKTEST.md](BACKTEST.md). Pack reports are not widened because no pack data support a calibration, and the report says which interval kind it uses (`interval_kind`).
+The raw bootstrap interval measures scatter around a line; real cells also change their rate of fade. In the backtest it contained the true remaining life in only 12% of forecasts. For `measurement_scope=cell` the interval is therefore widened: the midpoint `m` is kept and the half-width is `r × max(m, 5 × median spacing)`, with `r = 0.70`, a finite-sample conformal quantile of the relative midpoint error in which each of the three source datasets (NASA, CALB, HUST) has equal weight. Leave-one-cell-out coverage is 97%, leave-one-dataset-out coverage 96% (CALB 90%, HUST 100%, NASA 67%). See [BACKTEST.md](BACKTEST.md). Pack reports are not widened because no pack data support a calibration, and the report says which interval kind it uses (`interval_kind`).
 
 ## 4. Voltage-curve indicators
 
@@ -44,7 +44,8 @@ bash scripts/build_cpp_core.sh
 export PYTHONPATH="$PWD/python:$PWD/build/cpp_core"
 python -m argus.battery.public_data --download     # NASA, see PUBLIC_BATTERY_DATA.md
 python -m argus.battery.calb                       # after placing the CALB workbook, see BACKTEST.md
-python -m argus.battery.backtest                   # about 7 minutes
+python -m argus.battery.hust                       # after downloading the HUST archive, see BACKTEST.md
+python -m argus.battery.backtest                   # about 35 minutes
 python -m argus.battery.curve_features
 python -m argus.battery.training <dataset.json> --output <dir> --seeds 3 5 11
 ```
