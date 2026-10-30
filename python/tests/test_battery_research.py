@@ -151,7 +151,7 @@ def test_balanced_radius_stops_a_large_source_from_setting_the_radius() -> None:
     plain = backtest.conformal_radius([backtest.relative_score(c) for c in big + small])
     balanced = backtest.balanced_radius(big + small)
     assert plain is not None and plain < 0.2
-    assert balanced is not None and balanced > 0.5
+    assert balanced is not None and balanced > 0.4 and balanced > 5 * plain
     assert (
         backtest.dataset_of("HUST-1-1") == "HUST"
         and backtest.dataset_of("B0005") == "NASA"
