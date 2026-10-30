@@ -348,7 +348,7 @@ Native tests remain active in Release. Python tests cover feature parity and edg
 
 [CI](.github/workflows/ci.yml) uses Python 3.12 and Node 22, builds the extension with compiler warnings as errors, runs both CTest executables and `clang-tidy`, runs both Python modes with a 70% coverage floor, checks formatting, dashboard logic and README/documentation consistency, and validates the complete staged training/export workflow.
 
-Current local result (30 October 2026): 2 of 2 CTest executables, 171 Python tests with the native extension (150 passed and 21 native-only skips with the NumPy fallback), 70% line coverage, 18 dashboard tests. Tests that need the downloaded NASA, CALB or HUST data skip when it is absent.
+Current local result (30 October 2026): 2 of 2 CTest executables, 214 Python tests with the native extension (193 passed and 21 native-only skips with the NumPy fallback), 73% line coverage, 18 dashboard tests. Tests that need the downloaded NASA, CALB or HUST data skip when it is absent.
 
 ### Recorded evaluation
 

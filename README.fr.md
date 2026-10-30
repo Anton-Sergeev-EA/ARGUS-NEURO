@@ -31,7 +31,7 @@ Données : NASA PCoE (4 cellules), CALB (28 cellules NCM) et HUST (77 cellules L
 - **À pas fixe, les courbes battent désormais la droite** (erreur moyenne 61 contre 83 cycles). La droite reste le choix par défaut tant que le choix n’est pas confirmé sur un protocole fixé à l’avance.
 - **Les gains antérieurs des modèles appris et des indicateurs de courbe sont retirés.** Sur le pipeline corrigé, l’ensemble avec indicateurs de courbe est de 11 à 15 % plus précis que la meilleure référence fondée sur la seule capacité sur les cellules de développement HUST, mais sur 15 cellules verrouillées la différence n’est pas confirmée statistiquement (voir la section sur les preuves).
 - Tout cela concerne des cellules de laboratoire, pas des packs de véhicules. Les rapports de pack gardent l’intervalle non calibré et le signalent.
-- **Vérification :** la CI compile le C++ avec les avertissements en erreurs, lance `clang-tidy`, les tests Python avec un plancher de couverture de 70 % et la cohérence des README. En local (30 octobre 2026) : 171 tests Python (150 réussis et 21 ignorés sans l’extension native), 18 tests d’interface, couverture 70 %.
+- **Vérification :** la CI compile le C++ avec les avertissements en erreurs, lance `clang-tidy`, les tests Python avec un plancher de couverture de 70 % et la cohérence des README. En local (30 octobre 2026) : 214 tests Python (193 réussis et 21 ignorés sans l’extension native), 18 tests d’interface, couverture 73 %.
 
 ## Cas d’usage
 

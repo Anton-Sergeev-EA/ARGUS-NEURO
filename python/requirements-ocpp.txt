@@ -1,0 +1,2 @@
+# Optional: OCPP collector and emulator (argus.ingest). Needs Python 3.11 or newer.
+ocpp==2.1.0

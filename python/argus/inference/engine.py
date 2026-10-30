@@ -273,6 +273,13 @@ class HealthInferenceEngine:
         buf = self._buffers.setdefault(asset_id, collections.deque(maxlen=WINDOW_LEN))
         buf.append(values.tolist())
 
+    def data_quality(self, asset_id: str) -> dict[str, Any]:
+        return {
+            "issues": list(self._issues.get(asset_id, [])),
+            "samples_collected": len(self._buffers.get(asset_id, ())),
+            "samples_required": WINDOW_LEN,
+        }
+
     def ready(self, asset_id: str) -> bool:
         return len(
             self._buffers.get(asset_id, ())

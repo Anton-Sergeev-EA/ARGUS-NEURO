@@ -31,7 +31,7 @@ Daten: NASA PCoE (4 Zellen), CALB (28 NCM-Zellen) und HUST (77 LFP-Zellen), 3 71
 - **Bei festem Schritt schlagen Kurvenanpassungen jetzt die Gerade** (mittlerer Fehler 61 gegenüber 83 Zyklen). Standard bleibt die Gerade, bis die Wahl an einem vorab festgelegten Protokoll bestätigt ist.
 - **Die früheren Gewinne gelernter Modelle und der Kurvenindikatoren sind zurückgezogen.** In der korrigierten Pipeline ist das Ensemble mit Kurvenindikatoren auf den HUST-Entwicklungszellen 11–15 % genauer als die stärkste Nur-Kapazität-Referenz, bei 15 gesperrten Zellen ist der Unterschied jedoch statistisch nicht bestätigt (siehe Abschnitt zur Beweislage).
 - Das betrifft Laborzellen, keine Fahrzeugpacks. Pack-Berichte behalten das unkalibrierte Intervall und weisen darauf hin.
-- **Prüfung:** Die CI baut C++ mit Warnungen als Fehlern, führt `clang-tidy`, Python-Tests mit 70 % Mindestabdeckung und die README-Konsistenzprüfung aus. Lokal (30. Oktober 2026): 171 Python-Tests (150 bestanden und 21 übersprungen ohne native Erweiterung), 18 Oberflächentests, Abdeckung 70 %.
+- **Prüfung:** Die CI baut C++ mit Warnungen als Fehlern, führt `clang-tidy`, Python-Tests mit 70 % Mindestabdeckung und die README-Konsistenzprüfung aus. Lokal (30. Oktober 2026): 214 Python-Tests (193 bestanden und 21 übersprungen ohne native Erweiterung), 18 Oberflächentests, Abdeckung 73 %.
 
 ## Anwendungsfälle
 

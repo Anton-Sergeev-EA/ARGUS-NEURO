@@ -31,7 +31,7 @@ Datos: NASA PCoE (4 celdas), CALB (28 celdas NCM) y HUST (77 celdas LFP), 3 713 
 - **Con el paso fijo, las curvas ahora superan a la recta** (error medio 61 frente a 83 ciclos). El valor por defecto sigue siendo la recta hasta confirmar la elección en un protocolo fijado de antemano.
 - **Las ganancias anteriores de los modelos aprendidos y de los indicadores de curva se retiran.** En el flujo corregido, el conjunto con indicadores de curva es entre un 11 y un 15 % más preciso que la mejor referencia solo de capacidad en las celdas de desarrollo de HUST, pero en 15 celdas reservadas la diferencia no está confirmada estadísticamente (véase la sección de evidencia).
 - Todo esto se refiere a celdas de laboratorio, no a paquetes de vehículos. Los informes de paquete mantienen el intervalo sin calibrar y lo indican.
-- **Verificación:** la CI compila C++ con advertencias como errores, ejecuta `clang-tidy`, las pruebas Python con un mínimo de cobertura del 70 % y la coherencia de los README. En local (30 de octubre de 2026): 171 pruebas Python (150 superadas y 21 omitidas sin la extensión nativa), 18 pruebas de interfaz, cobertura 70 %.
+- **Verificación:** la CI compila C++ con advertencias como errores, ejecuta `clang-tidy`, las pruebas Python con un mínimo de cobertura del 70 % y la coherencia de los README. En local (30 de octubre de 2026): 214 pruebas Python (193 superadas y 21 omitidas sin la extensión nativa), 18 pruebas de interfaz, cobertura 73 %.
 
 ## Casos de uso
 
