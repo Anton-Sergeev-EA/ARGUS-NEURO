@@ -255,6 +255,16 @@ I18N.fr.battery = "Diagnostic de batterie";
 I18N.de.battery = "Batteriediagnose";
 I18N.ja.battery = "バッテリー診断";
 I18N.it.battery = "Diagnostica batteria";
+// Asset types and sensor names are shown in the selected language; units are SI symbols.
+Object.assign(I18N.en, {"assetType_MARINE_CONVERTER": "Marine frequency converter / thruster drive", "assetType_UAV_PDU": "UAV power distribution unit", "sensor_voltage_v": "Voltage", "sensor_current_a": "Current", "sensor_temperature_c": "Temperature", "sensor_vibration_g": "Vibration", "sensor_frequency_hz": "Frequency", "sensor_load_factor": "Load factor"});
+Object.assign(I18N.ru, {"assetType_MARINE_CONVERTER": "Судовой преобразователь частоты / привод движителя", "assetType_UAV_PDU": "Блок распределения питания БПЛА", "sensor_voltage_v": "Напряжение", "sensor_current_a": "Ток", "sensor_temperature_c": "Температура", "sensor_vibration_g": "Вибрация", "sensor_frequency_hz": "Частота", "sensor_load_factor": "Коэффициент нагрузки"});
+Object.assign(I18N.zh, {"assetType_MARINE_CONVERTER": "船用变频器 / 推进驱动", "assetType_UAV_PDU": "无人机配电单元", "sensor_voltage_v": "电压", "sensor_current_a": "电流", "sensor_temperature_c": "温度", "sensor_vibration_g": "振动", "sensor_frequency_hz": "频率", "sensor_load_factor": "负载系数"});
+Object.assign(I18N.hi, {"assetType_MARINE_CONVERTER": "समुद्री फ़्रीक्वेंसी कन्वर्टर / थ्रस्टर ड्राइव", "assetType_UAV_PDU": "यूएवी पावर वितरण इकाई", "sensor_voltage_v": "वोल्टेज", "sensor_current_a": "धारा", "sensor_temperature_c": "तापमान", "sensor_vibration_g": "कंपन", "sensor_frequency_hz": "आवृत्ति", "sensor_load_factor": "लोड कारक"});
+Object.assign(I18N.es, {"assetType_MARINE_CONVERTER": "Convertidor de frecuencia naval / accionamiento de propulsor", "assetType_UAV_PDU": "Unidad de distribución de energía de UAV", "sensor_voltage_v": "Tensión", "sensor_current_a": "Corriente", "sensor_temperature_c": "Temperatura", "sensor_vibration_g": "Vibración", "sensor_frequency_hz": "Frecuencia", "sensor_load_factor": "Factor de carga"});
+Object.assign(I18N.fr, {"assetType_MARINE_CONVERTER": "Convertisseur de fréquence naval / entraînement de propulseur", "assetType_UAV_PDU": "Unité de distribution d’énergie de drone", "sensor_voltage_v": "Tension", "sensor_current_a": "Courant", "sensor_temperature_c": "Température", "sensor_vibration_g": "Vibration", "sensor_frequency_hz": "Fréquence", "sensor_load_factor": "Facteur de charge"});
+Object.assign(I18N.de, {"assetType_MARINE_CONVERTER": "Schiffs-Frequenzumrichter / Antrieb des Querstrahlruders", "assetType_UAV_PDU": "Stromverteilungseinheit einer Drohne", "sensor_voltage_v": "Spannung", "sensor_current_a": "Strom", "sensor_temperature_c": "Temperatur", "sensor_vibration_g": "Vibration", "sensor_frequency_hz": "Frequenz", "sensor_load_factor": "Lastfaktor"});
+Object.assign(I18N.ja, {"assetType_MARINE_CONVERTER": "船舶用周波数変換器／スラスター駆動", "assetType_UAV_PDU": "無人機用配電ユニット", "sensor_voltage_v": "電圧", "sensor_current_a": "電流", "sensor_temperature_c": "温度", "sensor_vibration_g": "振動", "sensor_frequency_hz": "周波数", "sensor_load_factor": "負荷率"});
+Object.assign(I18N.it, {"assetType_MARINE_CONVERTER": "Convertitore di frequenza navale / azionamento del propulsore", "assetType_UAV_PDU": "Unità di distribuzione di potenza per drone", "sensor_voltage_v": "Tensione", "sensor_current_a": "Corrente", "sensor_temperature_c": "Temperatura", "sensor_vibration_g": "Vibrazione", "sensor_frequency_hz": "Frequenza", "sensor_load_factor": "Fattore di carico"});
 const LANGUAGES = ["en", "ru", "zh", "hi", "es", "fr", "de", "ja", "it"];
 const LOCALES = { ru: "ru-RU", en: "en-US", zh: "zh-CN", hi: "hi-IN", es: "es-ES", fr: "fr-FR", de: "de-DE", ja: "ja-JP", it: "it-IT" };
 const LANG_STORAGE_KEY = "argus.lang";
@@ -264,8 +274,11 @@ function loadSavedLang() {
 }
 let currentLang = loadSavedLang();
 const t = (key) => I18N[currentLang][key] ?? I18N.en[key] ?? key;
+const label = (prefix, id) => I18N[currentLang][prefix + id] ?? I18N.en[prefix + id] ?? id;
 const finite = (value) => typeof value === "number" && Number.isFinite(value);
-const number = (value, digits = 0) => finite(value) ? value.toFixed(digits) : "—";
+const number = (value, digits = 0) => finite(value)
+  ? new Intl.NumberFormat(currentLang, { minimumFractionDigits: digits, maximumFractionDigits: digits, useGrouping: false }).format(value)
+  : "—";
 const HISTORY_LEN = 60;
 const STALE_AFTER_MS = 10000;
 const TREND_SENSOR_BY_TYPE = { MARINE_CONVERTER: "vibration_g", UAV_PDU: "temperature_c" };
@@ -453,12 +466,12 @@ function renderCard(id, rec) {
   card.classList.toggle("anomaly", anomaly); card.classList.toggle("stale", stale);
   const badge = card.querySelector(".status-badge"); badge.textContent = t(status);
   badge.className = `badge status-badge ${stale ? "unknown" : anomaly ? "anomaly" : status === "ok" ? "ok" : "unknown"}`;
-  card.querySelector(".asset-type").textContent = rec.asset_type;
+  card.querySelector(".asset-type").textContent = label("assetType_", rec.asset_type);
   drawGauge(card.querySelector(".gauge-canvas"), a.health_index);
   card.querySelector(".gauge-value").textContent = number(a.health_index);
   const key = TREND_SENSOR_BY_TYPE[rec.asset_type] || Object.keys(rec.sensorHistory)[0];
   const series = rec.sensorHistory[key] || [], last = series[series.length - 1];
-  card.querySelector(".spark-name").textContent = key || "—";
+  card.querySelector(".spark-name").textContent = key ? label("sensor_", key) : "—";
   card.querySelector(".spark-value").textContent = `${number(last, 2)} ${SENSOR_UNITS[key] || ""}`;
   drawSparkline(card.querySelector(".sparkline"), series, healthColor(a.health_index));
   card.querySelector(".m-tier1").textContent = number(a.baseline_anomaly_score, 2);
@@ -471,7 +484,7 @@ function renderCard(id, rec) {
   const disagreement = card.querySelector(".disagreement");
   disagreement.textContent = a.detector_disagreement ? t("disagreement") : "";
   const evidence = Array.isArray(a.evidence) ? a.evidence : [];
-  fillList(card.querySelector(".evidence-list"), evidence.length ? evidence.map((e) => `${e.sensor}: ${number(e.observed, 2)} ${SENSOR_UNITS[e.sensor] || ""} · ${t("reference")} ${number(e.reference, 2)} · ${t("sigma")} ${number(e.deviation_sigma, 1)}`) : [t("noEvidence")]);
+  fillList(card.querySelector(".evidence-list"), evidence.length ? evidence.map((e) => `${label("sensor_", e.sensor)}: ${number(e.observed, 2)} ${SENSOR_UNITS[e.sensor] || ""} · ${t("reference")} ${number(e.reference, 2)} · ${t("sigma")} ${number(e.deviation_sigma, 1)}`) : [t("noEvidence")]);
   fillList(card.querySelector(".explanation-list"), (a.explanation || []).map(t));
   card.querySelector(".passport-id").textContent = a.assessment_id || "—";
   card.querySelector(".model-version").textContent = `${t("modelVersion")}: ${a.model_version || "—"}`;

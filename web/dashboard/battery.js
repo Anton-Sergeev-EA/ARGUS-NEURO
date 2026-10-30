@@ -411,6 +411,12 @@ if (typeof document !== 'undefined') {
     });
   }
 
+  function formatDate(iso) {
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return iso;
+    return new Intl.DateTimeFormat(state.lang, {dateStyle: 'medium', timeStyle: 'short'}).format(date);
+  }
+
   async function showChange(node) {
     try {
       const change = await call('history/' + encodeURIComponent(state.last.battery_id) + '/changes');
@@ -513,7 +519,7 @@ if (typeof document !== 'undefined') {
       const node = $('saved-list');
       node.replaceChildren();
       if (!list.length) addText(node, 'p', t('savedEmpty'));
-      list.forEach(r => addText(node, 'p', r.saved_at + ' · ' + (r.assessment.soh_pct ?? t('missing')) + '% · ' + r.assessment.battery_id));
+      list.forEach(r => addText(node, 'p', formatDate(r.saved_at) + ' · ' + (r.assessment.soh_pct ?? t('missing')) + '% · ' + r.assessment.battery_id));
       if (list.length > 1) await showChange(node);
     } catch { message('error'); }
   });

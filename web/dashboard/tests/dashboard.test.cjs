@@ -92,3 +92,28 @@ test('language selector switches labels and ignores unknown languages', () => {
   h.run("setLanguage('xx')");
   assert.equal(h.run('currentLang'), 'de');
 });
+
+test('asset types and sensor names are translated, never shown as raw identifiers', () => {
+  const h = harness();
+  const ids = ['assetType_MARINE_CONVERTER', 'assetType_UAV_PDU', 'sensor_voltage_v', 'sensor_current_a',
+    'sensor_temperature_c', 'sensor_vibration_g', 'sensor_frequency_hz', 'sensor_load_factor'];
+  for (const lang of ['en', 'ru', 'zh', 'hi', 'es', 'fr', 'de', 'ja', 'it']) {
+    h.run(`setLanguage('${lang}')`);
+    for (const id of ids) {
+      const [prefix, name] = [id.slice(0, id.indexOf('_') + 1), id.slice(id.indexOf('_') + 1)];
+      const text = h.run(`label('${prefix}', '${name}')`);
+      assert.ok(text && text !== name && !/^[A-Z_]+$/.test(text) && !/_[a-z]$/.test(text), `${lang} ${id}`);
+    }
+  }
+  assert.equal(h.run("label('sensor_', 'unknown_sensor')"), 'unknown_sensor');
+});
+
+test('numbers follow the decimal convention of the selected language', () => {
+  const h = harness();
+  assert.equal(h.run('number(3.14159, 2)'), '3.14');
+  h.run("setLanguage('de')");
+  assert.equal(h.run('number(3.14159, 2)'), '3,14');
+  h.run("setLanguage('ru')");
+  assert.equal(h.run('number(1234.5, 1)'), '1234,5');
+  assert.equal(h.run('number(NaN, 1)'), '—');
+});
