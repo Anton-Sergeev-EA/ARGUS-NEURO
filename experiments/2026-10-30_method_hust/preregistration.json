@@ -1,0 +1,56 @@
+{
+  "declared_at": "2026-10-30, before any model of this experiment was fitted; the earlier pipeline-check run (5 splits, GB only) and the separate reviewer run in 2026-10-30_fixed_stride_hust are known and are not used to choose anything below except as a reason to expect a modest effect",
+  "agreed_by_user": "2026-10-30: compute budget up to ~3 CPU hours, thresholds below, independent re-implementation (the reviewer's script is not imported)",
+  "hypothesis": "A remaining-life estimator that combines charge-curve indicators with a capacity-trend Gaussian process, plus a completeness gate, beats the strongest capacity-only baseline on cells it has never seen, and its intervals reach nominal coverage.",
+  "data": "HUST 77 LFP/graphite cells (CC BY 4.0, archive SHA256 pinned in hust.py), fixed physical stride 5, 8-point windows ending before the 90% SOH event, caches cells-fixed-stride5.json and indicators-fixed-stride5.json",
+  "target": "cycles from the last window point to the 90% SOH event; censored cells have no windows and are excluded (counted in the report)",
+  "units": "the cell is the independent unit; windows inside a cell are correlated",
+  "locked_confirmation_group": {
+    "cells": 15,
+    "selection": "permutation of cell ids with numpy default_rng(999), first 15; never used for baseline choice, tuning or threshold choice; evaluated once, after the development run",
+    "training_for_it": "42 development cells for training, 10 validation, 10 calibration, drawn with default_rng(777)"
+  },
+  "development_pool": {
+    "cells": "remaining 62",
+    "splits": "10 grouped permutations, seeds 201-210; each: test 12, calibration 10, validation 10, train 30",
+    "note": "each cell lands in the test group in roughly 2 of 10 splits; per-cell results are averaged over its appearances before any interval is computed"
+  },
+  "models": {
+    "median": "training-target median",
+    "linear_window": "straight line through the 8 capacity points, extrapolated to 90%",
+    "ridge": "ridge regression on the 8 capacity values",
+    "gb_capacity": "HistGradientBoosting on the 8 capacity values",
+    "gpr_capacity": "Gaussian process, RBF+White on standardized capacity, 800 training windows sampled with a fixed seed",
+    "gru_capacity": "one-layer GRU, hidden 32, 40 epochs max, early stop on validation cells, capacity sequence only",
+    "gb_indicators": "HistGradientBoosting on capacity + 4 charge-curve indicators (rise time, dQ/dV peak voltage, height, width)",
+    "ensemble": "mean of gb_indicators and gpr_capacity",
+    "ensemble_gated": "ensemble when every indicator of the window is present, otherwise gpr_capacity only (completeness gate)"
+  },
+  "baseline_pool": ["median", "linear_window", "ridge", "gb_capacity", "gpr_capacity", "gru_capacity"],
+  "baseline_choice": "pool member with the lowest mean macro-MAE on the validation cells over the 10 development splits; chosen before test errors are read",
+  "primary_comparisons": {
+    "P1": "ensemble versus the chosen baseline",
+    "P2": "gb_indicators versus the chosen baseline",
+    "correction": "two comparisons, so a Bonferroni 97.5% interval is used for the decision; the 95% interval is also printed"
+  },
+  "interval_variants": ["split-conformal absolute", "split-conformal relative (floor 50 cycles)", "GPR-sigma normalized conformal (for gpr_capacity)", "CQR on HistGB quantiles 0.05/0.95", "indicator-scaled (relative radius divided by mean indicator completeness)"],
+  "interval_target": "90% nominal, calibration cells weighted equally per cell",
+  "abstention": {
+    "scores": ["disagreement |gb_indicators - gpr_capacity| / max(ensemble, 50)", "ensemble size (short predicted life accepted first)", "kNN distance to training windows (applicability control)", "relative interval width", "random"],
+    "accepted_share": 0.6,
+    "risk": "primary: macro-MAE of accepted windows; secondary: relative error with floor 50",
+    "compared_at": "equal accepted share inside each split"
+  },
+  "quality_scenario": "30% of test windows get all indicator channels set to missing; compare gb_indicators ungated, ensemble ungated, ensemble_gated",
+  "go_no_go": {
+    "note": "Practical-significance values were agreed with the user on 2026-10-30; they are not tuned to results.",
+    "G1_significance": "lower bound of the Bonferroni 97.5% paired cell-bootstrap interval of (baseline MAE - method MAE) > 0 on the development pool AND on the locked confirmation group",
+    "G2_practical": "point estimate of the relative gain (baseline - method) / baseline >= 10% on both",
+    "G3_coverage": "mean per-cell coverage of the chosen interval variant >= 0.85 on both",
+    "G4_abstention": "claimed only if risk at 60% accepted <= 0.9 x risk at 100% accepted AND better than the 'ensemble size' ranking and better than random, with the bootstrap interval of the difference to the 'ensemble size' ranking excluding 0",
+    "G5_quality": "ensemble_gated beats ungated on the missing-indicator scenario with a paired interval excluding 0, else the gate is not claimed",
+    "declaration": "method is declared 'better' only if G1 and G2 hold on both groups; anything else is reported as 'no demonstrated gain'. A result of 'no gain' is an accepted outcome."
+  },
+  "protocol_holdout": "HUST discharge/charge protocol groups are only used if the cell-to-protocol mapping is confirmed from the dataset description or the source paper; otherwise reported as not verified",
+  "limits": "Retrospective laboratory check on one dataset and one chemistry; windows are correlated; the cell split is the only independence unit; not field validation; no second dataset with charge curves is available locally."
+}
