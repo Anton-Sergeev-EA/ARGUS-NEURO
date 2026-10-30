@@ -50,3 +50,25 @@ jobs:
           node --test web/dashboard/tests/*.test.cjs
       - name: Validate staged training and ONNX parity
         run: bash scripts/train_all.sh
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the image (builds the C++ core and runs its tests)
+        run: docker compose build
+      - name: Start, train the equipment models and restart
+        run: |
+          docker compose up -d
+          docker compose exec -T argus bash scripts/train_all.sh
+          docker compose restart argus
+      - name: Smoke test of the running container
+        run: |
+          bash scripts/docker_smoke.sh
+          curl -fsS http://127.0.0.1:8000/api/health | grep -q '"model_backed":true'
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs --tail 100 argus
+      - name: Clean up
+        if: always()
+        run: docker compose down -v
