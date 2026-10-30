@@ -32,7 +32,7 @@ Daten: NASA PCoE (4 Zellen), CALB (28 NCM-Zellen) und HUST (77 LFP-Zellen), 3 72
 - **Gelernte Modelle halbieren den Fehler der Geraden** bei zwei Chemien (CALB 47 gegenüber 96 Zyklen, HUST 77 gegenüber 156). Sie werden nur als optionale „Zweitmeinung“ mit Gültigkeitsprüfung angeboten; trainierte Gewichte werden nie eingecheckt.
 - **Spannungskurven-Indikatoren senken den Fehler um 24 %** (68,6 → 52,4 Zyklen bei HUST, in 5 von 5 Aufteilungen besser), benötigen aber eine aufgezeichnete Ladekurve und sind daher noch nicht Teil des Berichts.
 - Das betrifft Laborzellen, keine Fahrzeugpacks. Pack-Berichte behalten das unkalibrierte Intervall und weisen darauf hin.
-- **Prüfung:** Die CI baut C++ mit Warnungen als Fehlern, führt `clang-tidy`, Python-Tests mit 70 % Mindestabdeckung und die README-Konsistenzprüfung aus. Lokal (29. Oktober 2026): 153 Python-Tests (132 bestanden und 21 übersprungen ohne native Erweiterung), 18 Oberflächentests, Abdeckung 74 %.
+- **Prüfung:** Die CI baut C++ mit Warnungen als Fehlern, führt `clang-tidy`, Python-Tests mit 70 % Mindestabdeckung und die README-Konsistenzprüfung aus. Lokal (30. Oktober 2026): 171 Python-Tests (150 bestanden und 21 übersprungen ohne native Erweiterung), 18 Oberflächentests, Abdeckung 70 %.
 
 ## Anwendungsfälle
 
@@ -56,33 +56,67 @@ bash scripts/run_dashboard.sh
 
 Öffnen Sie [http://127.0.0.1:8000](http://127.0.0.1:8000), wählen Sie **B0018**, **40** Beobachtungen und **Load measured NASA history**. Englisch ist Standard; oben lässt sich Deutsch auswählen. Dafür ist kein Modelltraining nötig. Für die ML/DL-Gerätediagnose zusätzlich `bash scripts/train_all.sh` ausführen und `/equipment.html` öffnen.
 
+## So funktioniert das Projekt
+
+ARGUS-NEURO macht aus Messwerten einen Bericht, der sagt, was bekannt ist, was geschätzt wird und was bewusst zurückgehalten wird.
+
+1. **Eingabe.** Kapazitätsprüfungen aus einer CSV (Ah je äquivalentem Zyklus, gleiche Testbedingungen) oder eine von vier veröffentlichten NASA-Zellen (636 kontrollierte Entladungen). Ist die Historie zu kurz oder uneinheitlich, sagt das Programm das, statt zu prognostizieren.
+2. **Aktueller Zustand.** Der SOH ist die gemessene Kapazität geteilt durch die Referenzkapazität. Der SOC erscheint nur, wenn Sie ihn angeben.
+3. **Trend und Bereich.** Ein linearer Trend über die letzten vergleichbaren Prüfungen liefert eine bedingte Zahl weiterer kontrollierter Entladungen bis zu Ihrer Grenze; Bootstrap und, für Laborzellen, ein kalibrierter Conformal-Radius machen daraus einen Bereich. Die Prognose wird zurückgehalten, wenn die Historie kurz, der Trend instabil oder ein BMS-Alarm gemeldet ist.
+4. **Empfehlungen.** Sie beruhen nur auf den von Ihnen eingegebenen Herstellergrenzen sowie Lade- und Lagerbedingungen. Es gibt keine OBD/CAN-Anbindung und keine Ladesteuerung.
+5. **Flottenpriorisierung.** Eine CSV mit vielen Batterien wird eingeordnet in jetzt warten, Wartung planen, beobachten oder zu wenig Daten, mit Voreinstellungen je Anwendungsfall (E-Scooter, Powerbanks, Rettungsdrohnen, EV).
+6. **Anlagendiagnose.** 11 statistische und spektrale Merkmale, in C++ berechnet (der NumPy-Ersatz liefert dasselbe), speisen eine Spektral-Baseline, einen LSTM-Autoencoder, einen Abweichungskanal gegenüber der gesunden Referenz und ein GRU-Lebensdauermodell; die Seite nennt ihre Datenquelle ausdrücklich eine Simulation.
+
+### Stand der Belege (30. Oktober 2026)
+
+- Ein Audit zeigte, dass die frühere Ausdünnungsschrittweite von der Lebensdauer der Zelle abhing und den Modellen die Antwort verriet. Alle früheren Genauigkeitszahlen auf Kapazitätshistorien sind zurückgezogen ([Stichproben-Audit](docs/SAMPLING_AUDIT.md)); die mitgelieferte Intervallkalibrierung ist als neu zu berechnen markiert.
+- Bei fester Schrittweite auf 77 HUST-LFP-Zellen liegt die stärkste reine Kapazitäts-Baseline (ein Gauß-Prozess) im Mittel um etwa 92–113 Zyklen daneben. Ein Ensemble mit Ladekurven-Indikatoren ist 11–15 % besser, doch auf 15 gesperrten Zellen ist der Unterschied statistisch nicht gesichert ([Experiment](experiments/2026-10-30_method_hust/notes.md)).
+- Die Prognose zu verweigern, wenn zwei Modelle abweichen, senkte den Fehler nicht; das Programm behauptet es daher nicht. Kein Anwendungsfall ist durch Felddaten gestützt.
+
 ## Aufnahmen der laufenden Anwendung
 
-Am 28. Oktober 2026 (Batterie-Ansichten am 29. Oktober aktualisiert) lokal aufgenommen, keine Entwürfe. Der Batteriebericht ist deutsch; gemeinsame Auswahl-, Verlaufs- und Geräteansichten sind englisch.
+Aufgenommen am 30. Oktober 2026 aus dem lokal laufenden Programm, je ein Satz pro Oberflächensprache. Die Batterieseiten zeigen die NASA-Zelle B0018 (erste 40 kontrollierte Entladungen, 70-%-Grenze), die Flottenseite das eingebaute Beispiel mit 13 Batterien und der E-Scooter-Voreinstellung, die Geräteseite die Serversimulation. Es ist eine Laborzelle und sind synthetische Daten, kein Fahrzeug.
 
-### 1. Ohne eigene CSV beginnen
+### 1. Start ohne eigene Daten
 
-![Auswahl einer veröffentlichten NASA-Zelle und der Historienlänge](docs/screenshots/public-data-selection-en.jpg)
+![Auswahl einer veröffentlichten NASA-Zelle und der Zahl beobachteter Tests](docs/screenshots/public-data-selection-de.jpg)
 
-Zelle und beobachtete Testanzahl wählen. Nur dieser Anfang der Historie fließt in die Bewertung ein; spätere Messungen werden nicht verwendet.
+**Was passiert:** Die Seite bietet vier veröffentlichte NASA-Zellen und die Zahl der beobachteten Tests an. Zur Berechnung wird nur der gewählte Anfang der Reihe gesendet, nie spätere Messungen.
 
-### 2. Messbericht für B0018
+**Fazit für Anwender:** Sie können den ganzen Ablauf ohne Dateien ausprobieren. Das Ergebnis beschreibt eine Laborzelle, nicht Ihr Fahrzeug.
 
-![B0018: SOH, unbekannter SOC und bedingte Restlebensdauer](docs/screenshots/battery-nasa-de.jpg)
+### 2. Bericht zur gemessenen Zelle B0018
 
-Erste 40 Entladetests: **83,8 % SOH**, unbekannter SOC und bedingt **11,3–64,2 weitere Entladetests** bis zur 70-%-Kapazitätsgrenze. Quelle und Grenzen stehen über den Karten. Eine Laborzelle wird nicht als Fahrzeugpack oder in Fahrzeug-Betriebsmonaten ausgewertet.
+![B0018-Bericht: SOH, unbekannter SOC und bedingte Restlebensdauer](docs/screenshots/battery-nasa-de.jpg)
 
-### 3. Kapazitätsverlauf
+**Was passiert:** Aus den ersten 40 Entladungen zeigt das Programm SOH 83,8 %, SOC unbekannt (niemand hat ihn angegeben) und eine bedingte Schätzung von 11,3–64,2 weiteren kontrollierten Entladungen bis zur 70-%-Grenze. Datenquelle und Lizenzhinweis stehen über den Karten.
 
-![Gemessene Kapazität und gewählte 70-Prozent-Grenze](docs/screenshots/battery-trend-en.jpg)
+**Fazit für Anwender:** Die Zelle hat rund 84 % ihrer Kapazität behalten. Der Bereich ist breit, weil die Historie kurz ist; lesen Sie ihn als Szenario, nicht als Garantie. Ein unbekannter SOC wird als unbekannt gezeigt, und die Kapazität allein sagt nicht, ob die Batterie sicher ist.
 
-Grün: die ersten 40 Messungen; gestrichelt: die 70-%-Grenze. Die Beschriftung bezieht sich auf Tests 11–40 des jüngsten Trends. SOH bewertet keine Sicherheit.
+### 3. Kapazitätsverlauf und Unsicherheit
 
-### 4. Laufende Geräteüberwachung
+![Kapazitätsverlauf, 70-%-Grenze, Projektion und Unsicherheitsband](docs/screenshots/battery-trend-de.jpg)
 
-![Verbundene synthetische Flotte mit ML- und DL-Inferenz](docs/screenshots/equipment-live-en.jpg)
+**Was passiert:** Die durchgezogene Linie ist die gemessene Kapazität der Tests 1–40, die gestrichelte die 70-%-Grenze, die gepunktete die Projektion und die schattierte Fläche der Unsicherheitsbereich. Die Beschriftung nennt eine Änderung von −6,8 Punkten über die Tests 11–40, den vom aktuellen Trend genutzten Abschnitt.
 
-Neun simulierte Anlagen, **ML + DL**, Merkmale, Abweichungsnachweise und Alarmprotokoll. **Source: server simulation** benennt die Quelle. Die Lebensdaueranzeige verwendet eine synthetische Skala, keine realen Betriebsstunden.
+**Fazit für Anwender:** Planen Sie mit dem ganzen schattierten Bereich, nicht mit der einen gepunkteten Linie: Die Grenze kann deutlich früher oder später erreicht werden. Eine fallende Linie ist der Trend dieser Zelle, und der SOH ist kein Sicherheitsurteil.
+
+### 4. Flottenpriorisierung
+
+![Rangfolge von 13 Batterien mit der E-Scooter-Voreinstellung](docs/screenshots/fleet-de.jpg)
+
+**Was passiert:** Das eingebaute Beispiel mit 13 Batterien wird mit der E-Scooter-Voreinstellung eingeordnet: 2 jetzt warten, 3 planen, 8 beobachten, keine mit zu wenig Daten. Die Tabelle nennt SOH, Abstand zur Grenze in Punkten, den Bereich der Restzyklen und den Grund; ein Sternchen kennzeichnet einen unkalibrierten Bereich auf Pack-Ebene.
+
+**Fazit für Anwender:** Beginnen Sie bei den obersten Zeilen: SCOOTER-09 und SCOOTER-08 liegen schon unter der Wartungsgrenze (63,3 % und 63,8 %). Bereiche mit Sternchen sind grobe Anhaltspunkte. Das Beispiel ist synthetisch, es zeigt die Arbeitsweise der Seite, nicht den Zustand einer echten Flotte.
+
+### 5. Anlagendiagnose
+
+![Serversimulation von neun Anlagen mit ML- und DL-Diagnose](docs/screenshots/equipment-live-de.jpg)
+
+**Was passiert:** Neun simulierte Anlagen (Schiffsumrichter, UAV-Leistungseinheiten, DC-Schnellladeschränke) werden von ML- und DL-Modellen bewertet: Zustandsindex, Schwingungs- und Spektrummerkmale, Anomalieprotokoll. Das Banner nennt als Quelle eine Serversimulation und weist darauf hin, dass keine Anlage angeschlossen ist.
+
+**Fazit für Anwender:** Das zeigt den Diagnoseablauf, nicht den Zustand echter Anlagen. Die Restlebensdauer-Werte liegen auf einer synthetischen Skala. Für den echten Einsatz speisen Sie eigene Telemetrie über die API ein und prüfen, dass das Banner eine echte Quelle nennt.
+
 
 ## Umgesetzte Funktionen
 

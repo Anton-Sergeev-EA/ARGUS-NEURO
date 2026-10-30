@@ -32,7 +32,7 @@ Dati: NASA PCoE (4 celle), CALB (28 celle NCM) e HUST (77 celle LFP), 3 723 punt
 - **I modelli appresi dimezzano l’errore della retta** su due chimiche (CALB 47 contro 96 cicli, HUST 77 contro 156). Sono offerti solo come «seconda opinione» facoltativa con verifica del dominio; i pesi addestrati non vengono mai versionati.
 - **Gli indicatori della curva di tensione riducono l’errore del 24 %** (68,6 → 52,4 cicli su HUST, migliori in 5 partizioni su 5), ma richiedono una curva di carica registrata e quindi non fanno ancora parte del rapporto.
 - Tutto ciò riguarda celle di laboratorio, non pacchi di veicoli. I rapporti dei pacchi mantengono l’intervallo non calibrato e lo dichiarano.
-- **Verifica:** la CI compila il C++ con avvisi come errori, esegue `clang-tidy`, i test Python con soglia di copertura del 70 % e la coerenza dei README. In locale (29 ottobre 2026): 153 test Python (132 superati e 21 saltati senza estensione nativa), 18 test dell’interfaccia, copertura 74 %.
+- **Verifica:** la CI compila il C++ con avvisi come errori, esegue `clang-tidy`, i test Python con soglia di copertura del 70 % e la coerenza dei README. In locale (30 ottobre 2026): 171 test Python (150 superati e 21 saltati senza estensione nativa), 18 test dell’interfaccia, copertura 70 %.
 
 ## Casi d’uso
 
@@ -56,33 +56,67 @@ bash scripts/run_dashboard.sh
 
 Aprire [http://127.0.0.1:8000](http://127.0.0.1:8000), scegliere **B0018**, **40** osservazioni e **Load measured NASA history**. L’inglese è predefinito; selezionare l’italiano in alto. Questo percorso non richiede addestramento. Per la diagnostica ML/DL delle apparecchiature eseguire separatamente `bash scripts/train_all.sh` e aprire `/equipment.html`.
 
+## Come funziona il progetto
+
+ARGUS-NEURO trasforma le misure in un rapporto che dice cosa è noto, cosa è stimato e cosa viene rifiutato.
+
+1. **Input.** Controlli di capacità da un CSV (Ah per ciclo equivalente, stesse condizioni di prova) o una delle quattro celle NASA pubblicate (636 scariche controllate). Se lo storico è troppo breve o incoerente, il programma lo dice invece di prevedere.
+2. **Stato attuale.** L’SOH è la capacità misurata divisa per la capacità di riferimento. L’SOC compare solo se lo fornite.
+3. **Tendenza e intervallo.** Una tendenza lineare sugli ultimi controlli confrontabili dà un numero condizionale di scariche controllate fino alla vostra soglia; un bootstrap e, per le celle di laboratorio, un raggio conformal calibrato lo trasformano in un intervallo. La previsione è trattenuta se lo storico è breve, la tendenza instabile o c’è un allarme BMS.
+4. **Consigli.** Le raccomandazioni usano solo i limiti del produttore e le condizioni di carica e conservazione che inserite. Nessun collegamento OBD/CAN e nessun controllo della carica.
+5. **Triage della flotta.** Un CSV con molte batterie viene ordinato in intervenire ora, pianificare, monitorare o dati insufficienti, con un preset per caso d’uso (monopattini, power bank, droni di soccorso, EV).
+6. **Diagnostica delle apparecchiature.** 11 caratteristiche statistiche e spettrali calcolate in C++ (il ripiego NumPy dà lo stesso risultato) alimentano una base spettrale, un autoencoder LSTM, un canale di scostamento dal riferimento sano e un modello di vita GRU; la pagina dichiara che la fonte dei dati è una simulazione.
+
+### A che punto sono le prove (30 ottobre 2026)
+
+- Un audit ha rilevato che il passo di sottocampionamento precedente dipendeva da quanto viveva la cella e suggeriva la risposta ai modelli. Tutte le cifre di accuratezza precedenti sugli storici di capacità sono ritirate ([audit del campionamento](docs/SAMPLING_AUDIT.md)); la calibrazione degli intervalli fornita è segnata come in attesa di ricalcolo.
+- Con passo fisso su 77 celle LFP di HUST, la migliore linea di base con la sola capacità (un processo gaussiano) sbaglia in media di circa 92–113 cicli. Un insieme con indicatori della curva di carica è migliore dell’11–15 %, ma su 15 celle riservate la differenza non è stabilita statisticamente ([esperimento](experiments/2026-10-30_method_hust/notes.md)).
+- Rifiutare la previsione quando due modelli discordano non ha ridotto l’errore, quindi il programma non lo afferma. Nessun caso d’uso è sostenuto da dati sul campo.
+
 ## Schermate dell’applicazione in funzione
 
-Acquisite localmente il 28 ottobre 2026 (schermate batteria aggiornate il 29 ottobre), non sono bozze. Il rapporto è in italiano; le viste condivise di selezione, andamento e apparecchiature sono in inglese.
+Acquisite il 30 ottobre 2026 dal programma in esecuzione in locale, una serie per ogni lingua dell’interfaccia. Le pagine batteria usano la cella NASA B0018 (prime 40 scariche controllate, soglia del 70 %), la pagina flotta l’esempio integrato di 13 batterie con il preset monopattino e la pagina apparecchiature la simulazione del server. È una cella di laboratorio con dati sintetici, non un veicolo.
 
-### 1. Iniziare senza un proprio CSV
+### 1. Iniziare senza dati propri
 
-![Selezione della cella NASA e del numero di osservazioni](docs/screenshots/public-data-selection-en.jpg)
+![Scelta di una cella NASA pubblicata e del numero di prove osservate](docs/screenshots/public-data-selection-it.jpg)
 
-Scegliere una cella e l’inizio dello storico osservato. Le misure successive non entrano nella valutazione.
+**Cosa succede:** La pagina offre quattro celle NASA pubblicate e il numero di prove osservate. Al calcolo viene inviato solo l’inizio scelto della serie, mai le misure successive.
 
-### 2. Rapporto misurato di B0018
+**Conclusione per l’utente:** Potete provare l’intero percorso senza alcun file. Il risultato descrive una cella di laboratorio, non il vostro veicolo.
 
-![B0018: SOH, SOC sconosciuto e vita condizionata](docs/screenshots/battery-nasa-it.jpg)
+### 2. Rapporto della cella misurata B0018
 
-Prime 40 prove: **SOH 83,8 %**, SOC sconosciuto e proiezione condizionata di **11,3–64,2 prove aggiuntive** prima della soglia del 70 %. Fonte e limiti sono visibili sopra le schede. È una cella di laboratorio; non si converte il suo indice in mesi di utilizzo del veicolo.
+![Rapporto B0018: SOH, SOC sconosciuto e vita residua condizionale](docs/screenshots/battery-nasa-it.jpg)
 
-### 3. Storico della capacità
+**Cosa succede:** Dalle prime 40 scariche il programma mostra SOH 83,8 %, SOC sconosciuto (nessuno lo ha fornito) e una stima condizionale di 11,3–64,2 scariche controllate in più prima della soglia del 70 %. La fonte dei dati e la nota di licenza stanno sopra le schede.
 
-![Capacità misurata e soglia del 70 per cento](docs/screenshots/battery-trend-en.jpg)
+**Conclusione per l’utente:** La cella ha mantenuto circa l’84 % della capacità. L’intervallo è ampio perché lo storico è breve; leggetelo come uno scenario, non come una garanzia. Un SOC sconosciuto è mostrato come tale, e la sola capacità non dice se la batteria è sicura.
 
-Verde: prime 40 misure; tratteggio: soglia del 70 %. Il testo descrive il cambiamento nelle prove 11–40 della tendenza recente. SOH non valuta la sicurezza.
+### 3. Storico di capacità e incertezza
 
-### 4. Monitoraggio delle apparecchiature in tempo reale
+![Storico di capacità, soglia del 70 %, proiezione e banda di incertezza](docs/screenshots/battery-trend-it.jpg)
 
-![Flotta sintetica collegata con inferenza ML e DL](docs/screenshots/equipment-live-en.jpg)
+**Cosa succede:** La linea continua è la capacità misurata nelle prove 1–40, la tratteggiata la soglia del 70 %, la punteggiata la proiezione e l’area ombreggiata l’intervallo di incertezza. La didascalia riporta una variazione di −6,8 punti nelle prove 11–40, il tratto usato dalla tendenza attuale.
 
-Nove unità simulate, **ML + DL**, caratteristiche, evidenze degli scostamenti e registro anomalie. **Source: server simulation** identifica l’origine. La vita residua usa una scala sintetica, non ore operative reali.
+**Conclusione per l’utente:** Pianificate con tutta l’area ombreggiata, non con la sola linea punteggiata: la soglia può essere raggiunta molto prima o molto dopo. Una linea in discesa è la tendenza di questa cella, e l’SOH non è un verdetto di sicurezza.
+
+### 4. Triage della flotta
+
+![Ordine di 13 batterie con il preset monopattino](docs/screenshots/fleet-it.jpg)
+
+**Cosa succede:** L’esempio integrato di 13 batterie è ordinato con il preset monopattino: 2 da intervenire ora, 3 da pianificare, 8 da monitorare, nessuna con dati insufficienti. La tabella riporta SOH, margine dalla soglia in punti, intervallo di cicli residui e motivo; un asterisco indica un intervallo a livello di pacco non calibrato.
+
+**Conclusione per l’utente:** Partite dalle prime righe: SCOOTER-09 e SCOOTER-08 sono già sotto il limite di servizio (63,3 % e 63,8 %). Gli intervalli con asterisco sono indicazioni approssimative. Il campione è sintetico: mostra come funziona la pagina, non lo stato di una flotta reale.
+
+### 5. Diagnostica delle apparecchiature
+
+![Simulazione sul server di nove asset con diagnosi ML e DL](docs/screenshots/equipment-live-it.jpg)
+
+**Cosa succede:** Nove asset simulati (convertitori navali, unità di potenza UAV, armadi di ricarica rapida DC) sono valutati da modelli ML e DL: indice di salute, caratteristiche di vibrazione e spettro, registro delle anomalie. Il banner indica che la fonte è una simulazione del server e che nessuna apparecchiatura è collegata.
+
+**Conclusione per l’utente:** Questo mostra il percorso diagnostico, non lo stato di apparecchiature reali. I valori di vita residua sono su una scala sintetica. In uso reale inviate la vostra telemetria tramite l’API e verificate che il banner indichi una fonte reale.
+
 
 ## Funzionalità implementate
 

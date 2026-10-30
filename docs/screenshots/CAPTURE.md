@@ -1,11 +1,11 @@
 # Interface captures
 
-Captured on 29 October 2026 (battery captures; the others on 28 October) from the running local application using its normal browser viewport. These are direct application screenshots.
+Captured on 30 October 2026 from the locally running application (`bash scripts/run_dashboard.sh`) with headless Chrome at a 1280×860 viewport, once per interface language (`en`, `ru`, `zh`, `hi`, `es`, `fr`, `de`, `ja`, `it`). These are direct application screenshots; the interface language was set through the language selector's stored value, and every flow below was clicked through in the running page.
 
-- `battery-nasa-{en,ru,zh,hi,es,fr,de,ja,it}.jpg`: NASA B0018, first 40 measured discharge tests, 70% end-of-life threshold. Capacity SOH is 83.8%; calibrated conditional remaining trend estimate is 11.3–64.2 additional controlled discharge tests. SOC is unknown. These are laboratory cell measurements, not a vehicle pack forecast.
-- `public-data-selection-en.jpg`: public NASA data selector and observed-history controls.
-- `fleet-en.jpg`, `fleet-ru.jpg`: fleet triage of the 13-battery synthetic sample table with the shared e-scooter preset.
-- `battery-trend-en.jpg`: measured capacity history for tests 1–40, the 70% threshold, the projected capacity line and the shaded uncertainty range. The recent trend uses tests 11–40.
-- `equipment-live-en.jpg`: live nine-asset server simulation (shipboard converters, UAV power units, DC fast-charger cabinets) with ML/DL diagnostics, alarms and an explicit simulated-source label. It does not show connected physical equipment.
+- `public-data-selection-<lang>.jpg`: the public NASA data selector and observed-history controls.
+- `battery-nasa-<lang>.jpg`: NASA B0018, first 40 measured discharge tests, 70% end-of-life threshold. Capacity SOH is 83.8%; the conditional remaining trend estimate is 11.3–64.2 additional controlled discharge tests. SOC is unknown. These are laboratory cell measurements, not a vehicle pack forecast.
+- `battery-trend-<lang>.jpg`: measured capacity for tests 1–40, the 70% threshold, the projected capacity line and the shaded uncertainty range. The recent trend uses tests 11–40 (a change of −6.8 points).
+- `fleet-<lang>.jpg`: fleet triage of the built-in 13-battery synthetic example with the e-scooter preset: 2 service now, 3 plan service, 8 monitor, 0 not enough data. An asterisk marks an uncalibrated pack-level range.
+- `equipment-live-<lang>.jpg`: the live nine-asset server simulation (shipboard converters, UAV power units, DC fast-charger cabinets) with ML/DL diagnostics, an anomaly log and an explicit simulated-source banner. It does not show connected physical equipment. Health indices and the anomaly log change from capture to capture.
 
-The three shared overview/trend/equipment captures use English. Each README includes its own language-specific battery report. Public data source and reuse caveats: [public battery data](../PUBLIC_BATTERY_DATA.md).
+Public data source and reuse caveats: [public battery data](../PUBLIC_BATTERY_DATA.md).

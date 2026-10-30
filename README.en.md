@@ -83,33 +83,67 @@ bash scripts/run_dashboard.sh
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000), choose **B0018**, keep **40** observations and select **Load measured NASA history**. English is the default; the language selector is at the top. This route needs no model training. For model-backed equipment diagnostics, separately run `bash scripts/train_all.sh` and open `/equipment.html`.
 
+## How the project works
+
+ARGUS-NEURO turns measurements into a report that says what is known, what is estimated and what is withheld.
+
+1. **Input.** Capacity checks from a CSV (Ah per equivalent cycle, same test conditions) or one of four published NASA cells (636 controlled discharges). If the history is too short or inconsistent, the program says so instead of forecasting.
+2. **State now.** SOH is the measured capacity divided by the reference capacity. SOC is shown only when you supply it.
+3. **Trend and range.** A linear trend over the latest comparable checks gives a conditional number of further controlled discharges to your threshold; a bootstrap and, for laboratory cells, a calibrated conformal radius turn it into a range. The forecast is withheld when the history is short, the trend is unstable or a BMS alarm is reported.
+4. **Advice.** Recommendations use only the manufacturer limits and the charging and storage conditions you enter. There is no OBD/CAN connection and no charging control.
+5. **Fleet triage.** One CSV with many batteries is ranked as service now, plan service, monitor or insufficient data, with a preset for the use case (e-scooters, power banks, rescue drones, EV).
+6. **Equipment diagnostics.** 11 statistical and spectral features computed in C++ (the NumPy fallback gives the same result) feed a spectral baseline, an LSTM autoencoder, a healthy-reference deviation channel and a GRU life model; the page states that its data source is a simulation.
+
+### Where the evidence stands (30 October 2026)
+
+- An audit found that the earlier thinning stride depended on how long a cell lived and hinted the answer to the models. All earlier accuracy figures on capacity histories were withdrawn ([sampling audit](docs/SAMPLING_AUDIT.md)); the interval calibration shipped with the program is marked as awaiting a re-run.
+- At a fixed stride on 77 HUST LFP cells the strongest capacity-only baseline (a Gaussian process) is off by about 92–113 cycles on average. An ensemble with charge-curve indicators is 11–15 % better, but on 15 locked cells the difference is not statistically established ([experiment](experiments/2026-10-30_method_hust/notes.md)).
+- Refusing to forecast when two models disagree did not reduce the error, so the program does not claim that. No use case is backed by field data.
+
 ## Screenshots from the running application
 
-Captured on 28 October 2026 (battery screens refreshed on 29 October) from the locally running application. These are actual application screens, not mockups. The battery report is available below in the language of this README; shared overview, trend and fleet screenshots use English.
+Captured on 30 October 2026 from the locally running program, once per interface language. The battery pages use NASA cell B0018 (first 40 controlled discharges, 70 % threshold), the fleet page the built-in 13-battery example with the e-scooter preset, and the equipment page the server simulation. This is a laboratory cell and synthetic data, not a vehicle.
 
-### 1. Start without uploading a personal CSV
+### 1. Start without your own data
 
-![Published NASA cell and observation-count selection](docs/screenshots/public-data-selection-en.jpg)
+![Selection of a published NASA cell and the number of observed tests](docs/screenshots/public-data-selection-en.jpg)
 
-Select one of four cells and the observed prefix length. Only that prefix enters the assessment; later measurements are not passed to the predictor.
+**What is happening:** The page offers four published NASA cells and the number of observed tests. Only the chosen beginning of the series is sent for calculation, never later measurements.
 
-### 2. Measured B0018 cell report
+**What it means for you:** You can try the whole flow without any files. The result describes a laboratory cell, not your vehicle.
 
-![B0018 report with SOH, unknown SOC and conditional life](docs/screenshots/battery-nasa-en.jpg)
+### 2. Report for the measured cell B0018
 
-First 40 discharge tests: **83.8% SOH**, unknown SOC and a conditional **11.3–64.2 additional discharge-test** projection to the configured 70% capacity threshold. Source and limitations appear above the cards. This is a laboratory cell; its test index is not converted to EV operating months.
+![B0018 report: SOH, unknown SOC and conditional remaining life](docs/screenshots/battery-nasa-en.jpg)
 
-### 3. Capacity history
+**What is happening:** From the first 40 discharges the program shows SOH 83.8 %, SOC unknown (none was supplied) and a conditional estimate of 11.3–64.2 more controlled discharges before the 70 % threshold. The data source and licence note sit above the cards.
 
-![Measured capacity history and 70-percent threshold](docs/screenshots/battery-trend-en.jpg)
+**What it means for you:** The cell has kept about 84 % of its capacity. The range is wide because the history is short; read it as a scenario, not a guarantee. An unknown SOC is shown as unknown, and capacity alone does not tell whether the battery is safe.
 
-The solid line shows the first 40 measured tests; the dashed line is the 70% threshold; the dotted line and shaded wedge are the projected capacity and its calibrated uncertainty range. The text above the plot describes change over tests 11–40 used by the recent trend. Capacity-based SOH is not a battery safety assessment.
+### 3. Capacity history and uncertainty
 
-### 4. Live equipment monitoring
+![Capacity history, 70 % threshold, projection and uncertainty band](docs/screenshots/battery-trend-en.jpg)
 
-![Connected synthetic fleet dashboard with ML and DL inference](docs/screenshots/equipment-live-en.jpg)
+**What is happening:** The solid line is measured capacity for tests 1–40, the dashed line the 70 % threshold, the dotted line the projection and the shaded area the uncertainty range. The caption reports a change of −6.8 points over tests 11–40, the span used by the current trend.
 
-The dashboard is connected to the server simulator: nine assets, **ML + DL** inference, features, deviation evidence and an anomaly log. **Source: server simulation** identifies the data; remaining life uses a synthetic scale rather than real operating hours.
+**What it means for you:** Plan with the whole shaded range, not the single dotted line: the threshold may be reached much earlier or later. A falling line is a trend of this cell, and SOH is not a safety verdict.
+
+### 4. Fleet triage
+
+![Ranking of 13 batteries with the e-scooter preset](docs/screenshots/fleet-en.jpg)
+
+**What is happening:** The built-in example of 13 batteries is ranked with the e-scooter preset: 2 to service now, 3 to plan, 8 to monitor, none with insufficient data. The table gives SOH, the margin to the threshold in points, the remaining-cycle range and the reason; an asterisk marks a pack-level range that is not calibrated.
+
+**What it means for you:** Start from the top rows: SCOOTER-09 and SCOOTER-08 are already below the service limit (63.3 % and 63.8 %). Ranges with an asterisk are rough guides. The sample is synthetic, so it shows how the page works, not the state of a real fleet.
+
+### 5. Equipment diagnostics
+
+![Server simulation of nine assets with ML and DL diagnostics](docs/screenshots/equipment-live-en.jpg)
+
+**What is happening:** Nine simulated assets (ship converters, UAV power units, DC fast-charger cabinets) are scored by ML and DL models: health index, vibration and spectrum features, an anomaly log. The banner states that the source is a server simulation and no equipment is connected.
+
+**What it means for you:** This shows the diagnostic flow, not the condition of real equipment. The remaining-life figures are on a synthetic scale. For real use, feed your own telemetry through the API and check that the banner names a real source.
+
 
 ## Start with a small reproducible example
 
@@ -294,7 +328,7 @@ Native tests remain active in Release. Python tests cover feature parity and edg
 
 [CI](.github/workflows/ci.yml) uses Python 3.12 and Node 22, builds the extension with compiler warnings as errors, runs both CTest executables and `clang-tidy`, runs both Python modes with a 70% coverage floor, checks formatting, dashboard logic and README/documentation consistency, and validates the complete staged training/export workflow.
 
-Current local result (29 October 2026): 2 of 2 CTest executables, 153 Python tests with the native extension (132 passed and 21 native-only skips with the NumPy fallback), 74% line coverage, 18 dashboard tests. Tests that need the downloaded NASA, CALB or HUST data skip when it is absent.
+Current local result (30 October 2026): 2 of 2 CTest executables, 171 Python tests with the native extension (150 passed and 21 native-only skips with the NumPy fallback), 70% line coverage, 18 dashboard tests. Tests that need the downloaded NASA, CALB or HUST data skip when it is absent.
 
 ### Recorded evaluation
 
