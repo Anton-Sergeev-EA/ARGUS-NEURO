@@ -48,7 +48,7 @@ Choisissez une cellule et le début de son historique observé. Les mesures ult�
 
 ![B0018 : SOH, SOC inconnu et durée conditionnelle](docs/screenshots/battery-nasa-fr.jpg)
 
-Premiers 40 essais : **SOH 83,8 %**, SOC inconnu et projection conditionnelle de **32–43,5 essais supplémentaires** avant le seuil de 70 %. Source et limites sont visibles au-dessus des cartes. Il s’agit d’une cellule de laboratoire, sans conversion en mois d’utilisation automobile.
+Premiers 40 essais : **SOH 83,8 %**, SOC inconnu et projection conditionnelle de **11,3–64,2 essais supplémentaires** avant le seuil de 70 %. Source et limites sont visibles au-dessus des cartes. Il s’agit d’une cellule de laboratoire, sans conversion en mois d’utilisation automobile.
 
 ### 3. Historique de capacité
 

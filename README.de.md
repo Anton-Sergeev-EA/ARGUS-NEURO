@@ -48,7 +48,7 @@ Zelle und beobachtete Testanzahl wählen. Nur dieser Anfang der Historie fließt
 
 ![B0018: SOH, unbekannter SOC und bedingte Restlebensdauer](docs/screenshots/battery-nasa-de.jpg)
 
-Erste 40 Entladetests: **83,8 % SOH**, unbekannter SOC und bedingt **32–43,5 weitere Entladetests** bis zur 70-%-Kapazitätsgrenze. Quelle und Grenzen stehen über den Karten. Eine Laborzelle wird nicht als Fahrzeugpack oder in Fahrzeug-Betriebsmonaten ausgewertet.
+Erste 40 Entladetests: **83,8 % SOH**, unbekannter SOC und bedingt **11,3–64,2 weitere Entladetests** bis zur 70-%-Kapazitätsgrenze. Quelle und Grenzen stehen über den Karten. Eine Laborzelle wird nicht als Fahrzeugpack oder in Fahrzeug-Betriebsmonaten ausgewertet.
 
 ### 3. Kapazitätsverlauf
 

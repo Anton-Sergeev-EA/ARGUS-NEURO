@@ -48,7 +48,7 @@ Scegliere una cella e l’inizio dello storico osservato. Le misure successive n
 
 ![B0018: SOH, SOC sconosciuto e vita condizionata](docs/screenshots/battery-nasa-it.jpg)
 
-Prime 40 prove: **SOH 83,8 %**, SOC sconosciuto e proiezione condizionata di **32–43,5 prove aggiuntive** prima della soglia del 70 %. Fonte e limiti sono visibili sopra le schede. È una cella di laboratorio; non si converte il suo indice in mesi di utilizzo del veicolo.
+Prime 40 prove: **SOH 83,8 %**, SOC sconosciuto e proiezione condizionata di **11,3–64,2 prove aggiuntive** prima della soglia del 70 %. Fonte e limiti sono visibili sopra le schede. È una cella di laboratorio; non si converte il suo indice in mesi di utilizzo del veicolo.
 
 ### 3. Storico della capacità
 
