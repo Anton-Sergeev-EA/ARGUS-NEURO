@@ -57,7 +57,7 @@ bash scripts/run_dashboard.sh
 
 ## 在任何机器上用 Docker 运行
 
-只需 Docker Engine 或带 Compose v2 的 Docker Desktop：镜像会自行编译 C++ 核心并运行其测试，只用 CPU，占用约 2 GB 磁盘。已在 Linux x86-64 上测试；同一个 Dockerfile 也可为 arm64（例如 Apple Silicon）构建，但这里未测试。
+只需 Docker Engine 或带 Compose v2 的 Docker Desktop：镜像会自行编译 C++ 核心并运行其测试，只用 CPU，占用约 2 GB 磁盘。CI 在 Linux x86-64 和 arm64（例如 Apple Silicon 与 ARM 服务器）上原生构建并测试该镜像，包括生产栈。在 Windows 和 macOS 上，Docker Desktop 运行同一个 Linux 镜像；`docker compose` 命令可在 PowerShell 中使用，只有辅助脚本 `bash scripts/...` 需要 WSL2 或 Git Bash。需要 64 位 CPU，构建约需 4 GB 内存；不支持 32 位处理器。
 
 ```bash
 docker compose up --build -d

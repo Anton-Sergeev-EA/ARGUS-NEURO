@@ -57,7 +57,7 @@ Ouvrez [http://127.0.0.1:8000](http://127.0.0.1:8000), choisissez **B0018**, **4
 
 ## Exécuter dans Docker sur n’importe quelle machine
 
-Il suffit de Docker Engine ou de Docker Desktop avec Compose v2 : l’image compile elle-même le cœur C++ et ses tests, tourne sur CPU et occupe environ 2 Go sur disque. Testé sous Linux x86-64 ; le même Dockerfile se construit pour arm64 (par exemple Apple Silicon), ce qui n’a pas été testé ici.
+Il suffit de Docker Engine ou de Docker Desktop avec Compose v2 : l’image compile elle-même le cœur C++ et ses tests, tourne sur CPU et occupe environ 2 Go sur disque. La CI construit et teste l’image nativement sous Linux x86-64 et arm64 (par exemple Apple Silicon et serveurs ARM), pile de production comprise. Sous Windows et macOS, Docker Desktop exécute la même image Linux ; les commandes `docker compose` fonctionnent dans PowerShell, seuls les scripts auxiliaires `bash scripts/...` demandent WSL2 ou Git Bash. Il faut un processeur 64 bits et environ 4 Go de mémoire pour la construction ; les processeurs 32 bits ne sont pas pris en charge.
 
 ```bash
 docker compose up --build -d

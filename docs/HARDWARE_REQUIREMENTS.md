@@ -51,9 +51,9 @@ A C++20 compiler (GCC or Clang), CMake, Ninja, Python 3.12, 4 GB RAM, and about 
 
 ## 3. Software environment
 
-- Docker Engine or Docker Desktop with Compose v2. Tested on Linux x86-64 (CI and locally).
-- arm64: the same Dockerfile builds, but it was not tested here.
-- Windows and macOS (Docker Desktop): not tested.
+- Docker Engine or Docker Desktop with Compose v2. CI builds and tests the image natively on Linux x86-64 and arm64.
+- Windows and macOS (Docker Desktop): the same Linux image runs in Docker Desktop's virtual machine; those systems were not tested end to end. Give Docker Desktop at least 4 GB of memory for the build; the host-side `bash scripts/...` helpers need WSL2 or Git Bash.
+- A 64-bit CPU is required (32-bit processors are not supported). Very old x86-64 CPUs without the instructions the PyTorch wheels need were not tested.
 - The container runs without root (uid 10001) with `read_only`, `cap_drop: ALL` and `no-new-privileges`. Weights and data live in the named volume `argus-data`.
 - Port 8000, bound to `127.0.0.1` by default.
 

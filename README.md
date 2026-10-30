@@ -57,7 +57,7 @@ bash scripts/run_dashboard.sh
 
 ## Запуск в Docker на любой машине
 
-Нужны только Docker Engine или Docker Desktop с Compose v2: образ сам собирает C++-ядро с его тестами, работает на CPU и занимает около 2 ГБ на диске. Проверено на Linux x86-64; тот же Dockerfile собирается и для arm64 (например, Apple Silicon), здесь это не проверялось.
+Нужны только Docker Engine или Docker Desktop с Compose v2: образ сам собирает C++-ядро с его тестами, работает на CPU и занимает около 2 ГБ на диске. CI собирает и проверяет образ нативно на Linux x86-64 и arm64 (например, Apple Silicon и ARM-серверы), включая боевой стек. На Windows и macOS Docker Desktop запускает тот же Linux-образ; команды `docker compose` работают в PowerShell, а вспомогательным скриптам `bash scripts/...` нужен WSL2 или Git Bash. Нужны 64-разрядный процессор и около 4 ГБ памяти на сборку; 32-разрядные процессоры не поддерживаются.
 
 ```bash
 docker compose up --build -d

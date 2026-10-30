@@ -1,6 +1,6 @@
 # Operating ARGUS-NEURO (production stack)
 
-What was done for deployment, what was verified and where the limits are. Verified on Linux x86-64 with Docker Compose v2 only. The Russian version, [PRODUCTION.ru.md](PRODUCTION.ru.md), is the complete one; this page is the short form.
+What was done for deployment, what was verified and where the limits are. Verified in CI on Linux x86-64 and arm64 with Docker Compose v2. The Russian version, [PRODUCTION.ru.md](PRODUCTION.ru.md), is the complete one; this page is the short form.
 
 ## Intended use
 
@@ -41,4 +41,4 @@ Laptop (i5-1235U, 23 GB), whole stack in Docker Desktop, through the TLS proxy w
 
 ## Known limits
 
-Single instance, no failover. The OCPP collector is not part of the production Compose file (it needs credentials and `wss` before real chargers connect). Tested on Linux x86-64 only. Public datasets are not in the image (licences). Image vulnerability scanning is not automated; Dependabot watches the dependencies.
+Single instance, no failover. The OCPP collector is not part of the production Compose file (it needs credentials and `wss` before real chargers connect). CI builds and tests the image and the production stack natively on Linux x86-64 and arm64. Windows and macOS (Docker Desktop) run the same Linux image but those systems were not tested end to end; the host-side `bash scripts/...` helpers need WSL2 or Git Bash. 32-bit processors are not supported. Public datasets are not in the image (licences). Image vulnerability scanning is not automated; Dependabot watches the dependencies.

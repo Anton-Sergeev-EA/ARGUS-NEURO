@@ -59,7 +59,7 @@ bash scripts/run_dashboard.sh
 
 ## किसी भी मशीन पर Docker में चलाएँ
 
-सिर्फ़ Docker Engine या Compose v2 वाला Docker Desktop चाहिए: इमेज खुद C++ कोर और उसके परीक्षण बनाती है, CPU पर चलती है और डिस्क पर लगभग 2 GB लेती है। Linux x86-64 पर परखा गया; वही Dockerfile arm64 (जैसे Apple Silicon) के लिए भी बनता है, जिसे यहाँ परखा नहीं गया।
+सिर्फ़ Docker Engine या Compose v2 वाला Docker Desktop चाहिए: इमेज खुद C++ कोर और उसके परीक्षण बनाती है, CPU पर चलती है और डिस्क पर लगभग 2 GB लेती है। CI इमेज को Linux x86-64 और arm64 (जैसे Apple Silicon और ARM सर्वर) पर मूल रूप से बनाकर परखता है, प्रोडक्शन स्टैक समेत। Windows और macOS पर Docker Desktop वही Linux इमेज चलाता है; `docker compose` कमांड PowerShell में चलती हैं, केवल सहायक स्क्रिप्ट `bash scripts/...` को WSL2 या Git Bash चाहिए। 64-बिट CPU और बिल्ड के लिए लगभग 4 GB मेमोरी चाहिए; 32-बिट प्रोसेसर समर्थित नहीं हैं।
 
 ```bash
 docker compose up --build -d

@@ -57,7 +57,7 @@ bash scripts/run_dashboard.sh
 
 ## Auf jedem Rechner in Docker starten
 
-Nötig sind nur Docker Engine oder Docker Desktop mit Compose v2: Das Image baut den C++-Kern samt Tests selbst, läuft auf der CPU und belegt rund 2 GB auf der Platte. Getestet unter Linux x86-64; dasselbe Dockerfile baut auch für arm64 (etwa Apple Silicon), was hier nicht getestet wurde.
+Nötig sind nur Docker Engine oder Docker Desktop mit Compose v2: Das Image baut den C++-Kern samt Tests selbst, läuft auf der CPU und belegt rund 2 GB auf der Platte. Die CI baut und testet das Image nativ unter Linux x86-64 und arm64 (etwa Apple Silicon und ARM-Server), einschließlich des Produktions-Stacks. Unter Windows und macOS führt Docker Desktop dasselbe Linux-Image aus; die `docker compose`-Befehle laufen in PowerShell, nur die Hilfsskripte `bash scripts/...` brauchen WSL2 oder Git Bash. Nötig sind eine 64-Bit-CPU und etwa 4 GB Speicher für den Build; 32-Bit-Prozessoren werden nicht unterstützt.
 
 ```bash
 docker compose up --build -d

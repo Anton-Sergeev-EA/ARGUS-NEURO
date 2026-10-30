@@ -55,7 +55,7 @@ bash scripts/run_dashboard.sh
 
 ## どのマシンでも Docker で実行
 
-必要なのは Docker Engine、または Compose v2 付きの Docker Desktop だけです。イメージは C++ コアとそのテストを自分でビルドし、CPU で動作し、ディスクを約 2 GB 使います。Linux x86-64 で検証済みで、同じ Dockerfile は arm64（例：Apple Silicon）向けにもビルドできますが、ここでは検証していません。
+必要なのは Docker Engine、または Compose v2 付きの Docker Desktop だけです。イメージは C++ コアとそのテストを自分でビルドし、CPU で動作し、ディスクを約 2 GB 使います。CI は Linux x86-64 と arm64（例：Apple Silicon や ARM サーバー）でイメージをネイティブにビルドして検証しており、本番スタックも含みます。Windows と macOS では Docker Desktop が同じ Linux イメージを実行し、`docker compose` コマンドは PowerShell で動作します。補助スクリプト `bash scripts/...` だけは WSL2 か Git Bash が必要です。64 ビット CPU とビルド用に約 4 GB のメモリが必要で、32 ビットプロセッサは非対応です。
 
 ```bash
 docker compose up --build -d
