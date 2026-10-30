@@ -1,6 +1,6 @@
 # Remaining-life backtest
 
-> **Superseded (30 October 2026).** The numbers on this page were produced with a thinning stride of ceil(N/600) that depends on the full history length and leaks the answer; see [SAMPLING_AUDIT.md](SAMPLING_AUDIT.md). Do not quote them.
+> **Re-run at a fixed stride (30 October 2026).** The earlier version of this page used a thinning stride of ceil(N/600) that depends on the full history length and leaks the answer ([SAMPLING_AUDIT.md](SAMPLING_AUDIT.md)). Every number below comes from the re-run at a fixed physical stride of 5 cycles (NASA: every discharge test, no thinning); the earlier figures are withdrawn.
 
 How well does the remaining-life interval hold up on cells it has never seen? This page records the answer, not the hope.
 
@@ -20,25 +20,25 @@ How well does the remaining-life interval hold up on cells it has never seen? Th
 
 | | Linear trend (default) | Curve chosen by held-out error |
 |---|---|---|
-| Forecast points / with a number | 3723 / 1151 | 3723 / 1242 |
+| Forecast points / with a number | 3713 / 1413 | 3713 / 1610 |
 | Cells with a forecast | 108 | 108 |
-| Abstained (no number shown) | 69% | 67% |
-| Coverage of the raw bootstrap 5–95% interval | **12%** | 22% |
-| Mean absolute midpoint error (cycles) | 49 | 77 |
-| Median relative midpoint error | 17% | 14% |
-| Calibrated coverage, leave-one-cell-out | **97%** | 95% |
-| Calibrated coverage, leave-one-dataset-out | **96%** | 95% |
+| Abstained (no number shown) | 62% | 57% |
+| Coverage of the raw bootstrap 5–95% interval | **9%** | 26% |
+| Mean absolute midpoint error (cycles) | 83 | 61 |
+| Median relative midpoint error | 24% | 11% |
+| Calibrated coverage, leave-one-cell-out | **96%** | 96% |
+| Calibrated coverage, leave-one-dataset-out | **95%** | 95% |
 | Median calibrated width (relative to remaining life) | 1.6× | 1.7× |
 
-Coverage when a whole dataset is held out (linear, nominal 90%): CALB 90%, HUST 100%, **NASA 67%**.
+Coverage when a whole dataset is held out (linear, nominal 90%): CALB 83%, HUST 100%, **NASA 73%**. Two of the three sources are therefore **below the nominal 90%** when they are the unseen one; the pooled 95% is carried by HUST.
 
 Findings:
 
-1. The bootstrap interval alone is **badly over-confident**: it contains the truth in about one forecast of eight while presenting itself as 90%. It only measures scatter around the fitted line, not the way real cells change their rate of fade.
-2. An interval widened by the measured relative error (radius 0.70 of the midpoint) covers at least 90% on cells it did not see, at the price of width: the median interval is about 1.6× the remaining life. That is the honest size of the uncertainty with a capacity history only.
-3. **Calibration does not transfer evenly between sources.** The first pooled calibration, dominated by the 77 HUST cells, gave a narrow radius (0.38) that covered only 61% of CALB and 46% of NASA when those sources were held out. Equal weighting per source fixes CALB (90%) but NASA stays at 67%: those NCA cells show capacity regeneration spikes unlike the others. A new chemistry or protocol may therefore be under-covered; the report says the interval is laboratory-cell level, not guaranteed.
-4. Curved fits (exponential, quadratic) chosen by held-out error lower the median relative error (14% vs 17%) but raise the mean absolute error (77 vs 49 cycles) through occasional wild extrapolations. There is no reliable gain, so **linear stays the default**; `ProjectionConfig(model="auto")` is available for research.
-5. Two thirds of forecasts abstain by design (69%). A refusal is better than a confident wrong number.
+1. The bootstrap interval alone is **badly over-confident**: it contains the truth in about one forecast of eleven while presenting itself as 90%. It only measures scatter around the fitted line, not the way real cells change their rate of fade.
+2. An interval widened by the measured relative error (radius 0.65 of the midpoint) covers about 96% on cells it did not see, at the price of width: the median interval is about 1.6× the remaining life. That is the honest size of the uncertainty with a capacity history only.
+3. **Calibration does not transfer evenly between sources.** Equal weighting per source keeps the pooled figure high, but a held-out CALB or NASA dataset is covered only 83% and 73% of the time. Those NCM and NCA cells behave differently from the 77 LFP cells (NASA shows capacity regeneration spikes). A new chemistry or protocol may be under-covered; the report says the interval is laboratory-cell level, not guaranteed.
+4. At the fixed stride, curved fits (exponential, quadratic) chosen by held-out error beat the straight line on both error measures (mean 61 vs 83 cycles, median relative 11% vs 24%). The earlier statement that they bring no reliable gain came from the leaking stride and is withdrawn. The default has **not** been changed: this page gives no per-cell confidence interval for the difference, and the selection rule was not fixed in advance. `ProjectionConfig(model="auto")` stays available; switching the default is an open decision.
+5. More than half of the forecasts abstain by design (62% for the straight line). A refusal is better than a confident wrong number.
 
 ## Where this applies
 

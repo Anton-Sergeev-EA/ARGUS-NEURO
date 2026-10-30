@@ -14,8 +14,8 @@ An independent experiment with a fixed physical stride (see `experiments/2026-10
 |---|---|---|
 | Learned models halve the error of a straight line (CALB 47 vs 96, HUST 77 vs 156 cycles) | `experiments/2026-10-29_calb_benchmark`, `…_hust_benchmark`, README research block | Superseded: obtained with the leaking stride |
 | Curve indicators cut the error by 24% (68.6 → 52.4) | `experiments/2026-10-30_curve_indicators_hust`, `docs/CURVES.md` | Superseded: leaking stride; on the repaired pipeline see below |
-| Calibrated interval covers 97% / 96% and the radius 0.70 | `docs/BACKTEST.md`, `python/argus/battery/calibration.json` | Superseded until the backtest is re-run at a fixed stride; the radius shipped in `calibration.json` is marked accordingly |
-| The raw interval covered the truth 12% of the time | `docs/BACKTEST.md` | Not yet re-measured |
+| Calibrated interval covers 97% / 96% and the radius 0.70 | `docs/BACKTEST.md`, `python/argus/battery/calibration.json` | Re-measured at the fixed stride on 30 October 2026: radius 0.65, coverage 96% / 95%, but only 83% (CALB) and 73% (NASA) when that dataset is held out |
+| The raw interval covered the truth 12% of the time | `docs/BACKTEST.md` | Re-measured: 9% (straight line) |
 
 Arithmetic that does not depend on the stride (SOH formula, bootstrap trend, the simulator, the fleet triage rules) is unaffected, but it has no new validation either.
 

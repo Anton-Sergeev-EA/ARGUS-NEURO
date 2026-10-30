@@ -22,15 +22,14 @@ ARGUS-NEURO verbindet die Analyse der Batteriekapazität mit der Forschung zur D
 
 ### Forschungsergebnisse an 108 Laborzellen
 
-> **Hinweis (30. Oktober 2026).** Die Zahlen zu Kapazitätsverläufen in diesem Abschnitt entstanden mit einer Ausdünnung von ceil(N/600) Zyklen, die von der Lebensdauer der Zelle abhängt und den Modellen die Antwort verrät. Sie sind überholt und werden mit festem physikalischem Schritt neu gemessen; siehe [SAMPLING_AUDIT.md](docs/SAMPLING_AUDIT.md) (Englisch). Bis dahin weder die kalibrierte Abdeckung noch den Modellvergleich noch den Gewinn der Kurvenindikatoren zitieren.
+> **Hinweis (30. Oktober 2026).** Die frühere Fassung dieses Abschnitts nutzte einen Ausdünnungsschritt von ceil(N/600) Zyklen, der von der Lebensdauer der Zelle abhängt und die Antwort verrät. Der Intervall-Backtest unten wurde **mit festem physischem Schritt von 5 Zyklen neu gerechnet**. Die früheren Gewinne gelernter Modelle und der Kurvenindikatoren sind zurückgezogen; siehe [SAMPLING_AUDIT.md](docs/SAMPLING_AUDIT.md) und den Abschnitt zur Beweislage unten.
 
-Daten: NASA PCoE (4 Zellen), CALB (28 NCM-Zellen) und HUST (77 LFP-Zellen), 3 723 Prognosepunkte. Jede Prognose sieht nur ihre beobachtete Vergangenheit. Details und Reproduktionsbefehle: [BACKTEST.md](docs/BACKTEST.md) (Englisch).
+Daten: NASA PCoE (4 Zellen), CALB (28 NCM-Zellen) und HUST (77 LFP-Zellen), 3 713 Prognosepunkte. Jede Prognose sieht nur ihre beobachtete Vergangenheit. Details und Reproduktionsbefehle: [BACKTEST.md](docs/BACKTEST.md) (Englisch).
 
-- **Das einfache Intervall war zu selbstsicher.** Das Bootstrap-Intervall 5–95 % enthielt die wahre Restlebensdauer nur in **12 %** der Prognosen bei nominal 90 %.
-- **Das kalibrierte Intervall hält bei unbekannten Daten.** Ein Conformal-Radius mit gleichem Gewicht je Quelle deckt **97 %** bei ungesehenen Zellen und **96 %** ab, wenn ein ganzer Datensatz ausgelassen wird (CALB 90 %, HUST 100 %, **NASA 67 %**). Der Preis ist die Breite: das mediane Intervall beträgt etwa das 1,6-Fache der Restlebensdauer. Neue Chemie oder Protokolle können unterdeckt sein.
-- **Kurvenanpassungen halfen nicht,** deshalb bleibt der lineare Trend Standard.
-- **Gelernte Modelle halbieren den Fehler der Geraden** bei zwei Chemien (CALB 47 gegenüber 96 Zyklen, HUST 77 gegenüber 156). Sie werden nur als optionale „Zweitmeinung“ mit Gültigkeitsprüfung angeboten; trainierte Gewichte werden nie eingecheckt.
-- **Spannungskurven-Indikatoren senken den Fehler um 24 %** (68,6 → 52,4 Zyklen bei HUST, in 5 von 5 Aufteilungen besser), benötigen aber eine aufgezeichnete Ladekurve und sind daher noch nicht Teil des Berichts.
+- **Das einfache Intervall war zu selbstsicher.** Das Bootstrap-Intervall 5–95 % enthielt die tatsächliche Restlebensdauer nur in **9 %** der Prognosen, nominal sind 90 %.
+- **Das kalibrierte Intervall hält im Mittel, nicht bei jeder Quelle.** Ein Conformal-Radius von 0,65 mit gleichem Gewicht je Datenquelle deckt **96 %** der Prognosen bei unbekannten Zellen ab und **95 %**, wenn ein ganzer Datensatz ausgeschlossen wird, aber nur **83 %** bei CALB und **73 %** bei NASA (HUST 100 %). Das mediane Intervall ist etwa das 1,6-Fache der Restlebensdauer. Bei neuer Chemie oder neuem Protokoll kann die Abdeckung geringer sein.
+- **Bei festem Schritt schlagen Kurvenanpassungen jetzt die Gerade** (mittlerer Fehler 61 gegenüber 83 Zyklen). Standard bleibt die Gerade, bis die Wahl an einem vorab festgelegten Protokoll bestätigt ist.
+- **Die früheren Gewinne gelernter Modelle und der Kurvenindikatoren sind zurückgezogen.** In der korrigierten Pipeline ist das Ensemble mit Kurvenindikatoren auf den HUST-Entwicklungszellen 11–15 % genauer als die stärkste Nur-Kapazität-Referenz, bei 15 gesperrten Zellen ist der Unterschied jedoch statistisch nicht bestätigt (siehe Abschnitt zur Beweislage).
 - Das betrifft Laborzellen, keine Fahrzeugpacks. Pack-Berichte behalten das unkalibrierte Intervall und weisen darauf hin.
 - **Prüfung:** Die CI baut C++ mit Warnungen als Fehlern, führt `clang-tidy`, Python-Tests mit 70 % Mindestabdeckung und die README-Konsistenzprüfung aus. Lokal (30. Oktober 2026): 171 Python-Tests (150 bestanden und 21 übersprungen ohne native Erweiterung), 18 Oberflächentests, Abdeckung 70 %.
 
@@ -90,7 +89,7 @@ ARGUS-NEURO macht aus Messwerten einen Bericht, der sagt, was bekannt ist, was g
 
 ### Stand der Belege (30. Oktober 2026)
 
-- Ein Audit zeigte, dass die frühere Ausdünnungsschrittweite von der Lebensdauer der Zelle abhing und den Modellen die Antwort verriet. Alle früheren Genauigkeitszahlen auf Kapazitätshistorien sind zurückgezogen ([Stichproben-Audit](docs/SAMPLING_AUDIT.md)); die mitgelieferte Intervallkalibrierung ist als neu zu berechnen markiert.
+- Ein Audit zeigte, dass der frühere Ausdünnungsschritt von der Lebensdauer der Zelle abhing und den Modellen die Antwort verriet. Alle früheren Genauigkeitszahlen zu Kapazitätsverläufen wurden zurückgezogen ([Stichproben-Audit](docs/SAMPLING_AUDIT.md)); die mitgelieferte Intervallkalibrierung wurde am 30. Oktober 2026 mit festem Schritt neu berechnet (Radius 0,65; Abdeckung 96 % und 95 %, aber 83 % für CALB und 73 % für NASA beim Ausschluss).
 - Bei fester Schrittweite auf 77 HUST-LFP-Zellen liegt die stärkste reine Kapazitäts-Baseline (ein Gauß-Prozess) im Mittel um etwa 92–113 Zyklen daneben. Ein Ensemble mit Ladekurven-Indikatoren ist 11–15 % besser, doch auf 15 gesperrten Zellen ist der Unterschied statistisch nicht gesichert ([Experiment](experiments/2026-10-30_method_hust/notes.md)).
 - Die Prognose zu verweigern, wenn zwei Modelle abweichen, senkte den Fehler nicht; das Programm behauptet es daher nicht. Kein Anwendungsfall ist durch Felddaten gestützt.
 
@@ -361,7 +360,7 @@ Dies sind datierte Ergebnisse, keine zugesagten Ergebnisse für andere Umgebunge
 
 ## Aktuelle Grenzen und nächste Schritte
 
-Für Batterien: Kein Ergebnis ist an Fahrzeugpacks oder im Feld validiert; die Kalibrierung überträgt sich ungleichmäßig zwischen Quellen (NASA 67 %); das Intervall ist breit; Spannungskurven-Indikatoren brauchen aufgezeichnete Ladekurven und werden noch nicht in Berichten genutzt; die gelernte Zweitmeinung deckt nur Chemie und Protokoll des Trainings ab. Nächster Schritt: mehr Zellen mit Spannungs- und Temperaturaufzeichnung sowie Daten auf Pack-Ebene.
+Für Batterien: Kein Ergebnis ist an Fahrzeugpacks oder im Feld validiert; die Kalibrierung überträgt sich ungleichmäßig zwischen Quellen (NASA 73 %, CALB 83 %); das Intervall ist breit; Spannungskurven-Indikatoren brauchen aufgezeichnete Ladekurven und werden noch nicht in Berichten genutzt; die gelernte Zweitmeinung deckt nur Chemie und Protokoll des Trainings ab. Nächster Schritt: mehr Zellen mit Spannungs- und Temperaturaufzeichnung sowie Daten auf Pack-Ebene.
 
 Adapter für echte Telemetrie, dauerhafte Speicherung des Telemetrieverlaufs von Anlagen, Authentifizierung, Mandantentrennung und eine C++-Inferenzbrücke für ONNX Runtime bleiben künftige Arbeit. Prioritäten für die Feldvalidierung sind zeitgestempelte Erfassung, ingenieurmäßig gekennzeichnete Fehler, unabhängige physische Anlagen für Tests, akzeptable Fehlalarmraten und die Messung der Vorwarnzeit. Vor dem industriellen Betrieb sind außerdem Drift-Überwachung und Langzeittests zu Netzwerk- und Geräteausfällen erforderlich.
 

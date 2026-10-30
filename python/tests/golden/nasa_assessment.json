@@ -39,8 +39,8 @@
   "capacity_state": "above_service_threshold",
   "rul": {
    "equivalent_cycles": [
-    7.6,
-    43.0
+    8.9,
+    41.7
    ],
    "status": "conditional_estimate"
   },
@@ -92,8 +92,8 @@
   "capacity_state": "above_service_threshold",
   "rul": {
    "equivalent_cycles": [
-    2.2,
-    12.2
+    2.5,
+    11.9
    ],
    "status": "conditional_estimate"
   },
@@ -113,8 +113,8 @@
   "capacity_state": "above_service_threshold",
   "rul": {
    "equivalent_cycles": [
-    9.5,
-    54.1
+    11.2,
+    52.4
    ],
    "status": "conditional_estimate"
   },
@@ -152,8 +152,8 @@
   "capacity_state": "above_service_threshold",
   "rul": {
    "equivalent_cycles": [
-    11.5,
-    65.4
+    13.6,
+    63.3
    ],
    "status": "conditional_estimate"
   },
@@ -187,8 +187,8 @@
   "capacity_state": "above_service_threshold",
   "rul": {
    "equivalent_cycles": [
-    11.3,
-    64.2
+    13.3,
+    62.2
    ],
    "status": "conditional_estimate"
   },
@@ -208,8 +208,8 @@
   "capacity_state": "above_service_threshold",
   "rul": {
    "equivalent_cycles": [
-    2.0,
-    11.2
+    2.3,
+    10.9
    ],
    "status": "conditional_estimate"
   },

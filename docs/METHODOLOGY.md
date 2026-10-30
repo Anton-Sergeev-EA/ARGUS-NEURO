@@ -18,7 +18,7 @@ Every number in a battery report can be traced to a formula below, a parameter i
 
 ## 3. Calibrated interval for laboratory cells
 
-The raw bootstrap interval measures scatter around a line; real cells also change their rate of fade. In the backtest it contained the true remaining life in only 12% of forecasts. For `measurement_scope=cell` the interval is therefore widened: the midpoint `m` is kept and the half-width is `r × max(m, 5 × median spacing)`, with `r = 0.70`, a finite-sample conformal quantile of the relative midpoint error in which each of the three source datasets (NASA, CALB, HUST) has equal weight. Leave-one-cell-out coverage is 97%, leave-one-dataset-out coverage 96% (CALB 90%, HUST 100%, NASA 67%). See [BACKTEST.md](BACKTEST.md). Pack reports are not widened because no pack data support a calibration, and the report says which interval kind it uses (`interval_kind`).
+The raw bootstrap interval measures scatter around a line; real cells also change their rate of fade. In the backtest (fixed stride) it contained the true remaining life in only 9% of forecasts. For `measurement_scope=cell` the interval is therefore widened: the midpoint `m` is kept and the half-width is `r × max(m, 5 × median spacing)`, with `r = 0.65` (0.647), a finite-sample conformal quantile of the relative midpoint error in which each of the three source datasets (NASA, CALB, HUST) has equal weight. Leave-one-cell-out coverage is 96%, leave-one-dataset-out coverage 95% (CALB 83%, HUST 100%, NASA 73%). See [BACKTEST.md](BACKTEST.md). Pack reports are not widened because no pack data support a calibration, and the report says which interval kind it uses (`interval_kind`).
 
 ## 4. Voltage-curve indicators
 

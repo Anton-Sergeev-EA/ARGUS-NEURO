@@ -13,7 +13,7 @@
 - Explicit `warming_up`, `ready`, `invalid_data`, and `degraded` states instead of silently inventing predictions.
 - FastAPI/WebSocket fleet monitor with bounded slow-client behaviour and transport health separated from model availability.
 - CI verifies Python lint/formatting, C++ Release tests, native and NumPy execution paths, dashboard contracts, retraining, and ONNX parity.
-- Battery remaining-life intervals were backtested on **108 laboratory cells** (NASA, CALB, HUST) and conformally calibrated, **but those figures came from a length-dependent thinning stride and are superseded** ([audit](docs/SAMPLING_AUDIT.md)); the backtest is being re-run at a fixed stride.
+- Battery remaining-life intervals were backtested on **108 laboratory cells** (NASA, CALB, HUST) and conformally calibrated; the backtest was **re-run at a fixed stride on 30 October 2026** after an audit withdrew the earlier figures ([audit](docs/SAMPLING_AUDIT.md)). Coverage is 96% on unseen cells but only 83% (CALB) and 73% (NASA) when that dataset is held out.
 - **C++20 voltage-curve indicators** (dQ/dV peak, voltage rise time, step resistance) with NumPy parity. The earlier 24% gain is superseded; on the repaired pipeline a first, unregistered check shows a smaller and less certain gain (see the audit).
 - An optional learned **second opinion** that refuses requests outside the chemistry, scope, threshold and sampling it was trained on.
 - Reliability documentation states what is computationally tested, what remains heuristic, and what would be required before field deployment.
@@ -50,15 +50,14 @@ ARGUS-NEURO combines battery-capacity analysis with power-electronics diagnostic
 
 ### Research results on 108 laboratory cells
 
-> **Notice (30 October 2026).** The capacity-history numbers in this section were obtained with a thinning stride of ceil(N/600) cycles that depends on how long a cell lives and leaks the answer into the models. They are superseded and are being re-measured at a fixed physical stride; see [SAMPLING_AUDIT.md](docs/SAMPLING_AUDIT.md). Do not quote the calibrated coverage, the learned-model comparison or the curve-indicator gain until then.
+> **Notice (30 October 2026).** The earlier version of this section used a thinning stride of ceil(N/600) cycles that depends on how long a cell lives and leaks the answer. The interval backtest below was **re-run at a fixed physical stride of 5 cycles**. The earlier gains of learned models and curve indicators are withdrawn; see [SAMPLING_AUDIT.md](docs/SAMPLING_AUDIT.md) and the evidence section below.
 
-Data: NASA PCoE (4 cells), CALB (28 NCM cells) and HUST (77 LFP cells), 3,723 forecast points. Every forecast sees only its observed past. Details and reproduction commands: [BACKTEST.md](docs/BACKTEST.md).
+Data: NASA PCoE (4 cells), CALB (28 NCM cells) and HUST (77 LFP cells), 3,713 forecast points. Every forecast sees only its observed past. Details and reproduction commands: [BACKTEST.md](docs/BACKTEST.md).
 
-- **The plain interval was over-confident.** The bootstrap 5–95% interval covered the true remaining life in only **12%** of forecasts against a nominal 90%.
-- **The calibrated interval holds on unseen data.** A conformal radius with equal weight per source dataset covers **97%** of forecasts on cells it did not see and **96%** when a whole dataset is held out (CALB 90%, HUST 100%, **NASA 67%**). The price is width: the median interval is about 1.6 times the remaining life. A new chemistry or protocol may be under-covered.
-- **Curved fits did not help,** so the straight-line trend remains the default.
-- **Learned models halve the error of a straight line** on two chemistries (CALB 47 vs 96 cycles, HUST 77 vs 156). They are offered only as an optional second opinion with domain checks; trained weights are never committed.
-- **Voltage-curve indicators lower the error by 24%** (68.6 → 52.4 cycles on HUST, better in 5 of 5 splits) but need a recorded charge curve, so they are not yet part of the report.
+- **The plain interval was over-confident.** The bootstrap 5–95% interval covered the true remaining life in only **9%** of forecasts against a nominal 90%.
+- **The calibrated interval holds on average, not on every source.** A conformal radius of 0.65 with equal weight per source dataset covers **96%** of forecasts on cells it did not see and **95%** when a whole dataset is held out, but only **83%** for CALB and **73%** for NASA (HUST 100%). The median interval is about 1.6 times the remaining life. A new chemistry or protocol may be under-covered.
+- **Curved fits now beat the straight line** at the fixed stride (mean error 61 vs 83 cycles). The default stays the straight line until the choice is confirmed on a protocol fixed in advance.
+- **The earlier gains of learned models and curve indicators are withdrawn.** On the repaired pipeline the ensemble with curve indicators is 11–15% more accurate than the strongest capacity-only baseline on HUST development cells, but on 15 locked cells the difference is not statistically confirmed (see the evidence section).
 - All of this concerns laboratory cells, not EV packs. Pack reports keep the uncalibrated interval and say so.
 
 ## Use cases
@@ -117,7 +116,7 @@ ARGUS-NEURO turns measurements into a report that says what is known, what is es
 
 ### Where the evidence stands (30 October 2026)
 
-- An audit found that the earlier thinning stride depended on how long a cell lived and hinted the answer to the models. All earlier accuracy figures on capacity histories were withdrawn ([sampling audit](docs/SAMPLING_AUDIT.md)); the interval calibration shipped with the program is marked as awaiting a re-run.
+- An audit found that the earlier thinning stride depended on how long a cell lived and hinted the answer to the models. All earlier accuracy figures on capacity histories were withdrawn ([sampling audit](docs/SAMPLING_AUDIT.md)); the interval calibration shipped with the program was recomputed at the fixed stride on 30 October 2026 (radius 0.65; coverage 96% and 95%, but 83% for CALB and 73% for NASA when held out).
 - At a fixed stride on 77 HUST LFP cells the strongest capacity-only baseline (a Gaussian process) is off by about 92–113 cycles on average. An ensemble with charge-curve indicators is 11–15 % better, but on 15 locked cells the difference is not statistically established ([experiment](experiments/2026-10-30_method_hust/notes.md)).
 - Refusing to forecast when two models disagree did not reduce the error, so the program does not claim that. No use case is backed by field data.
 
@@ -402,7 +401,7 @@ These are dated results, not promised outcomes for other environments or real eq
 
 ## Current boundaries and next steps
 
-For batteries: no result here is validated on EV packs or in the field; calibration transfers unevenly between sources (NASA 67%); the interval is wide; voltage-curve indicators need recorded charge curves and are not yet used by reports; the learned second opinion covers only the chemistry and protocol it was trained on. More cells with voltage and temperature records, and pack-level data, are the next step.
+For batteries: no result here is validated on EV packs or in the field; calibration transfers unevenly between sources (NASA 73%, CALB 83%); the interval is wide; voltage-curve indicators need recorded charge curves and are not yet used by reports; the learned second opinion covers only the chemistry and protocol it was trained on. More cells with voltage and temperature records, and pack-level data, are the next step.
 
 Real telemetry adapters, durable equipment telemetry history, authentication, tenant isolation, and a C++ ONNX Runtime inference bridge remain future work. Priorities for field validation are timestamped acquisition, engineering-labelled faults, independent physical assets for testing, acceptable false-alarm rates, and warning-time measurements. Drift monitoring and long-duration network/device failure tests are also needed before industrial operation.
 

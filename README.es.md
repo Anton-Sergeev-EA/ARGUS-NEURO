@@ -22,15 +22,14 @@ ARGUS-NEURO combina el análisis de capacidad de baterías con la investigación
 
 ### Resultados de investigación con 108 celdas de laboratorio
 
-> **Aviso (30 de octubre de 2026).** Las cifras de historiales de capacidad de esta sección se obtuvieron con un paso de ceil(N/600) ciclos que depende de cuánto vive la celda y filtra la respuesta a los modelos. Quedan anuladas y se vuelven a medir con un paso físico fijo; véase [SAMPLING_AUDIT.md](docs/SAMPLING_AUDIT.md) (inglés). No cite la cobertura calibrada, la comparación de modelos ni la ganancia de los indicadores de curva hasta entonces.
+> **Aviso (30 de octubre de 2026).** La versión anterior de esta sección usaba un paso de submuestreo de ceil(N/600) ciclos que depende de lo que dura la celda y filtra la respuesta. El backtest de intervalos de abajo se **repitió con un paso físico fijo de 5 ciclos**. Las ganancias anteriores de los modelos aprendidos y de los indicadores de curva se retiran; véase [SAMPLING_AUDIT.md](docs/SAMPLING_AUDIT.md) y la sección de evidencia más abajo.
 
-Datos: NASA PCoE (4 celdas), CALB (28 celdas NCM) y HUST (77 celdas LFP), 3 723 puntos de predicción. Cada predicción solo ve su pasado observado. Detalles y comandos de reproducción: [BACKTEST.md](docs/BACKTEST.md) (inglés).
+Datos: NASA PCoE (4 celdas), CALB (28 celdas NCM) y HUST (77 celdas LFP), 3 713 puntos de predicción. Cada predicción solo ve su pasado observado. Detalles y comandos de reproducción: [BACKTEST.md](docs/BACKTEST.md) (inglés).
 
-- **El intervalo simple era demasiado optimista.** El intervalo bootstrap 5–95 % cubría la vida restante real solo en el **12 %** de las predicciones frente a un 90 % nominal.
-- **El intervalo calibrado se sostiene con datos nuevos.** Un radio conformal con el mismo peso por fuente cubre el **97 %** en celdas no vistas y el **96 %** al excluir un conjunto de datos completo (CALB 90 %, HUST 100 %, **NASA 67 %**). El precio es la anchura: el intervalo mediano es unas 1,6 veces la vida restante. Una química o un protocolo nuevos pueden quedar infracubiertos.
-- **Las curvas no ayudaron,** por lo que la tendencia lineal sigue por defecto.
-- **Los modelos aprendidos reducen a la mitad el error de la recta** en dos químicas (CALB 47 frente a 96 ciclos, HUST 77 frente a 156). Solo se ofrecen como «segunda opinión» opcional con comprobación de dominio; los pesos entrenados nunca se suben al repositorio.
-- **Los indicadores de la curva de tensión reducen el error un 24 %** (68,6 → 52,4 ciclos en HUST, mejor en 5 de 5 particiones), pero requieren una curva de carga registrada, por lo que aún no forman parte del informe.
+- **El intervalo simple era demasiado optimista.** El intervalo bootstrap 5–95 % cubrió la vida restante real solo en el **9 %** de las predicciones frente a un 90 % nominal.
+- **El intervalo calibrado se sostiene de media, no en cada fuente.** Un radio conformal de 0,65 con el mismo peso por conjunto de datos cubre el **96 %** de las predicciones en celdas no vistas y el **95 %** al excluir un conjunto entero, pero solo el **83 %** en CALB y el **73 %** en NASA (HUST 100 %). El intervalo mediano es unas 1,6 veces la vida restante. Una química o un protocolo nuevos pueden quedar infracubiertos.
+- **Con el paso fijo, las curvas ahora superan a la recta** (error medio 61 frente a 83 ciclos). El valor por defecto sigue siendo la recta hasta confirmar la elección en un protocolo fijado de antemano.
+- **Las ganancias anteriores de los modelos aprendidos y de los indicadores de curva se retiran.** En el flujo corregido, el conjunto con indicadores de curva es entre un 11 y un 15 % más preciso que la mejor referencia solo de capacidad en las celdas de desarrollo de HUST, pero en 15 celdas reservadas la diferencia no está confirmada estadísticamente (véase la sección de evidencia).
 - Todo esto se refiere a celdas de laboratorio, no a paquetes de vehículos. Los informes de paquete mantienen el intervalo sin calibrar y lo indican.
 - **Verificación:** la CI compila C++ con advertencias como errores, ejecuta `clang-tidy`, las pruebas Python con un mínimo de cobertura del 70 % y la coherencia de los README. En local (30 de octubre de 2026): 171 pruebas Python (150 superadas y 21 omitidas sin la extensión nativa), 18 pruebas de interfaz, cobertura 70 %.
 
@@ -90,7 +89,7 @@ ARGUS-NEURO convierte mediciones en un informe que dice qué se sabe, qué se es
 
 ### Dónde están las pruebas (30 de octubre de 2026)
 
-- Una auditoría encontró que el paso de submuestreo anterior dependía de cuánto vivía la celda y daba pistas de la respuesta a los modelos. Se retiraron todas las cifras de precisión anteriores sobre historiales de capacidad ([auditoría de muestreo](docs/SAMPLING_AUDIT.md)); la calibración de intervalos incluida está marcada como pendiente de recálculo.
+- Una auditoría encontró que el paso de submuestreo anterior dependía de lo que duraba la celda y daba pistas a los modelos. Todas las cifras de precisión anteriores sobre historiales de capacidad se retiraron ([auditoría de muestreo](docs/SAMPLING_AUDIT.md)); la calibración de intervalos incluida en el programa se recalculó con paso fijo el 30 de octubre de 2026 (radio 0,65; cobertura 96 % y 95 %, pero 83 % para CALB y 73 % para NASA al excluirlos).
 - Con paso fijo en 77 celdas LFP de HUST, la mejor línea base solo con capacidad (un proceso gaussiano) se equivoca de media en unos 92–113 ciclos. Un conjunto con indicadores de la curva de carga mejora un 11–15 %, pero en 15 celdas reservadas la diferencia no está establecida estadísticamente ([experimento](experiments/2026-10-30_method_hust/notes.md)).
 - Negarse a pronosticar cuando dos modelos discrepan no redujo el error, así que el programa no lo afirma. Ningún caso de uso cuenta con datos de campo.
 
@@ -361,7 +360,7 @@ Son resultados fechados, no resultados prometidos para otros entornos ni para eq
 
 ## Límites actuales y próximos pasos
 
-Para baterías: ningún resultado está validado en paquetes de vehículos ni en campo; la calibración se transfiere de forma desigual entre fuentes (NASA 67 %); el intervalo es ancho; los indicadores de la curva de tensión necesitan curvas de carga registradas y aún no se usan en los informes; la segunda opinión aprendida solo cubre la química y el protocolo con los que se entrenó. El siguiente paso son más celdas con registros de tensión y temperatura y datos a nivel de paquete.
+Para baterías: ningún resultado está validado en paquetes de vehículos ni en campo; la calibración se transfiere de forma desigual entre fuentes (NASA 73 %, CALB 83 %); el intervalo es ancho; los indicadores de la curva de tensión necesitan curvas de carga registradas y aún no se usan en los informes; la segunda opinión aprendida solo cubre la química y el protocolo con los que se entrenó. El siguiente paso son más celdas con registros de tensión y temperatura y datos a nivel de paquete.
 
 Los adaptadores de telemetría real, el historial persistente de telemetría de equipos, la autenticación, el aislamiento entre inquilinos y un puente de inferencia ONNX Runtime en C++ siguen siendo trabajo futuro. Las prioridades para la validación en campo son la adquisición con marcas de tiempo, averías etiquetadas por ingeniería, activos físicos independientes para las pruebas, tasas de falsas alarmas aceptables y la medición del tiempo de anticipación. Antes de la operación industrial también se necesitan monitorización de la deriva y pruebas de larga duración de fallos de red y de dispositivos.
 

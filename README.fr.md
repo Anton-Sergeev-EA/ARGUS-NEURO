@@ -22,15 +22,14 @@ ARGUS-NEURO associe l’analyse de capacité des batteries à la recherche sur l
 
 ### Résultats de recherche sur 108 cellules de laboratoire
 
-> **Avis (30 octobre 2026).** Les chiffres d’historiques de capacité de cette section ont été obtenus avec un pas de ceil(N/600) cycles qui dépend de la durée de vie de la cellule et laisse fuiter la réponse vers les modèles. Ils sont caducs et sont re-mesurés à pas physique fixe ; voir [SAMPLING_AUDIT.md](docs/SAMPLING_AUDIT.md) (anglais). Ne citez ni la couverture calibrée, ni la comparaison des modèles, ni le gain des indicateurs de courbe d’ici là.
+> **Avis (30 octobre 2026).** La version précédente de cette section utilisait un pas d’échantillonnage de ceil(N/600) cycles, qui dépend de la durée de vie de la cellule et dévoile la réponse. Le backtest des intervalles ci-dessous a été **refait avec un pas physique fixe de 5 cycles**. Les gains antérieurs des modèles appris et des indicateurs de courbe sont retirés ; voir [SAMPLING_AUDIT.md](docs/SAMPLING_AUDIT.md) et la section sur les preuves plus bas.
 
-Données : NASA PCoE (4 cellules), CALB (28 cellules NCM) et HUST (77 cellules LFP), 3 723 points de prévision. Chaque prévision ne voit que son passé observé. Détails et commandes de reproduction : [BACKTEST.md](docs/BACKTEST.md) (anglais).
+Données : NASA PCoE (4 cellules), CALB (28 cellules NCM) et HUST (77 cellules LFP), 3 713 points de prévision. Chaque prévision ne voit que son passé observé. Détails et commandes de reproduction : [BACKTEST.md](docs/BACKTEST.md) (anglais).
 
-- **L’intervalle simple était trop optimiste.** L’intervalle bootstrap 5–95 % ne contenait la durée de vie restante réelle que dans **12 %** des prévisions, pour 90 % nominal.
-- **L’intervalle calibré tient sur des données inconnues.** Un rayon conforme à poids égal par source couvre **97 %** sur des cellules jamais vues et **96 %** quand un jeu de données entier est exclu (CALB 90 %, HUST 100 %, **NASA 67 %**). Le prix est la largeur : l’intervalle médian vaut environ 1,6 fois la durée restante. Une nouvelle chimie ou un nouveau protocole peut être sous-couvert.
-- **Les courbes n’ont pas aidé** ; la tendance linéaire reste donc par défaut.
-- **Les modèles appris divisent par deux l’erreur d’une droite** sur deux chimies (CALB 47 contre 96 cycles, HUST 77 contre 156). Ils ne sont proposés que comme « second avis » facultatif avec contrôle du domaine ; les poids entraînés ne sont jamais versionnés.
-- **Les indicateurs de la courbe de tension réduisent l’erreur de 24 %** (68,6 → 52,4 cycles sur HUST, meilleur dans 5 partitions sur 5), mais exigent une courbe de charge enregistrée ; ils ne font donc pas encore partie du rapport.
+- **L’intervalle simple était trop optimiste.** L’intervalle bootstrap 5–95 % n’a couvert la durée de vie restante réelle que dans **9 %** des prévisions, contre 90 % annoncés.
+- **L’intervalle calibré tient en moyenne, pas sur chaque source.** Un rayon conforme de 0,65 à poids égal par jeu de données couvre **96 %** des prévisions sur des cellules inconnues et **95 %** quand un jeu entier est exclu, mais seulement **83 %** pour CALB et **73 %** pour NASA (HUST 100 %). L’intervalle médian vaut environ 1,6 fois la durée restante. Une nouvelle chimie ou un nouveau protocole peut être sous-couvert.
+- **À pas fixe, les courbes battent désormais la droite** (erreur moyenne 61 contre 83 cycles). La droite reste le choix par défaut tant que le choix n’est pas confirmé sur un protocole fixé à l’avance.
+- **Les gains antérieurs des modèles appris et des indicateurs de courbe sont retirés.** Sur le pipeline corrigé, l’ensemble avec indicateurs de courbe est de 11 à 15 % plus précis que la meilleure référence fondée sur la seule capacité sur les cellules de développement HUST, mais sur 15 cellules verrouillées la différence n’est pas confirmée statistiquement (voir la section sur les preuves).
 - Tout cela concerne des cellules de laboratoire, pas des packs de véhicules. Les rapports de pack gardent l’intervalle non calibré et le signalent.
 - **Vérification :** la CI compile le C++ avec les avertissements en erreurs, lance `clang-tidy`, les tests Python avec un plancher de couverture de 70 % et la cohérence des README. En local (30 octobre 2026) : 171 tests Python (150 réussis et 21 ignorés sans l’extension native), 18 tests d’interface, couverture 70 %.
 
@@ -90,7 +89,7 @@ ARGUS-NEURO transforme des mesures en un rapport qui dit ce qui est connu, ce qu
 
 ### Où en sont les preuves (30 octobre 2026)
 
-- Un audit a montré que l’ancien pas d’échantillonnage dépendait de la durée de vie de la cellule et soufflait la réponse aux modèles. Tous les chiffres de précision antérieurs sur les historiques de capacité sont retirés ([audit d’échantillonnage](docs/SAMPLING_AUDIT.md)) ; la calibration des intervalles livrée est marquée en attente de recalcul.
+- Un audit a montré que l’ancien pas d’échantillonnage dépendait de la durée de vie de la cellule et soufflait la réponse aux modèles. Tous les chiffres de précision antérieurs sur les historiques de capacité sont retirés ([audit d’échantillonnage](docs/SAMPLING_AUDIT.md)) ; la calibration des intervalles livrée avec le programme a été recalculée à pas fixe le 30 octobre 2026 (rayon 0,65 ; couverture 96 % et 95 %, mais 83 % pour CALB et 73 % pour NASA en cas d’exclusion).
 - À pas fixe sur 77 cellules LFP de HUST, la meilleure référence fondée sur la seule capacité (un processus gaussien) se trompe en moyenne d’environ 92 à 113 cycles. Un ensemble avec des indicateurs de la courbe de charge fait 11 à 15 % mieux, mais sur 15 cellules réservées la différence n’est pas établie statistiquement ([expérience](experiments/2026-10-30_method_hust/notes.md)).
 - Refuser de prévoir quand deux modèles divergent n’a pas réduit l’erreur ; le programme ne l’affirme donc pas. Aucun cas d’usage n’est appuyé par des données de terrain.
 
@@ -361,7 +360,7 @@ Ce sont des résultats datés, pas des résultats promis pour d’autres environ
 
 ## Limites actuelles et prochaines étapes
 
-Pour les batteries : aucun résultat n’est validé sur des packs de véhicules ni sur le terrain ; la calibration se transfère de façon inégale entre sources (NASA 67 %) ; l’intervalle est large ; les indicateurs de la courbe de tension exigent des courbes de charge enregistrées et ne sont pas encore utilisés par les rapports ; le second avis appris ne couvre que la chimie et le protocole d’entraînement. L’étape suivante : plus de cellules avec enregistrements de tension et de température, et des données au niveau du pack.
+Pour les batteries : aucun résultat n’est validé sur des packs de véhicules ni sur le terrain ; la calibration se transfère de façon inégale entre sources (NASA 73 %, CALB 83 %) ; l’intervalle est large ; les indicateurs de la courbe de tension exigent des courbes de charge enregistrées et ne sont pas encore utilisés par les rapports ; le second avis appris ne couvre que la chimie et le protocole d’entraînement. L’étape suivante : plus de cellules avec enregistrements de tension et de température, et des données au niveau du pack.
 
 Les adaptateurs de télémétrie réelle, l’historique persistant de télémétrie des équipements, l’authentification, l’isolation entre locataires et un pont d’inférence ONNX Runtime en C++ restent des travaux à venir. Les priorités de la validation sur le terrain sont l’acquisition horodatée, des pannes étiquetées par l’ingénierie, des actifs physiques indépendants pour les tests, des taux de fausses alarmes acceptables et la mesure du délai d’alerte. Une surveillance de la dérive et des essais de longue durée sur les défaillances réseau et matérielles sont également nécessaires avant une exploitation industrielle.
 

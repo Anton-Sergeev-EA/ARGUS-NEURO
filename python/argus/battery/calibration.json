@@ -2,20 +2,20 @@
   "scope": "cell",
   "method": "balanced_split_conformal_relative_midpoint_error",
   "nominal_coverage": 0.9,
-  "relative_radius": 0.7,
+  "relative_radius": 0.647,
   "unit_spacings": 5,
   "cells": 108,
-  "forecast_points": 1151,
-  "leave_one_cell_out_coverage": 0.97,
-  "raw_interval_coverage": 0.123,
+  "forecast_points": 1413,
+  "leave_one_cell_out_coverage": 0.962,
+  "raw_interval_coverage": 0.092,
   "evidence": "docs/assets/backtest.json",
   "note": "NASA PCoE, CALB and HUST laboratory cells; each source dataset has equal weight. Not validated for EV packs.",
-  "leave_one_dataset_out_coverage": 0.958,
+  "leave_one_dataset_out_coverage": 0.951,
   "coverage_by_dataset_left_out": {
-    "CALB": 0.895,
+    "CALB": 0.833,
     "HUST": 1.0,
-    "NASA": 0.673
+    "NASA": 0.727
   },
-  "sampling": "adaptive_stride_ceil_N_over_600",
-  "status": "obtained_with_length_dependent_stride_pending_rerun_at_fixed_stride"
+  "sampling": "fixed_physical_stride_5",
+  "status": "recomputed_at_fixed_stride_2026-10-30"
 }
