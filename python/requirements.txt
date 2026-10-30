@@ -1,5 +1,5 @@
 # Tested on CPython 3.12 / Linux. Retrain bundles when changing versions.
-numpy==2.5.3
+numpy==2.5.4
 scipy==1.18.1
 pandas==3.0.5
 scikit-learn==1.9.1
