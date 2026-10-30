@@ -1,0 +1,23 @@
+{
+  "declared_at": "2026-10-30, before any model was fitted on the fixed-stride cache",
+  "hypothesis": "Charge-curve indicators reduce remaining-life error versus the best simple capacity-only baseline on unseen HUST cells when sampling does not depend on the future length of the history.",
+  "data": "HUST 77 LFP/graphite cells, raw pickles (archive SHA256 pinned in hust.py), physical cycle IDs read from the raw keys",
+  "sampling": {"fixed_stride_cycles": 5, "window_points": 8, "threshold_pct": 90.0, "reference": "median of first three discharges"},
+  "controls": {
+    "A": "adaptive stride ceil(N/600) with capacity + cycle_offset (existing pipeline)",
+    "A_no_offset": "adaptive stride, capacity only, no cycle_offset channel",
+    "B_span_only": "adaptive stride, only the window span 7*stride (no capacity, no indicators)"
+  },
+  "split": {"scheme": "5-fold grouped by physical cell, each cell tested exactly once", "fold_seed": 41, "per_fold": "calibration 12 cells, validation 12 cells, remaining cells train"},
+  "models": ["median", "linear_window", "ridge", "gb_capacity", "gpr_capacity (800 sampled train windows)", "gru_capacity (40 epochs max, early stop on validation)", "gb_indicators (proposed features)"],
+  "baseline_choice": "best of {linear_window, ridge, gb_capacity} by mean validation macro-MAE over folds, chosen before looking at test errors",
+  "metrics": ["MAE", "RMSE", "macro and per-cell", "paired cell bootstrap 95% CI (2000 resamples, seed 7)", "coverage, width, interval score at 90%", "risk-coverage at equal accepted share", "latency, size"],
+  "go_no_go_provisional": {
+    "note": "Practical thresholds are unknown and need agreement with a user; these values are declared now and are not tuned to results.",
+    "G1_channel": "control B macro-MAE / median macro-MAE < 0.8 means the stride channel alone carries material information",
+    "G2_primary": "lower bound of the 95% paired-bootstrap interval of (baseline MAE - gb_indicators MAE) on the fixed-stride arm is > 0",
+    "G3_coverage": "per-cell mean coverage of the relative split-conformal interval for gb_indicators >= 0.85",
+    "G4_abstention": "weighted MAE at 60% accepted windows <= 0.8 x MAE at 100% accepted, ranked by indicator/capacity disagreement"
+  },
+  "limits": "Retrospective laboratory check on one dataset, one charge protocol, discharge protocol groups unmapped; windows within a cell are correlated; seeds are not independent samples; not field validation."
+}

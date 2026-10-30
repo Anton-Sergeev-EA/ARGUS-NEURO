@@ -1,0 +1,776 @@
+{
+ "models": {
+  "fixed_cap/median": {
+   "macro_mae_cycles": 307.34,
+   "macro_rmse_cycles": 359.25,
+   "pooled_mae_cycles": 315.28,
+   "windows": 18255,
+   "cells": 77,
+   "mean_validation_macro_mae": 309.89
+  },
+  "fixed_cap/linear_window": {
+   "macro_mae_cycles": 155.84,
+   "macro_rmse_cycles": 201.54,
+   "pooled_mae_cycles": 153.08,
+   "windows": 18255,
+   "cells": 77,
+   "mean_validation_macro_mae": 155.78
+  },
+  "fixed_cap/ridge": {
+   "macro_mae_cycles": 116.43,
+   "macro_rmse_cycles": 137.17,
+   "pooled_mae_cycles": 117.28,
+   "windows": 18255,
+   "cells": 77,
+   "mean_validation_macro_mae": 115.22
+  },
+  "fixed_cap/gb": {
+   "macro_mae_cycles": 106.05,
+   "macro_rmse_cycles": 126.19,
+   "pooled_mae_cycles": 107.28,
+   "windows": 18255,
+   "cells": 77,
+   "mean_validation_macro_mae": 105.31
+  },
+  "fixed_cap/gpr": {
+   "macro_mae_cycles": 89.22,
+   "macro_rmse_cycles": 118.34,
+   "pooled_mae_cycles": 90.1,
+   "windows": 18255,
+   "cells": 77,
+   "mean_validation_macro_mae": 87.71
+  },
+  "fixed_cap/gru": {
+   "macro_mae_cycles": 118.92,
+   "macro_rmse_cycles": 135.89,
+   "pooled_mae_cycles": 119.47,
+   "windows": 18255,
+   "cells": 77,
+   "mean_validation_macro_mae": 116.29
+  },
+  "fixed_ind/gb": {
+   "macro_mae_cycles": 90.46,
+   "macro_rmse_cycles": 109.13,
+   "pooled_mae_cycles": 90.33,
+   "windows": 18255,
+   "cells": 77,
+   "mean_validation_macro_mae": 86.96
+  },
+  "fixed_ind_missing/gb": {
+   "macro_mae_cycles": 101.42,
+   "macro_rmse_cycles": 123.9,
+   "pooled_mae_cycles": 102.25,
+   "windows": 18255,
+   "cells": 77,
+   "mean_validation_macro_mae": null
+  },
+  "adaptive_cap_offset/median": {
+   "macro_mae_cycles": 308.94,
+   "macro_rmse_cycles": 361.22,
+   "pooled_mae_cycles": 308.8,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 311.68
+  },
+  "adaptive_cap_offset/linear_window": {
+   "macro_mae_cycles": 154.88,
+   "macro_rmse_cycles": 201.71,
+   "pooled_mae_cycles": 154.78,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 154.88
+  },
+  "adaptive_cap_offset/ridge": {
+   "macro_mae_cycles": 83.06,
+   "macro_rmse_cycles": 98.37,
+   "pooled_mae_cycles": 81.89,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 80.23
+  },
+  "adaptive_cap_offset/gb": {
+   "macro_mae_cycles": 72.69,
+   "macro_rmse_cycles": 86.39,
+   "pooled_mae_cycles": 71.93,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 64.78
+  },
+  "adaptive_cap_offset/gpr": {
+   "macro_mae_cycles": 67.2,
+   "macro_rmse_cycles": 82.39,
+   "pooled_mae_cycles": 66.88,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 60.58
+  },
+  "adaptive_cap_offset/gru": {
+   "macro_mae_cycles": 71.18,
+   "macro_rmse_cycles": 83.32,
+   "pooled_mae_cycles": 70.43,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 64.23
+  },
+  "adaptive_cap_only/median": {
+   "macro_mae_cycles": 308.94,
+   "macro_rmse_cycles": 361.22,
+   "pooled_mae_cycles": 308.8,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 311.68
+  },
+  "adaptive_cap_only/linear_window": {
+   "macro_mae_cycles": 154.88,
+   "macro_rmse_cycles": 201.71,
+   "pooled_mae_cycles": 154.78,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 154.88
+  },
+  "adaptive_cap_only/ridge": {
+   "macro_mae_cycles": 118.05,
+   "macro_rmse_cycles": 137.32,
+   "pooled_mae_cycles": 115.8,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 121.42
+  },
+  "adaptive_cap_only/gb": {
+   "macro_mae_cycles": 112.81,
+   "macro_rmse_cycles": 130.84,
+   "pooled_mae_cycles": 110.47,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 116.9
+  },
+  "adaptive_cap_only/gpr": {
+   "macro_mae_cycles": 111.31,
+   "macro_rmse_cycles": 132.71,
+   "pooled_mae_cycles": 109.33,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 113.11
+  },
+  "adaptive_cap_only/gru": {
+   "macro_mae_cycles": 71.18,
+   "macro_rmse_cycles": 83.32,
+   "pooled_mae_cycles": 70.43,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 64.23
+  },
+  "adaptive_span_only/gb": {
+   "macro_mae_cycles": 300.99,
+   "macro_rmse_cycles": 348.91,
+   "pooled_mae_cycles": 301.04,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 304.58
+  },
+  "adaptive_ind/gb": {
+   "macro_mae_cycles": 61.53,
+   "macro_rmse_cycles": 72.72,
+   "pooled_mae_cycles": 60.75,
+   "windows": 25327,
+   "cells": 77,
+   "mean_validation_macro_mae": 51.46
+  }
+ },
+ "pairs": {
+  "baseline_minus_gb_indicators_fixed": {
+   "mean": 15.594922791508859,
+   "low95": 1.1724520221951125,
+   "high95": 30.679571870144866,
+   "cells_better": 46,
+   "cells": 77
+  },
+  "fixed_cap_gb_minus_fixed_ind_gb": {
+   "mean": 15.594922791508859,
+   "low95": 1.1724520221951125,
+   "high95": 30.679571870144866,
+   "cells_better": 46,
+   "cells": 77
+  },
+  "adaptive_cap_offset_gb_minus_adaptive_cap_only_gb": {
+   "mean": -40.11573254129035,
+   "low95": -56.68276479438541,
+   "high95": -23.165389383011153,
+   "cells_better": 22,
+   "cells": 77
+  },
+  "adaptive_cap_offset_gb_minus_fixed_cap_gb": {
+   "mean": -33.361602121000516,
+   "low95": -49.023648370085844,
+   "high95": -17.356382783351997,
+   "cells_better": 20,
+   "cells": 77
+  },
+  "adaptive_ind_gb_minus_fixed_ind_gb": {
+   "mean": -28.928506798257757,
+   "low95": -42.1126973337423,
+   "high95": -15.52770165993494,
+   "cells_better": 21,
+   "cells": 77
+  }
+ },
+ "go_no_go": {
+  "G1_stride_channel_material": {
+   "span_only_over_median": 0.974,
+   "pass_if_below": 0.8,
+   "material": false
+  },
+  "G2_primary": {
+   "mean": 15.594922791508859,
+   "low95": 1.1724520221951125,
+   "high95": 30.679571870144866,
+   "cells_better": 46,
+   "cells": 77,
+   "pass": true
+  },
+  "G3_coverage": {
+   "per_cell_relative_conformal_coverage": 0.912,
+   "pass": true
+  },
+  "G4_abstention": {
+   "ratio_at_60pct": 0.985,
+   "pass": false
+  }
+ },
+ "baseline_by_validation": "fixed_cap/gb",
+ "intervals": {
+  "gb_indicators": {
+   "absolute": {
+    "nominal": 0.9,
+    "mean_per_cell_coverage": 0.901,
+    "pooled_coverage": 0.897,
+    "mean_width_cycles": 417.4,
+    "mean_interval_score": 586.4,
+    "cells_with_coverage_below_0.5": 4
+   },
+   "relative": {
+    "nominal": 0.9,
+    "mean_per_cell_coverage": 0.912,
+    "pooled_coverage": 0.91,
+    "mean_width_cycles": 457.5,
+    "mean_interval_score": 526.1,
+    "cells_with_coverage_below_0.5": 3
+   }
+  },
+  "gb_capacity": {
+   "absolute": {
+    "nominal": 0.9,
+    "mean_per_cell_coverage": 0.898,
+    "pooled_coverage": 0.891,
+    "mean_width_cycles": 463.7,
+    "mean_interval_score": 635.5,
+    "cells_with_coverage_below_0.5": 3
+   },
+   "relative": {
+    "nominal": 0.9,
+    "mean_per_cell_coverage": 0.928,
+    "pooled_coverage": 0.918,
+    "mean_width_cycles": 495.8,
+    "mean_interval_score": 569.8,
+    "cells_with_coverage_below_0.5": 4
+   }
+  }
+ },
+ "scenarios": {
+  "age_limited_position_le_300": {
+   "fixed_cap/gb": {
+    "macro_mae_cycles": 172.03,
+    "cells": 77,
+    "windows": 4081
+   },
+   "fixed_ind/gb": {
+    "macro_mae_cycles": 141.1,
+    "cells": 77,
+    "windows": 4081
+   }
+  },
+  "missing_30pct_indicator_points": {
+   "gb_indicators_clean": {
+    "macro_mae_cycles": 90.46,
+    "cells": 77,
+    "windows": 18255
+   },
+   "gb_indicators_missing": {
+    "macro_mae_cycles": 101.42,
+    "cells": 77,
+    "windows": 18255
+   },
+   "gb_capacity": {
+    "macro_mae_cycles": 106.05,
+    "cells": 77,
+    "windows": 18255
+   }
+  }
+ },
+ "risk_coverage": {
+  "weighted_mae_all": 90.46,
+  "disagreement": {
+   "1.0": 90.46,
+   "0.8": 91.37,
+   "0.6": 89.08,
+   "0.4": 91.34
+  },
+  "predicted_remaining_inverse": {
+   "1.0": 90.46,
+   "0.8": 105.55,
+   "0.6": 118.12,
+   "0.4": 129.79
+  },
+  "disagreement_ratio_at_0.6": 0.985,
+  "note": "random abstention keeps the weighted MAE at weighted_mae_all in expectation"
+ },
+ "latency_and_size": {
+  "gb_indicators_predict_seconds_per_1000_windows": 0.0012583852940534015,
+  "gb_indicators_pickle_bytes": 205140,
+  "fit_seconds_total_per_arm": {
+   "fixed_cap": 76.6,
+   "fixed_ind": 0.9,
+   "adaptive_cap_offset": 92.4,
+   "adaptive_cap_only": 69.8,
+   "adaptive_span_only": 0.2,
+   "adaptive_ind": 1.1
+  }
+ },
+ "folds": [
+  {
+   "test": [
+    "6-2",
+    "1-3",
+    "8-1",
+    "3-5",
+    "6-3",
+    "3-8",
+    "10-2",
+    "3-2",
+    "3-7",
+    "4-6",
+    "7-2",
+    "7-7",
+    "5-4",
+    "5-6",
+    "1-1",
+    "4-7"
+   ],
+   "calibration": [
+    "5-2",
+    "8-6",
+    "3-6",
+    "5-3",
+    "10-8",
+    "6-1",
+    "2-4",
+    "9-6",
+    "1-6",
+    "1-5",
+    "10-1",
+    "9-4"
+   ],
+   "validation": [
+    "1-7",
+    "1-4",
+    "1-2",
+    "8-2",
+    "9-7",
+    "6-5",
+    "1-8",
+    "9-2",
+    "7-1",
+    "7-4",
+    "7-8",
+    "10-3"
+   ],
+   "train": [
+    "9-3",
+    "9-1",
+    "5-5",
+    "2-3",
+    "2-7",
+    "8-7",
+    "8-4",
+    "10-6",
+    "10-4",
+    "8-5",
+    "4-2",
+    "7-6",
+    "7-5",
+    "2-8",
+    "2-2",
+    "3-3",
+    "8-8",
+    "4-4",
+    "3-1",
+    "4-3",
+    "10-5",
+    "4-5",
+    "9-5",
+    "6-6",
+    "3-4",
+    "6-4",
+    "9-8",
+    "6-8",
+    "2-5",
+    "2-6",
+    "8-3",
+    "4-1",
+    "5-1",
+    "10-7",
+    "5-7",
+    "4-8",
+    "7-3"
+   ]
+  },
+  {
+   "test": [
+    "5-2",
+    "8-6",
+    "3-6",
+    "5-3",
+    "10-8",
+    "6-1",
+    "2-4",
+    "9-6",
+    "1-6",
+    "1-5",
+    "10-1",
+    "9-4",
+    "1-7",
+    "1-4",
+    "1-2",
+    "8-2"
+   ],
+   "calibration": [
+    "6-2",
+    "1-3",
+    "8-1",
+    "3-5",
+    "6-3",
+    "3-8",
+    "10-2",
+    "3-2",
+    "3-7",
+    "4-6",
+    "7-2",
+    "7-7"
+   ],
+   "validation": [
+    "5-4",
+    "5-6",
+    "1-1",
+    "4-7",
+    "9-7",
+    "6-5",
+    "1-8",
+    "9-2",
+    "7-1",
+    "7-4",
+    "7-8",
+    "10-3"
+   ],
+   "train": [
+    "9-3",
+    "9-1",
+    "5-5",
+    "2-3",
+    "2-7",
+    "8-7",
+    "8-4",
+    "10-6",
+    "10-4",
+    "8-5",
+    "4-2",
+    "7-6",
+    "7-5",
+    "2-8",
+    "2-2",
+    "3-3",
+    "8-8",
+    "4-4",
+    "3-1",
+    "4-3",
+    "10-5",
+    "4-5",
+    "9-5",
+    "6-6",
+    "3-4",
+    "6-4",
+    "9-8",
+    "6-8",
+    "2-5",
+    "2-6",
+    "8-3",
+    "4-1",
+    "5-1",
+    "10-7",
+    "5-7",
+    "4-8",
+    "7-3"
+   ]
+  },
+  {
+   "test": [
+    "9-7",
+    "6-5",
+    "1-8",
+    "9-2",
+    "7-1",
+    "7-4",
+    "7-8",
+    "10-3",
+    "9-3",
+    "9-1",
+    "5-5",
+    "2-3",
+    "2-7",
+    "8-7",
+    "8-4"
+   ],
+   "calibration": [
+    "6-2",
+    "1-3",
+    "8-1",
+    "3-5",
+    "6-3",
+    "3-8",
+    "10-2",
+    "3-2",
+    "3-7",
+    "4-6",
+    "7-2",
+    "7-7"
+   ],
+   "validation": [
+    "5-4",
+    "5-6",
+    "1-1",
+    "4-7",
+    "5-2",
+    "8-6",
+    "3-6",
+    "5-3",
+    "10-8",
+    "6-1",
+    "2-4",
+    "9-6"
+   ],
+   "train": [
+    "1-6",
+    "1-5",
+    "10-1",
+    "9-4",
+    "1-7",
+    "1-4",
+    "1-2",
+    "8-2",
+    "10-6",
+    "10-4",
+    "8-5",
+    "4-2",
+    "7-6",
+    "7-5",
+    "2-8",
+    "2-2",
+    "3-3",
+    "8-8",
+    "4-4",
+    "3-1",
+    "4-3",
+    "10-5",
+    "4-5",
+    "9-5",
+    "6-6",
+    "3-4",
+    "6-4",
+    "9-8",
+    "6-8",
+    "2-5",
+    "2-6",
+    "8-3",
+    "4-1",
+    "5-1",
+    "10-7",
+    "5-7",
+    "4-8",
+    "7-3"
+   ]
+  },
+  {
+   "test": [
+    "10-6",
+    "10-4",
+    "8-5",
+    "4-2",
+    "7-6",
+    "7-5",
+    "2-8",
+    "2-2",
+    "3-3",
+    "8-8",
+    "4-4",
+    "3-1",
+    "4-3",
+    "10-5",
+    "4-5"
+   ],
+   "calibration": [
+    "6-2",
+    "1-3",
+    "8-1",
+    "3-5",
+    "6-3",
+    "3-8",
+    "10-2",
+    "3-2",
+    "3-7",
+    "4-6",
+    "7-2",
+    "7-7"
+   ],
+   "validation": [
+    "5-4",
+    "5-6",
+    "1-1",
+    "4-7",
+    "5-2",
+    "8-6",
+    "3-6",
+    "5-3",
+    "10-8",
+    "6-1",
+    "2-4",
+    "9-6"
+   ],
+   "train": [
+    "1-6",
+    "1-5",
+    "10-1",
+    "9-4",
+    "1-7",
+    "1-4",
+    "1-2",
+    "8-2",
+    "9-7",
+    "6-5",
+    "1-8",
+    "9-2",
+    "7-1",
+    "7-4",
+    "7-8",
+    "10-3",
+    "9-3",
+    "9-1",
+    "5-5",
+    "2-3",
+    "2-7",
+    "8-7",
+    "8-4",
+    "9-5",
+    "6-6",
+    "3-4",
+    "6-4",
+    "9-8",
+    "6-8",
+    "2-5",
+    "2-6",
+    "8-3",
+    "4-1",
+    "5-1",
+    "10-7",
+    "5-7",
+    "4-8",
+    "7-3"
+   ]
+  },
+  {
+   "test": [
+    "9-5",
+    "6-6",
+    "3-4",
+    "6-4",
+    "9-8",
+    "6-8",
+    "2-5",
+    "2-6",
+    "8-3",
+    "4-1",
+    "5-1",
+    "10-7",
+    "5-7",
+    "4-8",
+    "7-3"
+   ],
+   "calibration": [
+    "6-2",
+    "1-3",
+    "8-1",
+    "3-5",
+    "6-3",
+    "3-8",
+    "10-2",
+    "3-2",
+    "3-7",
+    "4-6",
+    "7-2",
+    "7-7"
+   ],
+   "validation": [
+    "5-4",
+    "5-6",
+    "1-1",
+    "4-7",
+    "5-2",
+    "8-6",
+    "3-6",
+    "5-3",
+    "10-8",
+    "6-1",
+    "2-4",
+    "9-6"
+   ],
+   "train": [
+    "1-6",
+    "1-5",
+    "10-1",
+    "9-4",
+    "1-7",
+    "1-4",
+    "1-2",
+    "8-2",
+    "9-7",
+    "6-5",
+    "1-8",
+    "9-2",
+    "7-1",
+    "7-4",
+    "7-8",
+    "10-3",
+    "9-3",
+    "9-1",
+    "5-5",
+    "2-3",
+    "2-7",
+    "8-7",
+    "8-4",
+    "10-6",
+    "10-4",
+    "8-5",
+    "4-2",
+    "7-6",
+    "7-5",
+    "2-8",
+    "2-2",
+    "3-3",
+    "8-8",
+    "4-4",
+    "3-1",
+    "4-3",
+    "10-5",
+    "4-5"
+   ]
+  }
+ ]
+}

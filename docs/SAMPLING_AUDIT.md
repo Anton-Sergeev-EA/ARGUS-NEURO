@@ -6,7 +6,7 @@
 
 To keep histories under 600 points, the cache builders for CALB and HUST kept every `ceil(N / 600)`-th cycle, where `N` is the **full** length of the cell's life. A model that sees a window of eight points also sees their spacing, so the spacing reveals how long the whole history is, and a longer life means a later failure. The correlation between the stride and the cycle at which a cell reaches 90% capacity is 0.880 on HUST (77 cells) and 0.851 on CALB (27 cells). The window's `cycle offset` channel carried this information into every learned model, the backtest windows and the second opinion.
 
-An independent experiment with a fixed physical stride (see `experiments/2026-10-30_fixed_stride_hust`, written by a separate reviewer and not yet part of the repository history) measured the effect on gradient boosting: 72.7 cycles with the offset channel against 112.8 without it in the same adaptive sampling, a difference of about 40 cycles (95% interval of the paired difference −57 to −23).
+An independent experiment with a fixed physical stride (see `experiments/2026-10-30_fixed_stride_hust`, an independent experiment kept in this repository) measured the effect on gradient boosting: 72.7 cycles with the offset channel against 112.8 without it in the same adaptive sampling, a difference of about 40 cycles (95% interval of the paired difference −57 to −23).
 
 ## What is superseded
 
