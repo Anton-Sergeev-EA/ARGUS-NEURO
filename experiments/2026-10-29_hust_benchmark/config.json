@@ -1,0 +1,9 @@
+{
+ "hypothesis": "The advantage of learned models over a straight line replicates on a second, independent chemistry (LFP) with enough cells for a conformal interval",
+ "dataset": "HUST 77 LFP/graphite cells, 30 C, threshold 90% of own reference capacity, stride-thinned to <=600 points",
+ "command": "python -m argus.battery.training <dataset.json> --output <dir> --epochs 60 --seeds 3 5 11",
+ "window": 8,
+ "split_seed": 41,
+ "split": "asset-grouped 32/15/15/15",
+ "cpu_only": true
+}

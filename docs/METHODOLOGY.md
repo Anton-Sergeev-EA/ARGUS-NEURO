@@ -24,7 +24,7 @@ Incremental capacity `dQ/dV` on a uniform voltage grid, rise time between two vo
 
 ## 5. Learned models
 
-TCN, GRU, ridge and gradient boosting are trained with cells (not windows) split into train/validation/calibration/test, scaler fitted on training cells only, fixed seeds and a recorded configuration. They are compared with a median predictor and with a straight line through the same window. Results are in [`experiments/2026-10-29_calb_benchmark`](../experiments/2026-10-29_calb_benchmark/notes.md). They are research results and do not feed the report.
+TCN, GRU, ridge and gradient boosting are trained with cells (not windows) split into train/validation/calibration/test, scaler fitted on training cells only, fixed seeds and a recorded configuration. They are compared with a median predictor and with a straight line through the same window. Results are in [`experiments/2026-10-29_calb_benchmark`](../experiments/2026-10-29_calb_benchmark/notes.md). The advantage over a straight line (about 2×) appeared on two independent chemistries (CALB NCM: 47 vs 96 cycles; HUST LFP: 77 vs 156, see [`experiments/2026-10-29_hust_benchmark`](../experiments/2026-10-29_hust_benchmark/notes.md)). They do not replace the explainable estimate. An optional gradient-boosting **second opinion** (`argus.battery.second_opinion`, trained locally with `python -m argus.battery.second_opinion <dataset.json>`; weights are not committed) is added to the API report as `second_opinion` only when the request matches the trained chemistry, scope, cycle axis, threshold and sampling spacing; otherwise the field says `out_of_domain` or `not_installed`.
 
 ## 6. Recommendations
 
