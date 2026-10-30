@@ -30,7 +30,9 @@ class OperatingLimits(BatteryModel):
 
 class BatteryProfile(BatteryModel):
     battery_id: str = Field(min_length=1, max_length=80, pattern=r"^[\w .-]+$")
-    application: Literal["ev", "uav", "equipment"] = "ev"
+    application: Literal[
+        "ev", "uav", "rescue_uav", "scooter", "power_bank", "equipment"
+    ] = "ev"
     chemistry: Literal["li-ion", "nmc", "nca", "lfp", "unknown"] = "unknown"
     measurement_scope: Literal["cell", "pack"] = "pack"
     cycle_axis: Literal["equivalent_cycles", "discharge_test_index"] = (
@@ -39,6 +41,8 @@ class BatteryProfile(BatteryModel):
     reference_capacity_ah: float = Field(ge=0.001, le=100000)
     reference_condition_id: str = Field(min_length=1, max_length=120)
     service_threshold_pct: float = Field(default=80, ge=40, le=95)
+    # Capacity above the threshold by no more than this many points counts as "approaching".
+    service_margin_pct: float = Field(default=5, ge=0, le=30)
     equivalent_cycles_per_month: float | None = Field(default=None, gt=0, le=1000)
     limits: OperatingLimits | None = None
 

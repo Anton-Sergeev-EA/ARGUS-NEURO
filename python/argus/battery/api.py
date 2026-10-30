@@ -7,6 +7,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import ValidationError
 from argus.battery.assessment import assess_battery
 from argus.battery.changes import compare_reports
+from argus.battery.fleet import requests_from_csv, triage
+from argus.battery.profiles import USE_CASES, catalogue as use_case_catalogue
 from argus.battery.ratelimit import limit_requests
 from argus.battery.data import csv_origin, records_from_csv
 from argus.battery.schema import BatteryRequest
@@ -120,6 +122,29 @@ async def changes(battery_id: str) -> dict:
     except ValueError as exc:
         raise HTTPException(422, detail="reports_not_comparable") from exc
     return {**result, "from": saved[1]["saved_at"], "to": saved[0]["saved_at"]}
+
+
+@router.get("/use-cases")
+async def use_cases() -> dict:
+    """Editable starting values per use case, with an honest validation statement."""
+    return use_case_catalogue()
+
+
+@router.post("/fleet-csv", dependencies=[Depends(limit_requests)])
+async def fleet_csv(
+    request: Request,
+    use_case: str = Query(default="ev"),
+    plan_within_cycles: float | None = Query(default=None, gt=0, le=100000),
+) -> dict:
+    """Rank a fleet from a long-format CSV (one row per capacity test)."""
+    if use_case not in USE_CASES:
+        raise HTTPException(422, detail="unknown_use_case")
+    try:
+        text = (await bounded_body(request)).decode("utf-8-sig")
+        requests = await asyncio.to_thread(requests_from_csv, text, use_case)
+        return await asyncio.to_thread(triage, requests, plan_within_cycles)
+    except (ValueError, UnicodeError, ValidationError) as exc:
+        raise HTTPException(422, detail="invalid_fleet_csv") from exc
 
 
 @router.post("/import-csv", dependencies=[Depends(limit_requests)])

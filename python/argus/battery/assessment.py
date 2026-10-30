@@ -183,6 +183,33 @@ def assess_battery(
     }
     if not len(y):
         return result
+    margin = float(y[-1]) - p.service_threshold_pct
+    near = margin <= p.service_margin_pct
+    if 0 < margin and near:
+        advice.append(
+            {
+                "code": "approaching_threshold",
+                "priority": "check",
+                "evidence": {
+                    "soh_pct": result["soh_pct"],
+                    "threshold_pct": p.service_threshold_pct,
+                },
+                "source": "configured_service_threshold",
+            }
+        )
+    if p.application == "rescue_uav" and near:
+        # Decision support for dispatchers; the operator's own procedure decides.
+        advice.append(
+            {
+                "code": "mission_assignment",
+                "priority": "check",
+                "evidence": {
+                    "soh_pct": result["soh_pct"],
+                    "threshold_pct": p.service_threshold_pct,
+                },
+                "source": "operator_procedure",
+            }
+        )
     result["capacity_state"] = (
         "below_service_threshold"
         if y[-1] <= p.service_threshold_pct
