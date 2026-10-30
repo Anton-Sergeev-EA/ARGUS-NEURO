@@ -1,0 +1,14 @@
+# Keep LF everywhere: shell scripts, the Dockerfile and YAML are copied into Linux
+# containers and break with CRLF line endings (a Windows checkout would add them).
+* text=auto eol=lf
+*.sh text eol=lf
+Dockerfile text eol=lf
+Caddyfile text eol=lf
+*.yml text eol=lf
+*.png binary
+*.jpg binary
+*.onnx binary
+*.pt binary
+*.joblib binary
+*.so binary
+*.zip binary
