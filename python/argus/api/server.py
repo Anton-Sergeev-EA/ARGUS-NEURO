@@ -38,6 +38,11 @@ _SCENARIOS: list[tuple[str, AssetType, FaultType, float]] = [
     ("UAV-PDU-07", AssetType.UAV_PDU, FaultType.NONE, 0.0),
     ("UAV-PDU-11", AssetType.UAV_PDU, FaultType.OVERHEATING, 0.4),
     ("UAV-PDU-14", AssetType.UAV_PDU, FaultType.FREQUENCY_DRIFT, 0.55),
+    ("CHARGER-DC-01", AssetType.EV_CHARGER, FaultType.NONE, 0.0),
+    # Cooling or connector contact degradation shows up as heat and extra current.
+    ("CHARGER-DC-02", AssetType.EV_CHARGER, FaultType.OVERHEATING, 0.42),
+    # Leakage towards earth: current rise, warm cabinet, sub-harmonic content.
+    ("CHARGER-DC-03", AssetType.EV_CHARGER, FaultType.INSULATION_DEGRADATION, 0.5),
 ]
 
 

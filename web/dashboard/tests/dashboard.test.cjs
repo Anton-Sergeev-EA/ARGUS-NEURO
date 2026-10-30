@@ -95,7 +95,7 @@ test('language selector switches labels and ignores unknown languages', () => {
 
 test('asset types and sensor names are translated, never shown as raw identifiers', () => {
   const h = harness();
-  const ids = ['assetType_MARINE_CONVERTER', 'assetType_UAV_PDU', 'sensor_voltage_v', 'sensor_current_a',
+  const ids = ['assetType_MARINE_CONVERTER', 'assetType_UAV_PDU', 'assetType_EV_CHARGER', 'sensor_voltage_v', 'sensor_current_a',
     'sensor_temperature_c', 'sensor_vibration_g', 'sensor_frequency_hz', 'sensor_load_factor'];
   for (const lang of ['en', 'ru', 'zh', 'hi', 'es', 'fr', 'de', 'ja', 'it']) {
     h.run(`setLanguage('${lang}')`);

@@ -6,6 +6,7 @@ industrial domains this project targets:
 * ``MARINE_CONVERTER`` -- a shipboard frequency converter / thruster drive
   (three-phase power stage feeding a steering or propulsion motor).
 * ``UAV_PDU``           -- an unmanned-aircraft power distribution unit
+* ``EV_CHARGER``       -- a DC fast-charging station power cabinet
   feeding the flight controller and actuators from the battery pack.
 
 Both are, electrically, the same kind of object: a power-electronic stage
@@ -29,6 +30,7 @@ import pandas as pd
 class AssetType(str, enum.Enum):
     MARINE_CONVERTER = "MARINE_CONVERTER"
     UAV_PDU = "UAV_PDU"
+    EV_CHARGER = "EV_CHARGER"
 
 
 class FaultType(str, enum.Enum):
@@ -84,6 +86,24 @@ _PROFILES: dict[AssetType, _NominalProfile] = {
             vibration_g=0.03,
             frequency_hz=0.5,
             load_factor=0.05,
+        ),
+    ),
+    # Cabinet of a DC fast charger: mains-side frequency, cooling fan vibration,
+    # cabinet/connector temperature. Illustrative nominal values, not a vendor model.
+    AssetType.EV_CHARGER: _NominalProfile(
+        voltage_v=800.0,
+        current_a=125.0,
+        temperature_c=48.0,
+        vibration_g=0.12,
+        frequency_hz=50.0,
+        load_factor=0.5,
+        noise_std=dict(
+            voltage_v=3.0,
+            current_a=2.5,
+            temperature_c=0.5,
+            vibration_g=0.01,
+            frequency_hz=0.03,
+            load_factor=0.06,
         ),
     ),
 }
@@ -272,7 +292,7 @@ class AssetSimulator:
     # ------------------------------------------------------------------
     def default_fleet(self) -> list[tuple[str, AssetType]]:
         """A representative mixed fleet: shipboard converters/drives plus
-        a UAV squadron's power distribution units -- used by the demo API
+        a UAV squadron's power distribution units and fast-charging stations -- used by the demo API
         and the dashboard."""
         return [
             ("SHIP-CONV-01", AssetType.MARINE_CONVERTER),
@@ -281,4 +301,7 @@ class AssetSimulator:
             ("UAV-PDU-07", AssetType.UAV_PDU),
             ("UAV-PDU-11", AssetType.UAV_PDU),
             ("UAV-PDU-14", AssetType.UAV_PDU),
+            ("CHARGER-DC-01", AssetType.EV_CHARGER),
+            ("CHARGER-DC-02", AssetType.EV_CHARGER),
+            ("CHARGER-DC-03", AssetType.EV_CHARGER),
         ]
