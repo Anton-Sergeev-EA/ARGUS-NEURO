@@ -265,6 +265,15 @@ Object.assign(I18N.fr, {"assetType_MARINE_CONVERTER": "Convertisseur de fréquen
 Object.assign(I18N.de, {"assetType_MARINE_CONVERTER": "Schiffs-Frequenzumrichter / Antrieb des Querstrahlruders", "assetType_UAV_PDU": "Stromverteilungseinheit einer Drohne", "sensor_voltage_v": "Spannung", "sensor_current_a": "Strom", "sensor_temperature_c": "Temperatur", "sensor_vibration_g": "Vibration", "sensor_frequency_hz": "Frequenz", "sensor_load_factor": "Lastfaktor"});
 Object.assign(I18N.ja, {"assetType_MARINE_CONVERTER": "船舶用周波数変換器／スラスター駆動", "assetType_UAV_PDU": "無人機用配電ユニット", "sensor_voltage_v": "電圧", "sensor_current_a": "電流", "sensor_temperature_c": "温度", "sensor_vibration_g": "振動", "sensor_frequency_hz": "周波数", "sensor_load_factor": "負荷率"});
 Object.assign(I18N.it, {"assetType_MARINE_CONVERTER": "Convertitore di frequenza navale / azionamento del propulsore", "assetType_UAV_PDU": "Unità di distribuzione di potenza per drone", "sensor_voltage_v": "Tensione", "sensor_current_a": "Corrente", "sensor_temperature_c": "Temperatura", "sensor_vibration_g": "Vibrazione", "sensor_frequency_hz": "Frequenza", "sensor_load_factor": "Fattore di carico"});
+Object.assign(I18N.en, {"fleetNav": "Fleet triage"});
+Object.assign(I18N.ru, {"fleetNav": "Оценка парка"});
+Object.assign(I18N.zh, {"fleetNav": "车队分级"});
+Object.assign(I18N.hi, {"fleetNav": "फ़्लीट प्राथमिकता"});
+Object.assign(I18N.es, {"fleetNav": "Priorización de flota"});
+Object.assign(I18N.fr, {"fleetNav": "Priorisation de flotte"});
+Object.assign(I18N.de, {"fleetNav": "Flottenpriorisierung"});
+Object.assign(I18N.ja, {"fleetNav": "フリート優先度"});
+Object.assign(I18N.it, {"fleetNav": "Priorità della flotta"});
 const LANGUAGES = ["en", "ru", "zh", "hi", "es", "fr", "de", "ja", "it"];
 const LOCALES = { ru: "ru-RU", en: "en-US", zh: "zh-CN", hi: "hi-IN", es: "es-ES", fr: "fr-FR", de: "de-DE", ja: "ja-JP", it: "it-IT" };
 const LANG_STORAGE_KEY = "argus.lang";

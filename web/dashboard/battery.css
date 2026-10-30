@@ -8,3 +8,7 @@ svg .series{fill:none;stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 @media(prefers-color-scheme:dark){:root{color-scheme:dark;--ink:#e6eef1;--muted:#a9bac3;--accent:#4fd1c5;--line:#2c3f4b;--paper:#16242d}body{background:#0e1a21}.secondary{background:#233743;color:#d4f3ef}button{color:#06201e}input:not([type=checkbox]),select{background:#0e1a21;border-color:#5d7482}.upload{background:#0e1a21}.warning{background:#3a2a10;border-left-color:#e0a050}svg .grid{stroke:#34505e}svg .threshold{stroke:#e0a050}svg .previous{stroke:#8da0aa}.hint{border-color:#5d7482}.hint:hover::after,.hint:focus::after{background:#e6eef1;color:#0e1a21}a{color:#6fe3d8}}
 @media(max-width:700px){#chart{overflow-x:auto}#chart svg{min-width:560px}.legend{flex-direction:column}.hint:hover::after,.hint:focus::after{left:0;transform:none}}
+.table-scroll{overflow-x:auto}.prio{font-weight:700;white-space:nowrap}.prio.service_now{color:#a02020}.prio.plan_service{color:#a25c00}.prio.monitor{color:var(--accent)}.prio.insufficient_data{color:var(--muted)}
+@media(prefers-color-scheme:dark){.prio.service_now{color:#ff8a80}.prio.plan_service{color:#ffc470}}
+@media(min-width:701px){nav{flex-wrap:wrap}}
+#counts{grid-template-columns:repeat(4,minmax(0,1fr))}@media(max-width:700px){#counts{grid-template-columns:1fr 1fr}}

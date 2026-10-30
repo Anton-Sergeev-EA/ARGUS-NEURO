@@ -123,6 +123,7 @@ if (typeof document !== 'undefined') {
       reference_capacity_ah: number('reference'),
       reference_condition_id: $('condition').value,
       service_threshold_pct: number('threshold'),
+      service_margin_pct: number('margin') ?? 5,
       equivalent_cycles_per_month: number('rate'),
     };
     if (source) {
@@ -187,6 +188,7 @@ if (typeof document !== 'undefined') {
       'battery-id': data.profile.battery_id,
       reference: data.profile.reference_capacity_ah,
       threshold: data.profile.service_threshold_pct,
+      margin: data.profile.service_margin_pct ?? 5,
       condition: data.profile.reference_condition_id,
       rate: data.profile.equivalent_cycles_per_month ?? '',
       application: data.profile.application,
@@ -437,6 +439,20 @@ if (typeof document !== 'undefined') {
 
   $('battery-form').addEventListener('input', event => {
     if (event.target.id !== 'capacity-file') markStale();
+  });
+
+  let useCases = null;
+  $('application').addEventListener('change', async () => {
+    if (state.datasetId) return;
+    try {
+      useCases = useCases || (await call('use-cases')).use_cases;
+      const preset = useCases[$('application').value];
+      if (preset) {
+        $('threshold').value = preset.service_threshold_pct;
+        $('margin').value = preset.service_margin_pct;
+        if (!$('rate').value && preset.cycles_per_month_hint) $('rate').placeholder = String(preset.cycles_per_month_hint);
+      }
+    } catch { /* presets are a convenience; the form still works without them */ }
   });
 
   $('compare').addEventListener('change', () => { if (state.last) chart(state.last); });

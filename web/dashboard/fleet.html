@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ARGUS-NEURO · Fleet triage</title><link rel="stylesheet" href="battery.css"></head>
+<body>
+<header><a class="brand" href="/">ARGUS<span>-NEURO</span></a><nav aria-label="Navigation"><a href="/" data-text="fleetBack">Battery diagnostics</a><a href="equipment.html" data-text="equipment">Equipment diagnostics</a><label><span data-text="language">Language</span> <select id="language"><option value="en" lang="en">English</option><option value="ru" lang="ru">Русский</option><option value="zh" lang="zh">中文</option><option value="hi" lang="hi">हिन्दी</option><option value="es" lang="es">Español</option><option value="fr" lang="fr">Français</option><option value="de" lang="de">Deutsch</option><option value="ja" lang="ja">日本語</option><option value="it" lang="it">Italiano</option></select></label></nav></header>
+<main>
+<section class="intro"><h1 data-text="fleetTitle">Which batteries need attention first?</h1><p data-text="fleetIntro">Upload one CSV for many batteries.</p></section>
+<section class="panel" aria-labelledby="fleet-form-title"><h2 id="fleet-form-title" data-text="fleetNav">Fleet triage</h2>
+<form id="fleet-form">
+<div class="fields">
+<label><span data-text="fleetUseCase">Use case</span><select id="use-case"><option value="scooter" data-text="scooter">Shared e-scooter</option><option value="power_bank" data-text="powerBank">Rental power bank</option><option value="rescue_uav" data-text="rescueUav">Rescue / medical drone</option><option value="uav" data-text="uav">UAV</option><option value="ev" data-text="ev">Vehicle</option></select><small data-text="useCaseHelp">Choosing an application pre-fills the threshold and margin.</small></label>
+<label><span data-text="fleetPlan">Plan service if the forecast is within, cycles</span><input id="plan" type="number" min="1" max="100000" step="any"><small data-text="fleetPlanHelp">Optional.</small></label>
+</div>
+<div class="upload"><label for="fleet-file" data-text="fleetFile">Fleet CSV</label><input id="fleet-file" type="file" accept=".csv,text/csv" required><p data-text="fleetCsvHelp">Columns: battery_id, equivalent_cycles, capacity_ah, reference_capacity_ah.</p><a href="fleet-example.csv" download data-text="fleetSample">Download a sample fleet table</a></div>
+<div class="actions"><button type="submit" id="rank" data-text="fleetRun">Rank the fleet</button></div>
+</form><p id="message" role="status" aria-live="polite"></p></section>
+<section id="results" hidden aria-live="polite"><div id="counts" class="cards"></div><section class="panel"><div class="table-scroll"><table id="ranking"></table></div><p class="note" id="limits"></p><div class="actions"><button type="button" class="secondary" id="download" data-text="fleetDownload">Download the ranking as CSV</button></div></section></section>
+<footer><p data-text="footer">ARGUS-NEURO · Evidence-based assessment and explainable guidance.</p></footer>
+</main><script src="battery-i18n.js"></script><script src="fleet.js"></script></body></html>
