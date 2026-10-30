@@ -72,9 +72,12 @@ jobs:
         run: |
           PASSWORD="$(head -c 18 /dev/urandom | base64 | tr -d '/+=')"
           echo "::add-mask::$PASSWORD"
+          INGEST_TOKEN="$(head -c 18 /dev/urandom | base64 | tr -d '/+=')"
+          echo "::add-mask::$INGEST_TOKEN"
           HASH="$(docker run --rm caddy:2.11.7-alpine caddy hash-password --plaintext "$PASSWORD" | sed 's/\$/$$/g')"
           {
             echo "ARGUS_USER=operator"
+            echo "ARGUS_INGEST_TOKEN=$INGEST_TOKEN"
             echo "ARGUS_PASSWORD_HASH=$HASH"
             echo "ARGUS_HTTP_PORT=8080"
             echo "ARGUS_HTTPS_PORT=8443"
@@ -83,7 +86,7 @@ jobs:
           $ARGUS_COMPOSE up -d
           $ARGUS_COMPOSE exec -T argus bash scripts/train_all.sh
           $ARGUS_COMPOSE restart argus
-          bash scripts/prod_smoke.sh https://localhost:8443 operator "$PASSWORD"
+          bash scripts/prod_smoke.sh https://localhost:8443 operator "$PASSWORD" "$INGEST_TOKEN"
           bash scripts/backup_volume.sh /tmp/argus-backup.tar.gz
           tar tzf /tmp/argus-backup.tar.gz > /dev/null
       - name: Show logs on failure
