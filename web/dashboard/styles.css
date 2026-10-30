@@ -190,3 +190,4 @@ summary { cursor: pointer; color: var(--text-dim); }
 .badge { flex-shrink: 0; max-width: 45%; text-align: center; }
 #summaryBackend { font-size: 17px; min-height: 31px; display: flex; align-items: center; }
 @media (max-width: 440px) { .app { padding: 16px 12px 40px; } .fleet-summary { gap: 8px; } .summary-card { padding: 12px; } .header-controls { flex-wrap: wrap; } }
+.header-controls a{color:var(--accent,#4fd1c5);text-decoration:none;font-size:14px}.header-controls a:hover,.header-controls a:focus-visible{text-decoration:underline}
