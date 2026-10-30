@@ -30,7 +30,7 @@ Adding the charge-curve indicators of section 4 to the same model lowered the HU
 
 ## 6. Recommendations
 
-Rule-based and sourced. A limit is applied only if the user supplies it with its source; there are no built-in universal temperatures or charging percentages.
+Rule-based and sourced. An *approaching the threshold* advisory fires while `0 < SOH − threshold ≤ margin` (default margin 5 points; per-use-case presets in [USE_CASES.md](USE_CASES.md)). Fleet triage ([USE_CASES.md](USE_CASES.md)) orders batteries by this rule set, not by a new model. A limit is applied only if the user supplies it with its source; there are no built-in universal temperatures or charging percentages.
 
 ## 7. What is not claimed
 

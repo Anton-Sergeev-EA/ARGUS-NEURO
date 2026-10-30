@@ -36,6 +36,10 @@ Calendar months are shown only when the input axis is equivalent full cycles and
 
 An independent laboratory cell history uses `measurement_scope=cell` and `cycle_axis=discharge_test_index`. It is not an EV-pack result and is never converted to calendar months. Existing experimental TCN/GRU training utilities are separate from this explainable production route. No trained cell model is presented as a validated vehicle-pack predictor.
 
+## Use cases and fleets
+
+The application field accepts `ev`, `uav`, `rescue_uav`, `scooter`, `power_bank` and `equipment`. A profile also carries `service_margin_pct`: while capacity is above the threshold by no more than this many points the report adds an *approaching the service threshold* advisory, and for `rescue_uav` a *review before assigning to time-critical missions* advisory. Starting values and the validation status of each use case are in [USE_CASES.md](USE_CASES.md).
+
 ## Recommendations
 
 Recommendations contain a code, priority, observed evidence, source and a translated action with a verification step:
@@ -63,9 +67,11 @@ Capacity-based SOH does not establish electrical, thermal or crash safety. There
 | `POST /api/battery/analyze` | Capacity, trend, conditional life and care recommendations; no persistence |
 | `POST /api/battery/save` | Explicit local SQLite report storage |
 | `GET /api/battery/history/{battery_id}` | Up to 50 saved reports for this battery, newest first |
+| `GET /api/battery/use-cases` | Editable starting thresholds per use case and an honest validation statement |
+| `POST /api/battery/fleet-csv?use_case=scooter&plan_within_cycles=100` | Rank a fleet from a long-format CSV (up to 300 batteries): service now, plan service, monitor, not enough data |
 | `GET /api/battery/history/{battery_id}/changes` | Direction of capacity and remaining life between the two newest saved reports (no safety verdict) |
 
-`analyze`, `save` and `import-csv` are limited to 60 requests per minute per client (`ARGUS_BATTERY_RATE_LIMIT`); excess requests receive `429` with `Retry-After`. Reports carry `schema_version` 2. Saving an identical report twice in a row stores it once; different reports build a timeline. The request schema is available in `/docs`. Manufacturer limits require a source. Reports include a content-derived assessment ID, source, comparable history and limitations. Export downloads the report JSON. Local history is stored in `artifacts/battery-local/history.sqlite3` and excluded from version control. No data is sent to external services by these routes. Use the application locally; it does not implement multi-user access controls.
+`analyze`, `save`, `import-csv` and `fleet-csv` are limited to 60 requests per minute per client (`ARGUS_BATTERY_RATE_LIMIT`); excess requests receive `429` with `Retry-After`. Reports carry `schema_version` 2. Saving an identical report twice in a row stores it once; different reports build a timeline. The request schema is available in `/docs`. Manufacturer limits require a source. Reports include a content-derived assessment ID, source, comparable history and limitations. Export downloads the report JSON. Local history is stored in `artifacts/battery-local/history.sqlite3` and excluded from version control. No data is sent to external services by these routes. Use the application locally; it does not implement multi-user access controls.
 
 ## Verification
 
