@@ -1,0 +1,15 @@
+{
+ "hypothesis": "Charge-curve indicators (voltage rise time, dQ/dV peak) computed by the C++ core lower the remaining-life error compared with capacity alone",
+ "dataset": "HUST 77 LFP cells, threshold 90%, constant-current charge phase of every thinned cycle",
+ "command": "python -m argus.battery.hust_curves && python -m argus.battery.indicator_experiment <benchmark-90.json>",
+ "model": "HistGradientBoostingRegressor(max_iter=100,max_leaf_nodes=10,l2=1.0,seed=3)",
+ "window": 8,
+ "split_seeds": [
+  41,
+  42,
+  43,
+  44,
+  45
+ ],
+ "cpu_only": true
+}

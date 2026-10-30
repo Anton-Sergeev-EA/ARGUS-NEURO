@@ -1,0 +1,84 @@
+{
+ "cells": 77,
+ "split_seeds": [
+  41,
+  42,
+  43,
+  44,
+  45
+ ],
+ "sets": {
+  "capacity_only": {
+   "channels": [
+    "capacity",
+    "cycle_offset"
+   ],
+   "test_macro_mae_cycles_per_split": [
+    72.05,
+    78.47,
+    57.64,
+    74.84,
+    60.21
+   ],
+   "mean": 68.64,
+   "std": 8.23,
+   "better_than_capacity_only_in_splits": 0
+  },
+  "plus_rise_time": {
+   "channels": [
+    "capacity",
+    "cycle_offset",
+    "rise_time_s"
+   ],
+   "test_macro_mae_cycles_per_split": [
+    67.56,
+    54.55,
+    46.61,
+    57.64,
+    61.9
+   ],
+   "mean": 57.65,
+   "std": 7.04,
+   "better_than_capacity_only_in_splits": 4
+  },
+  "plus_ica": {
+   "channels": [
+    "capacity",
+    "cycle_offset",
+    "ica_peak_v",
+    "ica_peak_height",
+    "ica_peak_width_v"
+   ],
+   "test_macro_mae_cycles_per_split": [
+    58.45,
+    52.07,
+    44.46,
+    58.69,
+    51.95
+   ],
+   "mean": 53.13,
+   "std": 5.23,
+   "better_than_capacity_only_in_splits": 5
+  },
+  "plus_all_indicators": {
+   "channels": [
+    "capacity",
+    "cycle_offset",
+    "rise_time_s",
+    "ica_peak_v",
+    "ica_peak_height",
+    "ica_peak_width_v"
+   ],
+   "test_macro_mae_cycles_per_split": [
+    59.15,
+    50.39,
+    45.56,
+    54.44,
+    52.4
+   ],
+   "mean": 52.39,
+   "std": 4.49,
+   "better_than_capacity_only_in_splits": 5
+  }
+ }
+}

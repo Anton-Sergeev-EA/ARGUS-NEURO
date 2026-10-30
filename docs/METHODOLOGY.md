@@ -26,6 +26,8 @@ Incremental capacity `dQ/dV` on a uniform voltage grid, rise time between two vo
 
 TCN, GRU, ridge and gradient boosting are trained with cells (not windows) split into train/validation/calibration/test, scaler fitted on training cells only, fixed seeds and a recorded configuration. They are compared with a median predictor and with a straight line through the same window. Results are in [`experiments/2026-10-29_calb_benchmark`](../experiments/2026-10-29_calb_benchmark/notes.md). The advantage over a straight line (about 2×) appeared on two independent chemistries (CALB NCM: 47 vs 96 cycles; HUST LFP: 77 vs 156, see [`experiments/2026-10-29_hust_benchmark`](../experiments/2026-10-29_hust_benchmark/notes.md)). They do not replace the explainable estimate. An optional gradient-boosting **second opinion** (`argus.battery.second_opinion`, trained locally with `python -m argus.battery.second_opinion <dataset.json>`; weights are not committed) is added to the API report as `second_opinion` only when the request matches the trained chemistry, scope, cycle axis, threshold and sampling spacing; otherwise the field says `out_of_domain` or `not_installed`.
 
+Adding the charge-curve indicators of section 4 to the same model lowered the HUST error from 68.6 to 52.4 cycles (better in 5 of 5 splits); see [CURVES.md](CURVES.md). Not yet used by reports.
+
 ## 6. Recommendations
 
 Rule-based and sourced. A limit is applied only if the user supplies it with its source; there are no built-in universal temperatures or charging percentages.
