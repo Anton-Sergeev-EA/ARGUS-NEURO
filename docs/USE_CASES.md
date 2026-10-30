@@ -1,6 +1,6 @@
 # Use cases
 
-ARGUS-NEURO started from one question: how worn is this battery, and when should I act? Five common situations ask it, each with different priorities. This page states, for each one, what the software does today, what has been validated and what has not. **No field data from vehicles, chargers, scooters, rental power banks or drones were used anywhere in this project**; everything measured comes from laboratory cells (NASA, CALB, HUST) and everything about chargers is simulated.
+ARGUS-NEURO started from one question: how worn is this battery, and when should I act? Five common situations ask it, each with different priorities. This page states, for each one, what the software does today, what has been validated and what has not. **Numbers on this page that come from laboratory backtests are superseded; see [SAMPLING_AUDIT.md](SAMPLING_AUDIT.md). No field data from vehicles, chargers, scooters, rental power banks or drones were used anywhere in this project**; everything measured comes from laboratory cells (NASA, CALB, HUST) and everything about chargers is simulated.
 
 | Use case | Where in the product | Starting values | Validated | Missing |
 |---|---|---|---|---|
@@ -47,6 +47,6 @@ A full discharge into a known load at a swap or return station, or the BMS's own
 
 1. Capacity histories and failures from a real fleet of each kind, with the service decisions that were actually taken.
 2. A backtest like [BACKTEST.md](BACKTEST.md) on those packs and a calibration that is valid for them.
-3. Recorded charge curves, which cut remaining-life error by 24% on laboratory cells ([CURVES.md](CURVES.md)).
+3. Recorded charge curves, whose benefit is being re-measured after a sampling leak was found ([SAMPLING_AUDIT.md](SAMPLING_AUDIT.md)).
 4. For chargers: real telemetry, an adapter, labelled faults and an accepted false-alarm rate.
 5. For drones: the operator's regulatory requirements, which this project does not address.

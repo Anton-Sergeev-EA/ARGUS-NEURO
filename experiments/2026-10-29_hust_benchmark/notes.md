@@ -1,5 +1,7 @@
 # HUST benchmark: does the learned-model advantage replicate?
 
+> **Superseded (30 October 2026).** The numbers on this page were produced with a thinning stride of ceil(N/600) that depends on the full history length and leaks the answer; see [SAMPLING_AUDIT.md](../../docs/SAMPLING_AUDIT.md). Do not quote them.
+
 **Hypothesis.** The CALB result (learned models about twice as accurate as a straight line on unseen cells) also holds on an independent chemistry, and 15 calibration cells are enough for a conformal interval.
 
 **Setup.** 77 HUST LFP/graphite cells, threshold 90% of each cell's reference capacity. Cells split 32/15/15/15 into train/validation/calibration/test; the test set is read once per seed. Config and metrics: `config.json`, `metrics.json`.

@@ -22,6 +22,8 @@ ARGUS-NEURO verbindet die Analyse der Batteriekapazität mit der Forschung zur D
 
 ### Forschungsergebnisse an 108 Laborzellen
 
+> **Hinweis (30. Oktober 2026).** Die Zahlen zu Kapazitätsverläufen in diesem Abschnitt entstanden mit einer Ausdünnung von ceil(N/600) Zyklen, die von der Lebensdauer der Zelle abhängt und den Modellen die Antwort verrät. Sie sind überholt und werden mit festem physikalischem Schritt neu gemessen; siehe [SAMPLING_AUDIT.md](docs/SAMPLING_AUDIT.md) (Englisch). Bis dahin weder die kalibrierte Abdeckung noch den Modellvergleich noch den Gewinn der Kurvenindikatoren zitieren.
+
 Daten: NASA PCoE (4 Zellen), CALB (28 NCM-Zellen) und HUST (77 LFP-Zellen), 3 723 Prognosepunkte. Jede Prognose sieht nur ihre beobachtete Vergangenheit. Details und Reproduktionsbefehle: [BACKTEST.md](docs/BACKTEST.md) (Englisch).
 
 - **Das einfache Intervall war zu selbstsicher.** Das Bootstrap-Intervall 5–95 % enthielt die wahre Restlebensdauer nur in **12 %** der Prognosen bei nominal 90 %.

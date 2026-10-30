@@ -1,5 +1,7 @@
 # CALB benchmark: sequence models vs a straight line
 
+> **Superseded (30 October 2026).** The numbers on this page were produced with a thinning stride of ceil(N/600) that depends on the full history length and leaks the answer; see [SAMPLING_AUDIT.md](../../docs/SAMPLING_AUDIT.md). Do not quote them.
+
 **Hypothesis.** Models trained on whole cells predict remaining cycles to 90% capacity on cells they never saw better than a straight line through the same eight-point window.
 
 **Setup.** 28 CALB cells (27 reach 90%; one is censored and excluded from targets). Cells, not windows, are split 13/5/5/5 into train/validation/calibration/test, so no cell appears on both sides. Validation picks the winner; the test set is read once per seed. Config and metrics: `config.json`, `metrics.json`.

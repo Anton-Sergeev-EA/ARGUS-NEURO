@@ -1,5 +1,7 @@
 # Voltage-curve health indicators
 
+> **Superseded (30 October 2026).** The numbers on this page were produced with a thinning stride of ceil(N/600) that depends on the full history length and leaks the answer; see [SAMPLING_AUDIT.md](SAMPLING_AUDIT.md). Do not quote them.
+
 Capacity is a late indicator: it has to fall before it can be measured. The shape of the charge curve and the voltage response to current change earlier, so the C++20 core computes them once and Python reuses them through pybind11 (`argus_core`), with a NumPy fallback that follows the same algorithm.
 
 | Indicator | What it is | Why it matters |

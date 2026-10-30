@@ -22,6 +22,8 @@ ARGUS-NEURO combina l’analisi della capacità delle batterie con la ricerca su
 
 ### Risultati di ricerca su 108 celle di laboratorio
 
+> **Avviso (30 ottobre 2026).** I numeri sugli storici di capacità di questa sezione sono stati ottenuti con un passo di ceil(N/600) cicli che dipende dalla durata della cella e fa trapelare la risposta ai modelli. Sono superati e vengono rimisurati con passo fisico fisso; vedere [SAMPLING_AUDIT.md](docs/SAMPLING_AUDIT.md) (inglese). Fino ad allora non citare la copertura calibrata, il confronto dei modelli né il guadagno degli indicatori di curva.
+
 Dati: NASA PCoE (4 celle), CALB (28 celle NCM) e HUST (77 celle LFP), 3 723 punti di previsione. Ogni previsione vede solo il proprio passato osservato. Dettagli e comandi di riproduzione: [BACKTEST.md](docs/BACKTEST.md) (inglese).
 
 - **L’intervallo semplice era troppo ottimista.** L’intervallo bootstrap 5–95 % conteneva la vita residua reale solo nel **12 %** delle previsioni a fronte di un 90 % nominale.

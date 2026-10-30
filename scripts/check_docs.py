@@ -15,6 +15,7 @@ REQUIRED = {
     "docs/METHODOLOGY.md",
     "docs/PUBLIC_BATTERY_DATA.md",
     "docs/USE_CASES.md",
+    "docs/SAMPLING_AUDIT.md",
 }
 LINK = re.compile(r"\]\(([^)#\s]+)(?:#[^)]*)?\)")
 

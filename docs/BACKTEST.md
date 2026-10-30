@@ -1,5 +1,7 @@
 # Remaining-life backtest
 
+> **Superseded (30 October 2026).** The numbers on this page were produced with a thinning stride of ceil(N/600) that depends on the full history length and leaks the answer; see [SAMPLING_AUDIT.md](SAMPLING_AUDIT.md). Do not quote them.
+
 How well does the remaining-life interval hold up on cells it has never seen? This page records the answer, not the hope.
 
 ## Method

@@ -1,5 +1,7 @@
 # Methodology
 
+> **Note (30 October 2026).** The calibration radius, coverage figures and learned-model comparisons quoted below were obtained with a length-dependent thinning stride and are superseded; see [SAMPLING_AUDIT.md](SAMPLING_AUDIT.md).
+
 Every number in a battery report can be traced to a formula below, a parameter in `python/argus/battery/config.py` and a test.
 
 ## 1. Capacity and health

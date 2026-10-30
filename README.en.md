@@ -13,8 +13,8 @@
 - Explicit `warming_up`, `ready`, `invalid_data`, and `degraded` states instead of silently inventing predictions.
 - FastAPI/WebSocket fleet monitor with bounded slow-client behaviour and transport health separated from model availability.
 - CI verifies Python lint/formatting, C++ Release tests, native and NumPy execution paths, dashboard contracts, retraining, and ONNX parity.
-- Battery remaining-life intervals are backtested on **108 laboratory cells** (NASA, CALB, HUST) and conformally calibrated: the raw interval covered the truth in 12% of forecasts, the calibrated one in 97% on unseen cells and 96% on unseen datasets, and the weakest case (NASA, 67%) is reported.
-- **C++20 voltage-curve indicators** (dQ/dV peak, voltage rise time, step resistance) with NumPy parity; on HUST they cut remaining-life error by 24% (5 of 5 splits).
+- Battery remaining-life intervals were backtested on **108 laboratory cells** (NASA, CALB, HUST) and conformally calibrated, **but those figures came from a length-dependent thinning stride and are superseded** ([audit](docs/SAMPLING_AUDIT.md)); the backtest is being re-run at a fixed stride.
+- **C++20 voltage-curve indicators** (dQ/dV peak, voltage rise time, step resistance) with NumPy parity. The earlier 24% gain is superseded; on the repaired pipeline a first, unregistered check shows a smaller and less certain gain (see the audit).
 - An optional learned **second opinion** that refuses requests outside the chemistry, scope, threshold and sampling it was trained on.
 - Reliability documentation states what is computationally tested, what remains heuristic, and what would be required before field deployment.
 
@@ -49,6 +49,8 @@ ARGUS-NEURO combines battery-capacity analysis with power-electronics diagnostic
 [Backtest on 108 cells](docs/BACKTEST.md) · [Voltage-curve indicators in C++](docs/CURVES.md) · [Methodology](docs/METHODOLOGY.md)
 
 ### Research results on 108 laboratory cells
+
+> **Notice (30 October 2026).** The capacity-history numbers in this section were obtained with a thinning stride of ceil(N/600) cycles that depends on how long a cell lives and leaks the answer into the models. They are superseded and are being re-measured at a fixed physical stride; see [SAMPLING_AUDIT.md](docs/SAMPLING_AUDIT.md). Do not quote the calibrated coverage, the learned-model comparison or the curve-indicator gain until then.
 
 Data: NASA PCoE (4 cells), CALB (28 NCM cells) and HUST (77 LFP cells), 3,723 forecast points. Every forecast sees only its observed past. Details and reproduction commands: [BACKTEST.md](docs/BACKTEST.md).
 

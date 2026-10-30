@@ -1,5 +1,7 @@
 # Do charge-curve indicators improve prediction beyond capacity?
 
+> **Superseded (30 October 2026).** The numbers on this page were produced with a thinning stride of ceil(N/600) that depends on the full history length and leaks the answer; see [SAMPLING_AUDIT.md](../../docs/SAMPLING_AUDIT.md). Do not quote them.
+
 **Hypothesis.** The voltage rise time and the dQ/dV peak of the constant-current charge, computed by the C++ core, reduce the remaining-life error compared with a window of capacity values alone.
 
 **Setup.** 77 HUST cells, threshold 90%. The same eight-point windows, the same asset-grouped split and the same gradient-boosting model; only the input channels differ. Five different split seeds show how much is split luck. Config and metrics: `config.json`, `metrics.json`.
