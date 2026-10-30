@@ -35,3 +35,6 @@ artifacts/battery-local/
 artifacts/battery-benchmark-*/
 .hypothesis/
 .coverage
+
+# Local secrets
+.env

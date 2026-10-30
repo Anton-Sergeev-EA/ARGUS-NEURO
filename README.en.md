@@ -103,6 +103,8 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The port is bound to localh
 
 Hardware sizing for production (what was measured, what is only a recommendation, and what must be added outside the software): [docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md).
 
+Production deployment with TLS, login, monitoring and backups, and the limits of use: [docs/PRODUCTION.md](docs/PRODUCTION.md).
+
 ## How the project works
 
 ARGUS-NEURO turns measurements into a report that says what is known, what is estimated and what is withheld.
@@ -348,7 +350,7 @@ Native tests remain active in Release. Python tests cover feature parity and edg
 
 [CI](.github/workflows/ci.yml) uses Python 3.12 and Node 22, builds the extension with compiler warnings as errors, runs both CTest executables and `clang-tidy`, runs both Python modes with a 70% coverage floor, checks formatting, dashboard logic and README/documentation consistency, and validates the complete staged training/export workflow.
 
-Current local result (30 October 2026): 2 of 2 CTest executables, 216 Python tests with the native extension (195 passed and 21 native-only skips with the NumPy fallback), 73% line coverage, 18 dashboard tests. Tests that need the downloaded NASA, CALB or HUST data skip when it is absent.
+Current local result (30 October 2026): 2 of 2 CTest executables, 217 Python tests with the native extension (196 passed and 21 native-only skips with the NumPy fallback), 73% line coverage, 18 dashboard tests. Tests that need the downloaded NASA, CALB or HUST data skip when it is absent.
 
 ### Recorded evaluation
 

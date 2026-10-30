@@ -31,7 +31,7 @@ Données : NASA PCoE (4 cellules), CALB (28 cellules NCM) et HUST (77 cellules L
 - **Les courbes battent la droite sur HUST, pas partout.** En appariant par cellule sur des prévisions communes, l’erreur moyenne est de 53 contre 82 cycles et l’intervalle à 95 % du gain est de 23–35 cycles sur 108 cellules, mais 75 des 77 cellules HUST s’améliorent, CALB se dégrade de 5 cycles et NASA ne change pas. L’analyse n’était pas préenregistrée ; la droite reste donc le choix par défaut.
 - **Les gains antérieurs des modèles appris et des indicateurs de courbe sont retirés.** Sur le pipeline corrigé, l’ensemble avec indicateurs de courbe est de 11 à 15 % plus précis que la meilleure référence fondée sur la seule capacité sur les cellules de développement HUST, mais sur 15 cellules verrouillées la différence n’est pas confirmée statistiquement (voir la section sur les preuves).
 - Tout cela concerne des cellules de laboratoire, pas des packs de véhicules. Les rapports de pack gardent l’intervalle non calibré et le signalent.
-- **Vérification :** la CI compile le C++ avec les avertissements en erreurs, lance `clang-tidy`, les tests Python avec un plancher de couverture de 70 % et la cohérence des README. En local (30 octobre 2026) : 216 tests Python (195 réussis et 21 ignorés sans l’extension native), 18 tests d’interface, couverture 73 %.
+- **Vérification :** la CI compile le C++ avec les avertissements en erreurs, lance `clang-tidy`, les tests Python avec un plancher de couverture de 70 % et la cohérence des README. En local (30 octobre 2026) : 217 tests Python (196 réussis et 21 ignorés sans l’extension native), 18 tests d’interface, couverture 73 %.
 
 ## Cas d’usage
 
@@ -75,6 +75,8 @@ bash scripts/docker_smoke.sh
 Ouvrez [http://127.0.0.1:8000](http://127.0.0.1:8000). Le port n’écoute que sur localhost, car l’API n’a pas d’authentification ; changez-le avec `ARGUS_PORT`. Le volume `argus-data` conserve modèles, données NASA et rapports enregistrés : `docker compose down` le garde, `docker compose down -v` le supprime. Le conteneur s’exécute en utilisateur non root, avec un système de fichiers racine en lecture seule.
 
 Matériel requis en production (ce qui a été mesuré, ce qui n’est qu’une recommandation et ce qu’il faut ajouter en dehors du logiciel) : [docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md) (en anglais).
+
+Déploiement de production avec TLS, connexion, supervision et sauvegardes, et limites d’usage : [docs/PRODUCTION.md](docs/PRODUCTION.md) (en anglais).
 
 ## Comment fonctionne le projet
 

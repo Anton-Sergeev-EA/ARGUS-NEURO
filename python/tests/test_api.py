@@ -92,3 +92,15 @@ def test_health_detects_producer_failure_and_stale_data() -> None:
         del server.app.state.telemetry
 
     asyncio.run(scenario())
+
+
+def test_metrics_report_state_without_a_running_service() -> None:
+    from fastapi.testclient import TestClient
+
+    server.app.state.telemetry = None
+    response = TestClient(server.app).get("/api/metrics")
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/plain")
+    assert "argus_up 0\n" in response.text
+    assert "argus_last_tick_age_seconds -1\n" in response.text
+    assert "# TYPE argus_connected_clients gauge" in response.text

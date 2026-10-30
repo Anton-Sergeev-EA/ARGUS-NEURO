@@ -19,3 +19,6 @@ artifacts/revalidated-*
 artifacts/battery-benchmark-*
 artifacts/active.json
 artifacts/active.json.tmp
+.env
+.env.*
+!.env.example

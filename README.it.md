@@ -31,7 +31,7 @@ Dati: NASA PCoE (4 celle), CALB (28 celle NCM) e HUST (77 celle LFP), 3 713 punt
 - **Le curve battono la retta su HUST, non ovunque.** Con l’accoppiamento per cella sulle previsioni comuni l’errore medio è 53 contro 82 cicli e l’intervallo al 95 % del guadagno è 23–35 cicli su 108 celle, ma migliorano 75 delle 77 celle HUST, CALB peggiora di 5 cicli e NASA non cambia. L’analisi non era preregistrata, quindi la retta resta il predefinito.
 - **I vantaggi precedenti dei modelli appresi e degli indicatori di curva sono ritirati.** Nella pipeline corretta l’insieme con indicatori di curva è più accurato dell’11–15 % rispetto alla migliore base solo-capacità sulle celle di sviluppo HUST, ma su 15 celle bloccate la differenza non è confermata statisticamente (vedi la sezione sulle prove).
 - Tutto ciò riguarda celle di laboratorio, non pacchi di veicoli. I rapporti dei pacchi mantengono l’intervallo non calibrato e lo dichiarano.
-- **Verifica:** la CI compila il C++ con avvisi come errori, esegue `clang-tidy`, i test Python con soglia di copertura del 70 % e la coerenza dei README. In locale (30 ottobre 2026): 216 test Python (195 superati e 21 saltati senza estensione nativa), 18 test dell’interfaccia, copertura 73 %.
+- **Verifica:** la CI compila il C++ con avvisi come errori, esegue `clang-tidy`, i test Python con soglia di copertura del 70 % e la coerenza dei README. In locale (30 ottobre 2026): 217 test Python (196 superati e 21 saltati senza estensione nativa), 18 test dell’interfaccia, copertura 73 %.
 
 ## Casi d’uso
 
@@ -75,6 +75,8 @@ bash scripts/docker_smoke.sh
 Aprite [http://127.0.0.1:8000](http://127.0.0.1:8000). La porta è legata solo a localhost perché l’API non ha autenticazione; si cambia con `ARGUS_PORT`. Il volume `argus-data` conserva modelli, dati NASA e rapporti salvati: `docker compose down` lo mantiene, `docker compose down -v` lo elimina. Il contenitore gira come utente non root con il file system radice in sola lettura.
 
 Requisiti hardware per la produzione (cosa è stato misurato, cosa è solo una raccomandazione e cosa va aggiunto fuori dal software): [docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md) (in inglese).
+
+Distribuzione in produzione con TLS, accesso, monitoraggio e backup, e limiti d’uso: [docs/PRODUCTION.md](docs/PRODUCTION.md) (in inglese).
 
 ## Come funziona il progetto
 

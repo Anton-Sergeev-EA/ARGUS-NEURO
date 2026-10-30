@@ -31,7 +31,7 @@ Datos: NASA PCoE (4 celdas), CALB (28 celdas NCM) y HUST (77 celdas LFP), 3 713 
 - **Las curvas superan a la recta en HUST, no en todas partes.** Emparejando por celda sobre predicciones comunes, el error medio es 53 frente a 82 ciclos y el intervalo del 95 % de la ganancia es de 23–35 ciclos sobre 108 celdas, pero mejoran 75 de las 77 celdas de HUST, CALB empeora 5 ciclos y NASA no cambia. El análisis no se registró de antemano, así que la recta sigue por defecto.
 - **Las ganancias anteriores de los modelos aprendidos y de los indicadores de curva se retiran.** En el flujo corregido, el conjunto con indicadores de curva es entre un 11 y un 15 % más preciso que la mejor referencia solo de capacidad en las celdas de desarrollo de HUST, pero en 15 celdas reservadas la diferencia no está confirmada estadísticamente (véase la sección de evidencia).
 - Todo esto se refiere a celdas de laboratorio, no a paquetes de vehículos. Los informes de paquete mantienen el intervalo sin calibrar y lo indican.
-- **Verificación:** la CI compila C++ con advertencias como errores, ejecuta `clang-tidy`, las pruebas Python con un mínimo de cobertura del 70 % y la coherencia de los README. En local (30 de octubre de 2026): 216 pruebas Python (195 superadas y 21 omitidas sin la extensión nativa), 18 pruebas de interfaz, cobertura 73 %.
+- **Verificación:** la CI compila C++ con advertencias como errores, ejecuta `clang-tidy`, las pruebas Python con un mínimo de cobertura del 70 % y la coherencia de los README. En local (30 de octubre de 2026): 217 pruebas Python (196 superadas y 21 omitidas sin la extensión nativa), 18 pruebas de interfaz, cobertura 73 %.
 
 ## Casos de uso
 
@@ -75,6 +75,8 @@ bash scripts/docker_smoke.sh
 Abra [http://127.0.0.1:8000](http://127.0.0.1:8000). El puerto solo escucha en localhost porque la API no tiene autenticación; cámbielo con `ARGUS_PORT`. El volumen `argus-data` guarda modelos, datos NASA e informes guardados: `docker compose down` lo conserva, `docker compose down -v` lo borra. El contenedor se ejecuta como usuario sin privilegios con el sistema de archivos raíz de solo lectura.
 
 Requisitos de hardware para producción (qué se midió, qué es solo una recomendación y qué hay que añadir fuera del software): [docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md) (en inglés).
+
+Despliegue de producción con TLS, acceso, monitorización y copias, y límites de uso: [docs/PRODUCTION.md](docs/PRODUCTION.md) (en inglés).
 
 ## Cómo funciona el proyecto
 

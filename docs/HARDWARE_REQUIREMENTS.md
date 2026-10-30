@@ -13,6 +13,7 @@ Test bench: laptop with an Intel Core i5-1235U (12 threads), 23 GB RAM, NVMe, Li
 | `/api/battery/example` response | 1–5 ms over a local connection | `curl`, 6 requests |
 | Prediction by all models for one window | about 8 ms | `method_experiment`, `latency` field |
 | Trained model size | GB ≈ 0.2 MB, GPR ≈ 5 MB, detector and RUL weights bundle about 3 MB | files in `artifacts/` and `metrics.json` |
+| Load through the TLS proxy with login (24 concurrent requests, 20 WebSocket clients, 20 s) | about 220 requests/s in total, no errors, p50/p95 about 70/320 ms; application about 258 MB | `scripts/load_test.py`, see [PRODUCTION.md](PRODUCTION.md) |
 | Full method comparison (77 HUST cells, 10 processes) | 29 seconds | `method_experiment --workers 10` |
 | Local data directory `artifacts/battery-local` | 5.8 GB (NASA, CALB, HUST sources and caches) | `du` |
 

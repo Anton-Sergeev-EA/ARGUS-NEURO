@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
 from argus.battery.api import router as battery_router
@@ -269,6 +269,43 @@ async def health() -> JSONResponse:
         },
         200 if healthy else 503,
     )
+
+
+@app.get("/api/metrics")
+async def metrics() -> PlainTextResponse:
+    """Prometheus text format; gauges only, no per-asset or personal data."""
+    state: ServiceState | None = getattr(app.state, "telemetry", None)
+    running = state is not None and state.task is not None and not state.task.done()
+    age = (
+        None
+        if state is None or state.last_tick is None
+        else (time.monotonic() - state.last_tick)
+    )
+    lines = [
+        ("argus_up", "1 when the telemetry producer is running", int(running)),
+        (
+            "argus_model_backed",
+            "1 when trained models are loaded",
+            int(state is not None and state.fleet.model_backed),
+        ),
+        (
+            "argus_connected_clients",
+            "Open WebSocket clients",
+            0 if state is None else state.manager.connected_count,
+        ),
+        (
+            "argus_last_tick_age_seconds",
+            "Seconds since the last telemetry tick (-1 before the first)",
+            -1 if age is None else round(age, 3),
+        ),
+        (
+            "argus_producer_error",
+            "1 when the producer reported an error",
+            int(state is not None and state.error is not None),
+        ),
+    ]
+    body = "".join(f"# HELP {n} {h}\n# TYPE {n} gauge\n{n} {v}\n" for n, h, v in lines)
+    return PlainTextResponse(body, media_type="text/plain; version=0.0.4")
 
 
 @app.get("/api/fleet")

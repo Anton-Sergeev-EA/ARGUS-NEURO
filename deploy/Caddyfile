@@ -1,0 +1,38 @@
+# TLS and authentication in front of ARGUS-NEURO. The application has no login of its own.
+# ARGUS_SITE: "localhost" uses Caddy's internal CA (test); a public domain gets a Let's
+# Encrypt certificate automatically (ports 80 and 443 must reach this host).
+{$ARGUS_SITE:localhost} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+
+	# Liveness stays open for load balancers; it exposes no data.
+	@health path /api/health
+	handle @health {
+		reverse_proxy argus:8000
+	}
+
+	# Machine clients authenticate with their own bearer token (ARGUS_INGEST_TOKEN).
+	@ingest path /api/ingest/*
+	handle @ingest {
+		reverse_proxy argus:8000
+	}
+
+	# Everything else, including the dashboard, the API, metrics and the WebSocket.
+	handle {
+		basic_auth {
+			{$ARGUS_USER} {$ARGUS_PASSWORD_HASH}
+		}
+		reverse_proxy argus:8000
+	}
+
+	request_body {
+		max_size 4MB
+	}
+}

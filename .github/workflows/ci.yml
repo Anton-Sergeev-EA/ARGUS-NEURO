@@ -66,9 +66,33 @@ jobs:
         run: |
           bash scripts/docker_smoke.sh
           curl -fsS http://127.0.0.1:8000/api/health | grep -q '"model_backed":true'
+      - name: Stop the development stack
+        run: docker compose down -v
+      - name: Production stack, TLS and login
+        run: |
+          PASSWORD="$(head -c 18 /dev/urandom | base64 | tr -d '/+=')"
+          echo "::add-mask::$PASSWORD"
+          HASH="$(docker run --rm caddy:2.11.7-alpine caddy hash-password --plaintext "$PASSWORD" | sed 's/\$/$$/g')"
+          {
+            echo "ARGUS_USER=operator"
+            echo "ARGUS_PASSWORD_HASH=$HASH"
+            echo "ARGUS_HTTP_PORT=8080"
+            echo "ARGUS_HTTPS_PORT=8443"
+          } > prod.env
+          export ARGUS_COMPOSE="docker compose -f docker-compose.prod.yml --env-file prod.env"
+          $ARGUS_COMPOSE up -d
+          $ARGUS_COMPOSE exec -T argus bash scripts/train_all.sh
+          $ARGUS_COMPOSE restart argus
+          bash scripts/prod_smoke.sh https://localhost:8443 operator "$PASSWORD"
+          bash scripts/backup_volume.sh /tmp/argus-backup.tar.gz
+          tar tzf /tmp/argus-backup.tar.gz > /dev/null
       - name: Show logs on failure
         if: failure()
-        run: docker compose logs --tail 100 argus
+        run: |
+          docker compose logs --tail 100 argus
+          docker compose -f docker-compose.prod.yml --env-file prod.env logs --tail 100
       - name: Clean up
         if: always()
-        run: docker compose down -v
+        run: |
+          docker compose down -v
+          docker compose -f docker-compose.prod.yml --env-file prod.env down -v || true
