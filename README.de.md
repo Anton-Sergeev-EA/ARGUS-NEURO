@@ -20,7 +20,17 @@ ARGUS-NEURO verbindet die Analyse der Batteriekapazität mit der Forschung zur D
 
 [Backtest auf 108 Zellen, Englisch](docs/BACKTEST.md) · [Spannungskurven-Indikatoren in C++, Englisch](docs/CURVES.md) · [Methodik, Englisch](docs/METHODOLOGY.md)
 
-Das einfache Restlebensdauer-Intervall traf die Wahrheit nur in 12 % der Prognosen bei nominal 90 %. Nach der Kalibrierung trifft es 90 % bei unbekannten Zellen. Das gilt für Laborzellen, nicht für EV-Packs.
+### Forschungsergebnisse an 108 Laborzellen
+
+Daten: NASA PCoE (4 Zellen), CALB (28 NCM-Zellen) und HUST (77 LFP-Zellen), 3 723 Prognosepunkte. Jede Prognose sieht nur ihre beobachtete Vergangenheit. Details und Reproduktionsbefehle: [BACKTEST.md](docs/BACKTEST.md) (Englisch).
+
+- **Das einfache Intervall war zu selbstsicher.** Das Bootstrap-Intervall 5–95 % enthielt die wahre Restlebensdauer nur in **12 %** der Prognosen bei nominal 90 %.
+- **Das kalibrierte Intervall hält bei unbekannten Daten.** Ein Conformal-Radius mit gleichem Gewicht je Quelle deckt **97 %** bei ungesehenen Zellen und **96 %** ab, wenn ein ganzer Datensatz ausgelassen wird (CALB 90 %, HUST 100 %, **NASA 67 %**). Der Preis ist die Breite: das mediane Intervall beträgt etwa das 1,6-Fache der Restlebensdauer. Neue Chemie oder Protokolle können unterdeckt sein.
+- **Kurvenanpassungen halfen nicht,** deshalb bleibt der lineare Trend Standard.
+- **Gelernte Modelle halbieren den Fehler der Geraden** bei zwei Chemien (CALB 47 gegenüber 96 Zyklen, HUST 77 gegenüber 156). Sie werden nur als optionale „Zweitmeinung“ mit Gültigkeitsprüfung angeboten; trainierte Gewichte werden nie eingecheckt.
+- **Spannungskurven-Indikatoren senken den Fehler um 24 %** (68,6 → 52,4 Zyklen bei HUST, in 5 von 5 Aufteilungen besser), benötigen aber eine aufgezeichnete Ladekurve und sind daher noch nicht Teil des Berichts.
+- Das betrifft Laborzellen, keine Fahrzeugpacks. Pack-Berichte behalten das unkalibrierte Intervall und weisen darauf hin.
+- **Prüfung:** Die CI baut C++ mit Warnungen als Fehlern, führt `clang-tidy`, Python-Tests mit 70 % Mindestabdeckung und die README-Konsistenzprüfung aus. Lokal (29. Oktober 2026): 145 Python-Tests (124 bestanden und 21 übersprungen ohne native Erweiterung), 14 Oberflächentests, Abdeckung 73 %.
 
 ## Schnellstart: Batterieseite
 
@@ -36,7 +46,7 @@ bash scripts/run_dashboard.sh
 
 ## Aufnahmen der laufenden Anwendung
 
-Am 28. Oktober 2026 lokal aufgenommen, keine Entwürfe. Der Batteriebericht ist deutsch; gemeinsame Auswahl-, Verlaufs- und Geräteansichten sind englisch.
+Am 28. Oktober 2026 (Batterie-Ansichten am 29. Oktober aktualisiert) lokal aufgenommen, keine Entwürfe. Der Batteriebericht ist deutsch; gemeinsame Auswahl-, Verlaufs- und Geräteansichten sind englisch.
 
 ### 1. Ohne eigene CSV beginnen
 
@@ -273,14 +283,18 @@ Dies sind datierte Ergebnisse, keine zugesagten Ergebnisse für andere Umgebunge
 | `python/argus/training/` | Aufteilung der Läufe, Skalierer, Training, Hilfen für Reproduzierbarkeit |
 | `python/argus/inference/`, `python/argus/artifacts.py` | Bewertungen und Auflösung des aktiven Pakets |
 | `python/argus/api/`, `python/argus/export/` | FastAPI-Dienst und geprüfter ONNX-Export |
+| `python/argus/battery/` | Kapazitätsbewertung, Kalibrierung, Backtest, Kurvenindikatoren, Datensatz-Lader, gelernte Zweitmeinung, Berichtsspeicher |
 | `python/tests/` | Python-Regressionstests |
 | `web/dashboard/` | Mehrsprachige HTML/CSS/JS-Konsole und Node-Tests; kein Frontend-Build-System |
 | `artifacts/` | Historische Demo-Dateien und lokal erzeugte Pakete |
 | `scripts/` | Umgebungseinrichtung, Build, gestuftes Training, lokaler Start |
 | `experiments/` | Konfigurationen, Metriken, Änderungs-Snapshots und Evaluierungsnotizen |
 | `docs/RELIABILITY.md` | Diagnoseentscheidungen, Verhalten bei Fehlern und Einsatzgrenzen |
+| `docs/BATTERY.md`, `METHODOLOGY.md`, `BACKTEST.md`, `CURVES.md` | Batteriemethode und API, Formeln und Annahmen, Backtest-Belege, Spannungskurven-Indikatoren |
 
 ## Aktuelle Grenzen und nächste Schritte
+
+Für Batterien: Kein Ergebnis ist an Fahrzeugpacks oder im Feld validiert; die Kalibrierung überträgt sich ungleichmäßig zwischen Quellen (NASA 67 %); das Intervall ist breit; Spannungskurven-Indikatoren brauchen aufgezeichnete Ladekurven und werden noch nicht in Berichten genutzt; die gelernte Zweitmeinung deckt nur Chemie und Protokoll des Trainings ab. Nächster Schritt: mehr Zellen mit Spannungs- und Temperaturaufzeichnung sowie Daten auf Pack-Ebene.
 
 Adapter für echte Telemetrie, dauerhafte Speicherung des Telemetrieverlaufs von Anlagen, Authentifizierung, Mandantentrennung und eine C++-Inferenzbrücke für ONNX Runtime bleiben künftige Arbeit. Prioritäten für die Feldvalidierung sind zeitgestempelte Erfassung, ingenieurmäßig gekennzeichnete Fehler, unabhängige physische Anlagen für Tests, akzeptable Fehlalarmraten und die Messung der Vorwarnzeit. Vor dem industriellen Betrieb sind außerdem Drift-Überwachung und Langzeittests zu Netzwerk- und Geräteausfällen erforderlich.
 

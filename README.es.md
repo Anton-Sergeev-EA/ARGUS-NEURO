@@ -20,7 +20,17 @@ ARGUS-NEURO combina el análisis de capacidad de baterías con la investigación
 
 [Backtest en 108 celdas, inglés](docs/BACKTEST.md) · [Indicadores de curvas de tensión en C++, inglés](docs/CURVES.md) · [Metodología, inglés](docs/METHODOLOGY.md)
 
-El intervalo simple de vida restante acertó solo en el 12 % de las predicciones frente a un 90 % nominal. Tras la calibración cubre el 90 % en celdas no vistas. Se aplica a celdas de laboratorio, no a paquetes de vehículos.
+### Resultados de investigación con 108 celdas de laboratorio
+
+Datos: NASA PCoE (4 celdas), CALB (28 celdas NCM) y HUST (77 celdas LFP), 3 723 puntos de predicción. Cada predicción solo ve su pasado observado. Detalles y comandos de reproducción: [BACKTEST.md](docs/BACKTEST.md) (inglés).
+
+- **El intervalo simple era demasiado optimista.** El intervalo bootstrap 5–95 % cubría la vida restante real solo en el **12 %** de las predicciones frente a un 90 % nominal.
+- **El intervalo calibrado se sostiene con datos nuevos.** Un radio conformal con el mismo peso por fuente cubre el **97 %** en celdas no vistas y el **96 %** al excluir un conjunto de datos completo (CALB 90 %, HUST 100 %, **NASA 67 %**). El precio es la anchura: el intervalo mediano es unas 1,6 veces la vida restante. Una química o un protocolo nuevos pueden quedar infracubiertos.
+- **Las curvas no ayudaron,** por lo que la tendencia lineal sigue por defecto.
+- **Los modelos aprendidos reducen a la mitad el error de la recta** en dos químicas (CALB 47 frente a 96 ciclos, HUST 77 frente a 156). Solo se ofrecen como «segunda opinión» opcional con comprobación de dominio; los pesos entrenados nunca se suben al repositorio.
+- **Los indicadores de la curva de tensión reducen el error un 24 %** (68,6 → 52,4 ciclos en HUST, mejor en 5 de 5 particiones), pero requieren una curva de carga registrada, por lo que aún no forman parte del informe.
+- Todo esto se refiere a celdas de laboratorio, no a paquetes de vehículos. Los informes de paquete mantienen el intervalo sin calibrar y lo indican.
+- **Verificación:** la CI compila C++ con advertencias como errores, ejecuta `clang-tidy`, las pruebas Python con un mínimo de cobertura del 70 % y la coherencia de los README. En local (29 de octubre de 2026): 145 pruebas Python (124 superadas y 21 omitidas sin la extensión nativa), 14 pruebas de interfaz, cobertura 73 %.
 
 ## Inicio rápido: pantalla de batería
 
@@ -36,7 +46,7 @@ Abra [http://127.0.0.1:8000](http://127.0.0.1:8000), elija **B0018**, mantenga *
 
 ## Capturas de la aplicación en funcionamiento
 
-Capturadas localmente el 28 de octubre de 2026; no son maquetas. El informe de batería está en español; las vistas compartidas de selección, tendencia y equipos están en inglés.
+Capturadas localmente el 28 de octubre de 2026 (pantallas de batería actualizadas el 29 de octubre); no son maquetas. El informe de batería está en español; las vistas compartidas de selección, tendencia y equipos están en inglés.
 
 ### 1. Empezar sin CSV propio
 
@@ -273,14 +283,18 @@ Son resultados fechados, no resultados prometidos para otros entornos ni para eq
 | `python/argus/training/` | División de ejecuciones, escaladores, entrenamiento, utilidades de reproducibilidad |
 | `python/argus/inference/`, `python/argus/artifacts.py` | Evaluaciones y resolución del paquete activo |
 | `python/argus/api/`, `python/argus/export/` | Servicio FastAPI y exportación ONNX verificada |
+| `python/argus/battery/` | Evaluación de capacidad, calibración, backtest, indicadores de curva, cargadores de datos, segunda opinión aprendida, almacenamiento de informes |
 | `python/tests/` | Pruebas de regresión de Python |
 | `web/dashboard/` | Consola multilingüe HTML/CSS/JS y pruebas de Node; sin sistema de compilación de frontend |
 | `artifacts/` | Archivos de demostración históricos y paquetes generados localmente |
 | `scripts/` | Configuración del entorno, compilación, entrenamiento escalonado, arranque local |
 | `experiments/` | Configuraciones, métricas, instantáneas de cambios y notas de evaluación |
 | `docs/RELIABILITY.md` | Decisiones de diagnóstico, comportamiento ante fallos y límites de despliegue |
+| `docs/BATTERY.md`, `METHODOLOGY.md`, `BACKTEST.md`, `CURVES.md` | Método y API de batería, fórmulas y supuestos, evidencia del backtest, indicadores de la curva de tensión |
 
 ## Límites actuales y próximos pasos
+
+Para baterías: ningún resultado está validado en paquetes de vehículos ni en campo; la calibración se transfiere de forma desigual entre fuentes (NASA 67 %); el intervalo es ancho; los indicadores de la curva de tensión necesitan curvas de carga registradas y aún no se usan en los informes; la segunda opinión aprendida solo cubre la química y el protocolo con los que se entrenó. El siguiente paso son más celdas con registros de tensión y temperatura y datos a nivel de paquete.
 
 Los adaptadores de telemetría real, el historial persistente de telemetría de equipos, la autenticación, el aislamiento entre inquilinos y un puente de inferencia ONNX Runtime en C++ siguen siendo trabajo futuro. Las prioridades para la validación en campo son la adquisición con marcas de tiempo, averías etiquetadas por ingeniería, activos físicos independientes para las pruebas, tasas de falsas alarmas aceptables y la medición del tiempo de anticipación. Antes de la operación industrial también se necesitan monitorización de la deriva y pruebas de larga duración de fallos de red y de dispositivos.
 

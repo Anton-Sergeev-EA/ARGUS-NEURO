@@ -2,7 +2,7 @@
 
 **Battery-health analysis and power-electronics diagnostics: C++20, Python, ML/DL and a working web interface.**
 
-> **Portfolio signal:** Industrial AI / predictive maintenance / edge-oriented ML engineering. Equipment-fleet evaluation uses synthetic data; measured NASA cell histories are available separately. Neither route establishes field-validated EV-pack life or real-equipment failure-prediction accuracy.
+> **Portfolio signal:** Industrial AI / predictive maintenance / edge-oriented ML engineering. Equipment-fleet evaluation uses synthetic data; measured NASA cell histories are available separately. Neither route establishes field-validated EV-pack life or real-equipment failure-prediction accuracy. Battery forecasts are backtested on 108 laboratory cells and the limits of that evidence are published.
 
 ## Engineering evidence at a glance
 
@@ -13,6 +13,9 @@
 - Explicit `warming_up`, `ready`, `invalid_data`, and `degraded` states instead of silently inventing predictions.
 - FastAPI/WebSocket fleet monitor with bounded slow-client behaviour and transport health separated from model availability.
 - CI verifies Python lint/formatting, C++ Release tests, native and NumPy execution paths, dashboard contracts, retraining, and ONNX parity.
+- Battery remaining-life intervals are backtested on **108 laboratory cells** (NASA, CALB, HUST) and conformally calibrated: the raw interval covered the truth in 12% of forecasts, the calibrated one in 97% on unseen cells and 96% on unseen datasets, and the weakest case (NASA, 67%) is reported.
+- **C++20 voltage-curve indicators** (dQ/dV peak, voltage rise time, step resistance) with NumPy parity; on HUST they cut remaining-life error by 24% (5 of 5 splits).
+- An optional learned **second opinion** that refuses requests outside the chemistry, scope, threshold and sampling it was trained on.
 - Reliability documentation states what is computationally tested, what remains heuristic, and what would be required before field deployment.
 
 ## What a reviewer should inspect first
@@ -22,6 +25,8 @@
 3. [Inference engine](python/argus/inference/engine.py) — evidence, provenance, quality gates, and synthetic RUL semantics.
 4. [Training pipeline](python/argus/training/) and generated reports under [artifacts](artifacts/).
 5. [Reproducibility experiment](experiments/2026-09-30_reliability/).
+6. [Backtest](docs/BACKTEST.md), [methodology](docs/METHODOLOGY.md) and [battery assessment code](python/argus/battery/assessment.py) — how the remaining-life interval is produced, calibrated and where it fails.
+7. [Voltage-curve indicators](docs/CURVES.md) and the [experiments log](experiments/LOG.md) — each experiment has a configuration, metrics and a conclusion.
 
 ---
 
@@ -43,7 +48,16 @@ ARGUS-NEURO combines battery-capacity analysis with power-electronics diagnostic
 
 [Backtest on 108 cells](docs/BACKTEST.md) · [Voltage-curve indicators in C++](docs/CURVES.md) · [Methodology](docs/METHODOLOGY.md)
 
-The plain remaining-life interval covered the truth in only 12% of forecasts against a nominal 90%. After calibration it covers 90% on cells it has not seen. This applies to laboratory cells, not EV packs.
+### Research results on 108 laboratory cells
+
+Data: NASA PCoE (4 cells), CALB (28 NCM cells) and HUST (77 LFP cells), 3,723 forecast points. Every forecast sees only its observed past. Details and reproduction commands: [BACKTEST.md](docs/BACKTEST.md).
+
+- **The plain interval was over-confident.** The bootstrap 5–95% interval covered the true remaining life in only **12%** of forecasts against a nominal 90%.
+- **The calibrated interval holds on unseen data.** A conformal radius with equal weight per source dataset covers **97%** of forecasts on cells it did not see and **96%** when a whole dataset is held out (CALB 90%, HUST 100%, **NASA 67%**). The price is width: the median interval is about 1.6 times the remaining life. A new chemistry or protocol may be under-covered.
+- **Curved fits did not help,** so the straight-line trend remains the default.
+- **Learned models halve the error of a straight line** on two chemistries (CALB 47 vs 96 cycles, HUST 77 vs 156). They are offered only as an optional second opinion with domain checks; trained weights are never committed.
+- **Voltage-curve indicators lower the error by 24%** (68.6 → 52.4 cycles on HUST, better in 5 of 5 splits) but need a recorded charge curve, so they are not yet part of the report.
+- All of this concerns laboratory cells, not EV packs. Pack reports keep the uncalibrated interval and say so.
 
 ## Quick start: battery page
 
@@ -59,7 +73,7 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000), choose **B0018**, keep **40
 
 ## Screenshots from the running application
 
-Captured on 28 October 2026 from the locally running application. These are actual application screens, not mockups. The battery report is available below in the language of this README; shared overview, trend and fleet screenshots use English.
+Captured on 28 October 2026 (battery screens refreshed on 29 October) from the locally running application. These are actual application screens, not mockups. The battery report is available below in the language of this README; shared overview, trend and fleet screenshots use English.
 
 ### 1. Start without uploading a personal CSV
 
@@ -77,7 +91,7 @@ First 40 discharge tests: **83.8% SOH**, unknown SOC and a conditional **11.3–
 
 ![Measured capacity history and 70-percent threshold](docs/screenshots/battery-trend-en.jpg)
 
-The green line shows the first 40 measured tests; the dashed line is the 70% threshold. The text above the plot describes change over tests 11–40 used by the recent trend. Capacity-based SOH is not a battery safety assessment.
+The solid line shows the first 40 measured tests; the dashed line is the 70% threshold; the dotted line and shaded wedge are the projected capacity and its calibrated uncertainty range. The text above the plot describes change over tests 11–40 used by the recent trend. Capacity-based SOH is not a battery safety assessment.
 
 ### 4. Live equipment monitoring
 
@@ -99,7 +113,9 @@ The dashboard is connected to the server simulator: six assets, **ML + DL** infe
 - **Detector disagreement.** The dashboard shows when spectral, reconstruction, and reference-based detectors disagree. A positive detector can raise an alert without requiring a majority vote.
 - **Consistent native and NumPy features.** The 11 statistical/spectral features use a shared zero-padded FFT contract. The pybind11 extension supports strided/reversed arrays and releases the GIL after copying its input.
 - **Connection-aware monitoring.** The dashboard marks disconnected or stale feeds, retains the last snapshot, and retries the connection. Browser-generated telemetry starts only through an explicit demo action and has a separate source label.
-- **Nine-language interface.** English (primary), Russian (second), Chinese, Hindi, Spanish, French, German, Japanese and Italian; both pages remember the same language preference.
+- **Calibrated, auditable forecasts.** Every forecast parameter lives in one configuration object; reports state whether the interval is calibrated (laboratory cells) or not (packs), and refuse to give a number when history is short, unstable or contradictory.
+- **Report history.** Saved reports form a timeline; `GET /api/battery/history/{id}/changes` shows how capacity and remaining life moved between the two newest reports. Heavy routes are rate-limited.
+- **Nine-language interface.** English (primary), Russian (second), Chinese, Hindi, Spanish, French, German, Japanese and Italian; both pages remember the same language preference. Sensor and asset names, decimal separators and dates follow the selected language.
 
 These are implemented product choices, not claims of worldwide novelty or validated industrial performance.
 
@@ -127,7 +143,7 @@ The six sensor channels are `voltage_v`, `current_a`, `temperature_c`, `vibratio
 
 The project has been exercised on Ubuntu/Linux with CPython 3.12, GCC 13, CMake 3.28, and Node.js 22. Building the native extension requires a C++20 compiler and Python development headers. Python must support creating virtual environments. Node is needed only for dashboard tests, not for serving the application.
 
-Direct Python dependency versions are pinned in [python/requirements.txt](python/requirements.txt); [python/requirements-dev.txt](python/requirements-dev.txt) additionally installs Ruff. This is not a complete transitive dependency lock. Training records the versions of its main numerical libraries in the bundle reports.
+Direct Python dependency versions are pinned in [python/requirements.txt](python/requirements.txt); [python/requirements-dev.txt](python/requirements-dev.txt) additionally installs Ruff, pytest-cov, Hypothesis and openpyxl. This is not a complete transitive dependency lock. Training records the versions of its main numerical libraries in the bundle reports.
 
 ## First setup on Ubuntu
 
@@ -213,6 +229,7 @@ The health index is a heuristic display score, not a failure probability. The da
 | `GET /api/fleet` | Last completed fleet snapshot; returns 503 before the first snapshot |
 | `WS /ws/telemetry` | Initial snapshot when available, followed by fleet updates |
 | `GET /docs` | FastAPI's generated HTTP API documentation |
+| `/api/battery/*` | Battery analysis, public datasets, CSV import, local report history and comparison; see [BATTERY.md](docs/BATTERY.md) |
 
 `/api/health` returns 200 when the producer is running and its last snapshot is at most 10 seconds old; otherwise it returns 503. **Inspect `model_backed` separately:** a healthy transport can still deliver assessments with unavailable models. `/api/fleet` can return an old snapshot after a producer failure, so clients should inspect timestamps and health rather than interpreting HTTP 200 as fresh telemetry.
 
@@ -263,7 +280,9 @@ node --test web/dashboard/tests/*.test.cjs
 
 Native tests remain active in Release. Python tests cover feature parity and edge cases, models, independent run splitting, provenance and abstention, and WebSocket failure behavior. Native-only tests skip when the extension is unavailable. The fallback check assumes `argus_core` has not also been installed into the Python environment.
 
-[CI](.github/workflows/ci.yml) uses Python 3.12 and Node 22, builds the extension, runs both Python modes, checks formatting/dashboard logic, and validates the complete staged training/export workflow.
+[CI](.github/workflows/ci.yml) uses Python 3.12 and Node 22, builds the extension with compiler warnings as errors, runs both CTest executables and `clang-tidy`, runs both Python modes with a 70% coverage floor, checks formatting, dashboard logic and README/documentation consistency, and validates the complete staged training/export workflow.
+
+Current local result (29 October 2026): 2 of 2 CTest executables, 145 Python tests with the native extension (124 passed and 21 native-only skips with the NumPy fallback), 73% line coverage, 14 dashboard tests. Tests that need the downloaded NASA, CALB or HUST data skip when it is absent.
 
 ### Recorded evaluation
 
@@ -290,26 +309,33 @@ These are dated results, not promised outcomes for other environments or real eq
 - **Address already in use:** stop the server you started with Ctrl+C, or choose another `ARGUS_PORT`.
 - **Disconnected/stale feed:** the UI preserves the last snapshot and retries. The explicit browser-demo button generates illustrations without using trained models; it does not reconnect real telemetry.
 - **Opening `index.html` directly:** the page can run the explicit browser demo, but use the server URL for model-backed diagnostics.
+- **Battery `429 rate_limited`:** the analysis routes allow 60 requests per minute per client; wait for `Retry-After` or raise `ARGUS_BATTERY_RATE_LIMIT`.
+- **Battery `503 public_dataset_unavailable`:** the NASA cache is not prepared; follow [PUBLIC_BATTERY_DATA.md](docs/PUBLIC_BATTERY_DATA.md).
+- **`second_opinion: not_installed` or `out_of_domain`:** expected unless a model was trained locally for the same chemistry and protocol.
 - **Dependency or serialization mismatch:** use the project's virtual environment and retrain with its pinned dependencies. Do not silently reuse an incompatible bundle.
 
 ## Repository layout
 
 | Path | Contents |
 |---|---|
-| `cpp_core/` | Feature extraction, radix-2 FFT, pybind11 bindings, native tests |
+| `cpp_core/` | Feature extraction, radix-2 FFT, battery voltage-curve indicators, pybind11 bindings, native tests |
 | `python/argus/simulator/` | Synthetic telemetry and waveform generation |
 | `python/argus/features/`, `models/` | Native/NumPy interface and model definitions |
 | `python/argus/training/` | Run splitting, scalers, training, reproducibility helpers |
 | `python/argus/inference/`, `python/argus/artifacts.py` | Assessments and active-bundle resolution |
 | `python/argus/api/`, `python/argus/export/` | FastAPI service and verified ONNX export |
+| `python/argus/battery/` | Capacity assessment, calibration, backtest, curve indicators, dataset loaders, learned second opinion, report storage |
 | `python/tests/` | Python regression tests |
 | `web/dashboard/` | Multilingual HTML/CSS/JS console and Node tests; no frontend build system |
 | `artifacts/` | Historical demo files and locally generated bundles |
 | `scripts/` | Environment setup, build, staged training, local launch |
 | `experiments/` | Configurations, metrics, change snapshots, and evaluation notes |
 | `docs/RELIABILITY.md` | Diagnostic decisions, failure behavior, and deployment boundaries |
+| `docs/BATTERY.md`, `METHODOLOGY.md`, `BACKTEST.md`, `CURVES.md` | Battery method and API, formulas and assumptions, backtest evidence, voltage-curve indicators |
 
 ## Current boundaries and next steps
+
+For batteries: no result here is validated on EV packs or in the field; calibration transfers unevenly between sources (NASA 67%); the interval is wide; voltage-curve indicators need recorded charge curves and are not yet used by reports; the learned second opinion covers only the chemistry and protocol it was trained on. More cells with voltage and temperature records, and pack-level data, are the next step.
 
 Real telemetry adapters, durable equipment telemetry history, authentication, tenant isolation, and a C++ ONNX Runtime inference bridge remain future work. Priorities for field validation are timestamped acquisition, engineering-labelled faults, independent physical assets for testing, acceptable false-alarm rates, and warning-time measurements. Drift monitoring and long-duration network/device failure tests are also needed before industrial operation.
 
