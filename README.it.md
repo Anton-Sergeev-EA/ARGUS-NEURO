@@ -371,3 +371,5 @@ Adattatori per telemetria reale, storico persistente della telemetria delle appa
 ## Autore e licenza
 
 Sergeev Anton Valentinovič (Сергеев Антон Валентинович, Anton Valentinovich Sergeev). Distribuito con licenza MIT; vedere [LICENSE](LICENSE).
+
+Diritti sul progetto, marchio e cambio di licenza (in inglese): [docs/RIGHTS.md](docs/RIGHTS.md).

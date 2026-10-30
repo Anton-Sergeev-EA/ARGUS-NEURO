@@ -371,3 +371,5 @@ node --test web/dashboard/tests/*.test.cjs
 ## 作者与许可证
 
 谢尔盖耶夫·安东·瓦连京诺维奇（Сергеев Антон Валентинович，Anton Valentinovich Sergeev）。采用 MIT 许可证；见 [LICENSE](LICENSE)。
+
+项目权利、商标和更换许可证的步骤（英文）：[docs/RIGHTS.md](docs/RIGHTS.md)。

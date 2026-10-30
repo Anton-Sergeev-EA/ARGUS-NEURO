@@ -371,3 +371,5 @@ node --test web/dashboard/tests/*.test.cjs
 ## लेखक और लाइसेंस
 
 सेर्गेयेव अंतोन वालेंतिनोविच (Сергеев Антон Валентинович, Anton Valentinovich Sergeev)। MIT लाइसेंस के अंतर्गत; देखें [LICENSE](LICENSE)।
+
+परियोजना के अधिकार, ट्रेडमार्क और लाइसेंस बदलने की प्रक्रिया (अंग्रेज़ी में): [docs/RIGHTS.md](docs/RIGHTS.md)।

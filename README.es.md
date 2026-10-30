@@ -371,3 +371,5 @@ Los adaptadores de telemetría real, el historial persistente de telemetría de 
 ## Autor y licencia
 
 Serguéyev Antón Valentínovich (Сергеев Антон Валентинович, Anton Valentinovich Sergeev). Licencia MIT; véase [LICENSE](LICENSE).
+
+Derechos sobre el proyecto, marca y cambio de licencia (en inglés): [docs/RIGHTS.md](docs/RIGHTS.md).

@@ -371,3 +371,5 @@ Les adaptateurs de télémétrie réelle, l’historique persistant de télémé
 ## Auteur et licence
 
 Sergueïev Anton Valentinovitch (Сергеев Антон Валентинович, Anton Valentinovich Sergeev). Sous licence MIT ; voir [LICENSE](LICENSE).
+
+Droits sur le projet, marque et changement de licence (en anglais) : [docs/RIGHTS.md](docs/RIGHTS.md).

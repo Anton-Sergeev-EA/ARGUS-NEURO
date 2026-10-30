@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use ARGUS-NEURO in research or a product, please cite it as below."
+title: "ARGUS-NEURO: predictive diagnostics for power electronics and batteries"
+type: software
+authors:
+  - family-names: Sergeev
+    given-names: Anton Valentinovich
+    email: avsergeev1981@gmail.com
+repository-code: "https://github.com/Anton-Sergeev-EA/ARGUS-NEURO"
+license: MIT
+date-released: "2026-10-30"
+keywords:
+  - predictive maintenance
+  - battery remaining useful life
+  - power electronics
+  - conformal prediction
+  - OCPP

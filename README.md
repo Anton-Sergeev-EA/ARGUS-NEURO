@@ -377,3 +377,5 @@ node --test web/dashboard/tests/*.test.cjs
 ## Автор и лицензия
 
 Сергеев Антон Валентинович. Лицензия MIT — см. [LICENSE](LICENSE).
+
+Права на проект, товарный знак и порядок смены лицензии: [docs/RIGHTS.ru.md](docs/RIGHTS.ru.md).

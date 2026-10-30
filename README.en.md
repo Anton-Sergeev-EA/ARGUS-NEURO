@@ -412,3 +412,5 @@ Real telemetry adapters, durable equipment telemetry history, authentication, te
 ## Author and license
 
 Сергеев Антон Валентинович (Anton Valentinovich Sergeev). Licensed under MIT; see [LICENSE](LICENSE).
+
+Rights to the project, the trademark and how to change the license: [docs/RIGHTS.md](docs/RIGHTS.md).

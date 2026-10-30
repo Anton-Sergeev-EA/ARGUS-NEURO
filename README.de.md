@@ -371,3 +371,5 @@ Adapter für echte Telemetrie, dauerhafte Speicherung des Telemetrieverlaufs von
 ## Autor und Lizenz
 
 Sergejew Anton Walentinowitsch (Сергеев Антон Валентинович, Anton Valentinovich Sergeev). Lizenziert unter MIT; siehe [LICENSE](LICENSE).
+
+Rechte am Projekt, Marke und Lizenzwechsel (auf Englisch): [docs/RIGHTS.md](docs/RIGHTS.md).
