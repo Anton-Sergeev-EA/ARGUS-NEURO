@@ -76,6 +76,8 @@ Abra [http://127.0.0.1:8000](http://127.0.0.1:8000). El puerto solo escucha en l
 
 Requisitos de hardware para producción (qué se midió, qué es solo una recomendación y qué hay que añadir fuera del software): [docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md) (en inglés).
 
+Lista de materiales para conectar a dispositivos reales (conectores, cables, placas, sensores; qué está comprobado y qué no): [docs/FIELD_BOM.es.md](docs/FIELD_BOM.es.md).
+
 Despliegue de producción con TLS, acceso, monitorización y copias, y límites de uso: [docs/PRODUCTION.md](docs/PRODUCTION.md) (en inglés).
 
 ## Cómo funciona el proyecto

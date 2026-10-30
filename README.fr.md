@@ -76,6 +76,8 @@ Ouvrez [http://127.0.0.1:8000](http://127.0.0.1:8000). Le port n’écoute que s
 
 Matériel requis en production (ce qui a été mesuré, ce qui n’est qu’une recommandation et ce qu’il faut ajouter en dehors du logiciel) : [docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md) (en anglais).
 
+Nomenclature pour le raccordement à des appareils réels (connecteurs, câbles, cartes, capteurs ; ce qui est vérifié et ce qui ne l’est pas): [docs/FIELD_BOM.fr.md](docs/FIELD_BOM.fr.md).
+
 Déploiement de production avec TLS, connexion, supervision et sauvegardes, et limites d’usage : [docs/PRODUCTION.md](docs/PRODUCTION.md) (en anglais).
 
 ## Comment fonctionne le projet

@@ -76,6 +76,8 @@ bash scripts/docker_smoke.sh
 
 生产环境的硬件配置（哪些是实测值、哪些只是建议、哪些需要在软件之外补充）：[docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md)（英文）。
 
+接入真实设备所需的物料清单（连接器、线缆、电路板、传感器；哪些已核对、哪些未核对）: [docs/FIELD_BOM.zh.md](docs/FIELD_BOM.zh.md).
+
 生产部署（TLS、登录、监控、备份）及适用范围：[docs/PRODUCTION.md](docs/PRODUCTION.md)（英文）。
 
 ## 项目如何工作

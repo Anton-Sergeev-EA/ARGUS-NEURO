@@ -88,7 +88,7 @@
 
 | Кандидат | Что подтверждено | Что не подтверждено |
 |---|---|---|
-| Revolution Pi Connect 4 (КУНБУС) | Промышленный корпус на DIN-рейку 96×45×110,5 мм, IP20; **RS485 встроен**; CAN — отдельный модуль расширения. Цена базового блока €389 (магазин производителя) – €535 без НДС (Distrelec); модуль CAN £113 без НДС (RS UK) | Совместимость модуля CAN (PR100286) именно с Connect 4: один продавец указывает только старые блоки, проверить перед заказом |
+| Revolution Pi Connect 4 (КУНБУС) | Промышленный корпус на DIN-рейку 96×45×110,5 мм, IP20; **RS485 встроен**; 2× USB-A, 2× RJ45. Цена базового блока €389 (магазин производителя) – €535 без НДС (Distrelec) | **Поправка 30.10.2026:** модуль RevPi Con CAN с Connect 4 несовместим (по магазину производителя); CAN берётся из USB-адаптера. Свободной гребёнки I²C/SPI нет. Подробности и перечень деталей: [FIELD_BOM.ru.md](FIELD_BOM.ru.md) |
 | Raspberry Pi Compute Module 5 на несущей плате | Диапазон температур по краткому описанию модуля −20…+85 °C | Цена 8 ГБ-версии у официальных источников не найдена (розница от £78 до $444, большой разброс); промышленный диапазон −40 °C относится к другим комплектациям |
 | Обычный Raspberry Pi 5 | Не искался отдельно | Промышленный диапазон температур не подтверждён: для установки на борту техники не использовать без проверки |
 
@@ -124,6 +124,6 @@
 - PCAN-USB: [Gridconnect](https://gridconnect.com/can-usb.html), [PCAN-USB FD, Control Technologies](https://controltech.uk.com/products/pcan-usb-fd), [IPEH-002021, IQElectro](https://iqelectro.com/products/ipeh-002021-peak-system-pcan-usb-adapter)
 - INA228: [Texas Instruments](https://www.ti.com/product/ina228), [Adafruit INA228](https://pakronics.com.au/products/adafruit-ina228-i2c-85v-20-bit-high-or-low-side-power-monitor-ada5832), [SparkFun](https://www.sparkfun.com/sparkfun-current-sensor-ina228-qwiic.html)
 - Compute Module 5: [описание производителя](https://pip-assets.raspberrypi.com/categories/944-raspberry-pi-compute-module-5/documents/RP-008181-DS-10-cm5-product-brief.pdf), [промышленная презентация](https://www.raspberrypi.com/app/uploads/2025/03/Industrial-Customer-Presentation_Compute-Module.pdf)
-- RevPi Connect 4: [магазин производителя](https://revolutionpi.com/shop/en/revpi-connect4), [модуль CAN, RS UK](https://uk.rs-online.com/web/p/plc-expansion-modules/1825574/)
+- RevPi Connect 4: [магазин производителя](https://revolutionpi.com/shop/en/revpi-connect4)
 - ADXL355: [Analog Devices, измерение вибраций](https://www.analog.com/en/resources/technical-articles/measuring-ac-accelerations-to-calibrate-or-not-to-calibrate.html), [Electronic Design](https://www.electronicdesign.com/markets/automation/article/21806684/threeaxis-mems-accelerometers-transform-iot-machine-monitoring)
 - OCPP: [apostoldevel/ocpp-cs](https://github.com/apostoldevel/ocpp-cs), [OpenCPO core](https://awesome.ecosyste.ms/projects/github.com%2Fopencpo%2Fopencpo-core), [Open Charge Alliance, signed meter values](https://openchargealliance.org/wp-content/uploads/2025/05/signed_meter_values-v10-1.pdf)

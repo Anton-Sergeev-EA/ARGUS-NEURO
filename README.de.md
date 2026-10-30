@@ -76,6 +76,8 @@ bash scripts/docker_smoke.sh
 
 Hardwareanforderungen für den Produktivbetrieb (was gemessen wurde, was nur eine Empfehlung ist und was außerhalb der Software ergänzt werden muss): [docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md) (auf Englisch).
 
+Stückliste für den Anschluss an reale Geräte (Stecker, Kabel, Platinen, Sensoren; was geprüft ist und was nicht): [docs/FIELD_BOM.de.md](docs/FIELD_BOM.de.md).
+
 Produktivbetrieb mit TLS, Anmeldung, Überwachung und Sicherungen sowie die Grenzen der Nutzung: [docs/PRODUCTION.md](docs/PRODUCTION.md) (auf Englisch).
 
 ## So funktioniert das Projekt

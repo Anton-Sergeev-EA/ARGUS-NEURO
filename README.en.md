@@ -103,6 +103,8 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The port is bound to localh
 
 Hardware sizing for production (what was measured, what is only a recommendation, and what must be added outside the software): [docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md).
 
+Bill of materials for connecting to real devices (connectors, cables, boards, sensors; what is verified and what is not): [docs/FIELD_BOM.md](docs/FIELD_BOM.md).
+
 Production deployment with TLS, login, monitoring and backups, and the limits of use: [docs/PRODUCTION.md](docs/PRODUCTION.md).
 
 ## How the project works

@@ -76,6 +76,8 @@ Aprite [http://127.0.0.1:8000](http://127.0.0.1:8000). La porta è legata solo a
 
 Requisiti hardware per la produzione (cosa è stato misurato, cosa è solo una raccomandazione e cosa va aggiunto fuori dal software): [docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md) (in inglese).
 
+Distinta dei materiali per il collegamento a dispositivi reali (connettori, cavi, schede, sensori; cosa è verificato e cosa no): [docs/FIELD_BOM.it.md](docs/FIELD_BOM.it.md).
+
 Distribuzione in produzione con TLS, accesso, monitoraggio e backup, e limiti d’uso: [docs/PRODUCTION.md](docs/PRODUCTION.md) (in inglese).
 
 ## Come funziona il progetto

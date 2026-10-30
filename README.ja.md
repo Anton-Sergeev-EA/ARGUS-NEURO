@@ -74,6 +74,8 @@ bash scripts/docker_smoke.sh
 
 本番運用のハードウェア要件（実測した値、推奨にすぎない値、ソフトウェアの外で用意すべきもの）：[docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md)（英語）。
 
+実機に接続するための部品表（コネクタ、ケーブル、基板、センサー。確認済みのものと未確認のもの）: [docs/FIELD_BOM.ja.md](docs/FIELD_BOM.ja.md).
+
 TLS・ログイン・監視・バックアップを備えた本番デプロイと利用の限界：[docs/PRODUCTION.md](docs/PRODUCTION.md)（英語）。
 
 ## プロジェクトの仕組み
