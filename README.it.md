@@ -75,6 +75,8 @@ bash scripts/docker_smoke.sh
 
 Aprite [http://127.0.0.1:8000](http://127.0.0.1:8000). La porta è legata solo a localhost perché l’API non ha autenticazione; si cambia con `ARGUS_PORT`. Il volume `argus-data` conserva modelli, dati NASA e rapporti salvati: `docker compose down` lo mantiene, `docker compose down -v` lo elimina. Il contenitore gira come utente non root con il file system radice in sola lettura.
 
+Requisiti hardware per la produzione (cosa è stato misurato, cosa è solo una raccomandazione e cosa va aggiunto fuori dal software): [docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md) (in inglese).
+
 ## Come funziona il progetto
 
 ARGUS-NEURO trasforma le misure in un rapporto che dice cosa è noto, cosa è stimato e cosa viene rifiutato.

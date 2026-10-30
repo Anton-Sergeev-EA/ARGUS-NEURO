@@ -73,6 +73,8 @@ bash scripts/docker_smoke.sh
 
 [http://127.0.0.1:8000](http://127.0.0.1:8000) を開きます。API に認証がないため、ポートはローカルホストのみに公開されます。変更は `ARGUS_PORT` で行います。ボリューム `argus-data` にモデル、NASA データ、保存したレポートが残ります。`docker compose down` では残り、`docker compose down -v` で削除されます。コンテナは非 root ユーザーで、読み取り専用のルートファイルシステムで動作します。
 
+本番運用のハードウェア要件（実測した値、推奨にすぎない値、ソフトウェアの外で用意すべきもの）：[docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md)（英語）。
+
 ## プロジェクトの仕組み
 
 ARGUS-NEURO は測定値を、何が分かっていて、何が推定で、何を控えるのかを示すレポートに変えます。

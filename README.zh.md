@@ -75,6 +75,8 @@ bash scripts/docker_smoke.sh
 
 打开 [http://127.0.0.1:8000](http://127.0.0.1:8000)。端口只绑定到本机，因为 API 没有身份验证；可用 `ARGUS_PORT` 修改。卷 `argus-data` 保存模型、NASA 数据和已保存的报告：`docker compose down` 会保留它，`docker compose down -v` 会删除它。容器以非 root 用户运行，根文件系统为只读。
 
+生产环境的硬件配置（哪些是实测值、哪些只是建议、哪些需要在软件之外补充）：[docs/HARDWARE_REQUIREMENTS.md](docs/HARDWARE_REQUIREMENTS.md)（英文）。
+
 ## 项目如何工作
 
 ARGUS-NEURO 把测量数据变成一份报告，清楚说明哪些是已知的、哪些是估计的、哪些被拒绝给出。
