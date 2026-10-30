@@ -52,15 +52,48 @@ def records_from_csv(text: str) -> list[CapacityRecord]:
     return records
 
 
-def load_histories(path: Path) -> list[BatteryRequest]:
-    raw = json.loads(path.read_text())
+def load_histories_with_meta(
+    path: Path, threshold_pct: float | None = None
+) -> tuple[dict[str, Any], list[BatteryRequest]]:
+    """Histories plus the sampling description stored with the cache.
+
+    A bare list (the legacy format) is reported as diagnostic adaptive sampling. A
+    ``threshold_pct`` rewrites the service threshold of every history.
+    """
+    document = json.loads(path.read_text())
+    if isinstance(document, dict) and "cells" in document:
+        meta, raw = document["meta"], document["cells"]
+    else:
+        meta = {
+            "sampling": "adaptive_stride_ceil_N_over_600",
+            "stride": None,
+            "diagnostic_only": True,
+        }
+        raw = document
     if not isinstance(raw, list) or not raw:
         raise ValueError("dataset must contain a nonempty list of battery histories")
     histories = [BatteryRequest.model_validate(item) for item in raw]
     ids = [h.profile.battery_id for h in histories]
     if len(ids) != len(set(ids)):
         raise ValueError("duplicate physical battery IDs")
-    return histories
+    if threshold_pct is not None:
+        histories = [
+            h.model_copy(
+                update={
+                    "profile": h.profile.model_copy(
+                        update={"service_threshold_pct": float(threshold_pct)}
+                    )
+                }
+            )
+            for h in histories
+        ]
+    return meta, histories
+
+
+def load_histories(
+    path: Path, threshold_pct: float | None = None
+) -> list[BatteryRequest]:
+    return load_histories_with_meta(path, threshold_pct)[1]
 
 
 def import_nasa_mat(path: Path, reference_capacity_ah: float = 2.0) -> dict[str, Any]:

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import pytest
@@ -14,7 +13,13 @@ from test_battery_research import synthetic_history
 def trained(tmp_path_factory: pytest.TempPathFactory) -> Path:
     root = tmp_path_factory.mktemp("so")
     dataset = root / "cells.json"
-    dataset.write_text(json.dumps([synthetic_history(i) for i in range(14)]))
+    from argus.battery import sampling
+
+    sampling.write_cache(
+        dataset,
+        {"sampling": sampling.FIXED, "stride": 1, "diagnostic_only": False},
+        [synthetic_history(i) for i in range(14)],
+    )
     train(dataset, root / "model")
     return root / "model"
 

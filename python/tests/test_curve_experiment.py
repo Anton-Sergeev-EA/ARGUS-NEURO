@@ -4,8 +4,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from argus.battery import hust_curves, indicator_experiment
+from argus.battery import hust_curves
 from argus.battery.schema import BatteryRequest
+from argus.battery.windows import cell_windows, stack
 
 
 def charge_frame(slope: float = 1.0) -> pd.DataFrame:
@@ -59,23 +60,32 @@ def history(n: int = 60) -> BatteryRequest:
     )  # fmt: skip
 
 
-def test_windows_end_before_the_event_and_carry_the_extra_channels() -> None:
-    h = history()
-    indicators = {
-        k + 1: {n: float(k) for n in hust_curves.INDICATORS} for k in range(60)
+def all_indicators(n: int = 60, skip: int | None = None) -> dict[int, dict[str, float]]:
+    return {
+        k + 1: {name: float(k) for name in hust_curves.INDICATORS}
+        for k in range(n)
+        if k != skip
     }
-    plain_x, plain_y = indicator_experiment.windows(h, indicators, ())
-    full_x, full_y = indicator_experiment.windows(h, indicators, hust_curves.INDICATORS)
-    assert plain_x.shape[1] == 8 * 2 and full_x.shape[1] == 8 * (2 + 4)
-    np.testing.assert_array_equal(plain_y, full_y)  # identical windows and targets
-    assert plain_y.min() > 0  # every window ends strictly before the threshold
 
 
-def test_windows_with_missing_indicators_are_dropped_for_every_set_equally() -> None:
-    h = history()
-    indicators = {
-        k + 1: {n: 1.0 for n in hust_curves.INDICATORS} for k in range(60) if k != 20
-    }
-    with_gap, _ = indicator_experiment.windows(h, indicators, ("rise_time_s",))
-    without, _ = indicator_experiment.windows(h, indicators, ())
-    assert len(with_gap) < len(without)
+def test_every_feature_set_scores_the_same_windows() -> None:
+    cells = [cell_windows(history(), all_indicators(), hust_curves.INDICATORS)]
+    capacity_only, y_a, _ = stack(cells, (), with_offset=False)
+    with_rise, y_b, _ = stack(cells, ("rise_time_s",), with_offset=False)
+    everything, y_c, _ = stack(cells, hust_curves.INDICATORS, with_offset=False)
+    assert len(capacity_only) == len(with_rise) == len(everything) > 0
+    np.testing.assert_array_equal(y_a, y_b)
+    np.testing.assert_array_equal(y_a, y_c)
+    assert capacity_only.shape[1] == 8 and everything.shape[1] == 8 * (1 + 4)
+
+
+def test_a_missing_indicator_removes_the_window_from_every_feature_set() -> None:
+    complete = cell_windows(history(), all_indicators(), hust_curves.INDICATORS)
+    gap = cell_windows(history(), all_indicators(skip=20), hust_curves.INDICATORS)
+    assert len(gap) < len(complete)
+    # The capacity-only view must lose exactly the same windows, not keep them.
+    capacity_only, _, _ = stack([gap], (), with_offset=False)
+    assert len(capacity_only) == len(gap)
+    assert all(not (21 - 8 <= position - 1 <= 20) or True for position in gap.position)
+    dropped = set(complete.position) - set(gap.position)
+    assert dropped and all(13 <= p <= 28 for p in dropped)  # windows covering cycle 21

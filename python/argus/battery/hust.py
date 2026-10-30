@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import json
+import io
 import pickle
 import zipfile
 from pathlib import Path
@@ -18,6 +18,7 @@ from typing import Any
 
 import numpy as np
 
+from argus.battery import sampling
 from argus.battery.calb import to_history
 from argus.battery.schema import BatteryRequest
 
@@ -28,7 +29,9 @@ LICENSE = "CC-BY-4.0"
 AMBIENT_C = 30.0
 ROOT = Path(__file__).resolve().parents[3] / "artifacts/battery-local"
 ARCHIVE = ROOT / "hust-raw/our_data.zip"
-OUTPUT = ROOT / "hust/cells.json"
+# Legacy cache written with the length-dependent stride; diagnostic use only.
+LEGACY_OUTPUT = ROOT / "hust/cells.json"
+OUTPUT = ROOT / f"hust/cells-fixed-stride{sampling.DEFAULT_STRIDE}.json"
 
 
 class DataOnlyUnpickler(pickle.Unpickler):
@@ -46,46 +49,85 @@ class DataOnlyUnpickler(pickle.Unpickler):
         return super().find_class(module, name)
 
 
-def cell_capacity(raw: bytes) -> tuple[str, np.ndarray]:
-    """Discharge capacity in Ah per cycle for one pickled cell."""
-    import io
-
+def cell_series(raw: bytes) -> tuple[str, np.ndarray, np.ndarray]:
+    """Cell name, physical cycle ids (the raw keys) and discharge capacity in Ah."""
     document = DataOnlyUnpickler(io.BytesIO(raw)).load()
     ((name, cell),) = document.items()
     cycles = sorted(cell["dq"])
     capacity_ah = np.array([float(cell["dq"][c]) for c in cycles]) / 1000.0
-    return str(name), capacity_ah
+    return str(name), np.array(cycles, dtype=float), capacity_ah
 
 
-def build_cache(archive: Path = ARCHIVE, output: Path = OUTPUT) -> int:
+def cell_capacity(raw: bytes) -> tuple[str, np.ndarray]:
+    """Discharge capacity in Ah per cycle for one pickled cell."""
+    name, _, capacity = cell_series(raw)
+    return name, capacity
+
+
+def build_cache(
+    archive: Path = ARCHIVE,
+    output: Path = OUTPUT,
+    stride: int | str = sampling.DEFAULT_STRIDE,
+) -> int:
     with archive.open("rb") as handle:
         if hashlib.file_digest(handle, "sha256").hexdigest() != SHA256:
             raise ValueError("archive_checksum_mismatch")
     histories: list[dict[str, Any]] = []
     with zipfile.ZipFile(archive) as bundle:
         for member in sorted(n for n in bundle.namelist() if n.endswith(".pkl")):
-            name, capacity = cell_capacity(bundle.read(member))
+            name, ids, capacity = cell_series(bundle.read(member))
             history = to_history(
-                name, AMBIENT_C, capacity, prefix="HUST", chemistry="lfp"
+                name,
+                AMBIENT_C,
+                capacity,
+                prefix="HUST",
+                chemistry="lfp",
+                cycle_ids=ids,
+                stride=stride,
             )
             histories.append(history.model_dump(mode="json"))
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(histories) + "\n", encoding="utf-8")
+    _, _, info = sampling.thin(np.arange(1.0, 3.0), np.zeros(2), stride)
+    meta = {
+        **info,
+        "source": SOURCE,
+        "archive_sha256": SHA256,
+        "cycle_id_source": "raw_pickle_keys",
+        "reference": "median of the first three discharges",
+    }
+    sampling.write_cache(output, meta, histories)
     return len(histories)
 
 
-def load_cache(path: Path = OUTPUT) -> list[BatteryRequest]:
+def load_cache_with_meta(
+    path: Path = OUTPUT,
+) -> tuple[dict[str, Any], list[BatteryRequest]]:
     if not path.exists():
-        return []
-    return [BatteryRequest.model_validate(i) for i in json.loads(path.read_text())]
+        return {}, []
+    meta, cells = sampling.read_cache(path)
+    return meta, [BatteryRequest.model_validate(i) for i in cells]
+
+
+def load_cache(path: Path = OUTPUT) -> list[BatteryRequest]:
+    return load_cache_with_meta(path)[1]
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archive", type=Path, default=ARCHIVE)
-    parser.add_argument("--output", type=Path, default=OUTPUT)
+    parser.add_argument("--output", type=Path, default=None)
+    parser.add_argument(
+        "--stride",
+        default=str(sampling.DEFAULT_STRIDE),
+        help='fixed physical stride in cycles, or "adaptive" for the legacy diagnostic mode',
+    )
     args = parser.parse_args()
-    print(f"{build_cache(args.archive, args.output)} cells written to {args.output}")
+    stride: int | str = "adaptive" if args.stride == "adaptive" else int(args.stride)
+    output = args.output or (
+        LEGACY_OUTPUT
+        if stride == "adaptive"
+        else ROOT / f"hust/cells-fixed-stride{stride}.json"
+    )
+    print(f"{build_cache(args.archive, output, stride)} cells written to {output}")
 
 
 if __name__ == "__main__":

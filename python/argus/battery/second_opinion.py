@@ -20,7 +20,7 @@ import numpy as np
 from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.preprocessing import StandardScaler
 
-from argus.battery.data import load_histories
+from argus.battery.data import load_histories_with_meta
 from argus.battery.schema import BatteryRequest
 from argus.battery.training import WINDOW, asset_split, calibrate, samples, stack_group
 
@@ -59,7 +59,11 @@ def spacing_of(histories: list[BatteryRequest]) -> tuple[float, float]:
 
 
 def train(dataset: Path, output: Path = DEFAULT_DIR) -> dict[str, Any]:
-    histories = load_histories(dataset)
+    sampling_meta, histories = load_histories_with_meta(dataset)
+    if sampling_meta.get("diagnostic_only"):
+        raise ValueError(
+            "refusing to train on a cache thinned by a length-dependent stride"
+        )
     first = histories[0].profile
     split = asset_split(histories, 41)
     x, y = stack_group(split["train"] + split["validation"])
@@ -94,6 +98,7 @@ def train(dataset: Path, output: Path = DEFAULT_DIR) -> dict[str, Any]:
             "service_threshold_pct": first.service_threshold_pct,
             "window_spacing_cycles": [low, high],
         },
+        "sampling": {k: sampling_meta.get(k) for k in ("sampling", "stride")},
         "model_sha256": hashlib.sha256((output / MODEL_FILE).read_bytes()).hexdigest(),
         "dataset_sha256": hashlib.sha256(dataset.read_bytes()).hexdigest(),
         "cells": {k: len(v) for k, v in split.items()},

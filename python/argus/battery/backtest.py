@@ -18,8 +18,7 @@ from typing import Any
 import numpy as np
 
 from argus.battery.assessment import assess_battery
-from argus.battery.calb import load_cache
-from argus.battery.hust import load_cache as load_hust
+from argus.battery import calb, hust
 from argus.battery.config import DEFAULT_CONFIG, ProjectionConfig
 from argus.battery.public_data import CELLS, DATA_DIR, load_public_history
 from argus.battery.schema import BatteryRequest
@@ -32,15 +31,32 @@ PREFIXES_PER_CELL = 12
 COVERAGE = 0.9
 
 
-def histories() -> list[tuple[str, BatteryRequest, tuple[float, ...]]]:
+def histories(
+    legacy_adaptive: bool = False,
+) -> tuple[dict[str, Any], list[tuple[str, BatteryRequest, tuple[float, ...]]]]:
+    """Cells of every source plus the sampling description of each cache.
+
+    The default caches use a fixed physical stride. ``legacy_adaptive`` reads the old
+    length-dependent caches for diagnostic comparison only.
+    """
     found: list[tuple[str, BatteryRequest, tuple[float, ...]]] = []
+    sampling_meta: dict[str, Any] = {"NASA": "discharge_test_index, no thinning"}
     for cell in sorted(CELLS):
         if (DATA_DIR / f"{cell}.json").exists():
             request, _ = load_public_history(f"nasa-{cell}", 2000)
             found.append((cell, request, NASA_THRESHOLDS))
-    found += [(h.profile.battery_id, h, CALB_THRESHOLDS) for h in load_cache()]
-    found += [(h.profile.battery_id, h, HUST_THRESHOLDS) for h in load_hust()]
-    return found
+    calb_path = calb.LEGACY_OUTPUT if legacy_adaptive else calb.DEFAULT_OUTPUT
+    hust_path = hust.LEGACY_OUTPUT if legacy_adaptive else hust.OUTPUT
+    for label, loader, path, thresholds in (
+        ("CALB", calb.load_cache_with_meta, calb_path, CALB_THRESHOLDS),
+        ("HUST", hust.load_cache_with_meta, hust_path, HUST_THRESHOLDS),
+    ):
+        meta, cells = loader(path)
+        sampling_meta[label] = {
+            k: meta.get(k) for k in ("sampling", "stride", "diagnostic_only")
+        }
+        found += [(h.profile.battery_id, h, thresholds) for h in cells]
+    return sampling_meta, found
 
 
 def event_index(request: BatteryRequest, threshold: float) -> int | None:
@@ -218,17 +234,18 @@ def summarize(
     return summary
 
 
-def run() -> dict[str, Any]:
+def run(legacy_adaptive: bool = False) -> dict[str, Any]:
     # Calibration stays off: the backtest measures the raw intervals it calibrates.
     raw = replace(DEFAULT_CONFIG, calibrate_cells=False)
     variants = {
         "linear_only": replace(raw, model="linear"),
         "validated_selection": replace(raw, model="auto"),
     }
-    data = histories()
+    sampling_meta, data = histories(legacy_adaptive)
     out: dict[str, Any] = {
         "cells": [name for name, _, _ in data],
         "coverage_target": COVERAGE,
+        "sampling": sampling_meta,
         "variants": {},
         "detail": {},
     }

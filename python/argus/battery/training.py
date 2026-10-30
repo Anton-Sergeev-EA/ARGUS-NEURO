@@ -18,7 +18,7 @@ from sklearn.preprocessing import StandardScaler
 from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
-from argus.battery.data import load_histories
+from argus.battery.data import load_histories_with_meta
 from argus.battery.models import BatteryGRU, BatteryTCN
 from argus.battery.schema import BatteryRequest
 from argus.training.reproducibility import package_versions, seed_training
@@ -178,7 +178,7 @@ def run_benchmark(
 ) -> dict[str, Any]:
     if epochs < 1 or not seeds:
         raise ValueError("positive epochs and at least one seed required")
-    histories = load_histories(path)
+    sampling_meta, histories = load_histories_with_meta(path)
     semantics = {
         (
             h.profile.chemistry,
@@ -351,6 +351,9 @@ def run_benchmark(
         "schema_version": 1,
         "dataset_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         "versions": package_versions(),
+        "sampling": {
+            k: sampling_meta.get(k) for k in ("sampling", "stride", "diagnostic_only")
+        },
         "split_seed": 41,
         "window_length": WINDOW,
         "split": {k: [h.profile.battery_id for h in v] for k, v in split.items()},

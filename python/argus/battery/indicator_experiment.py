@@ -1,8 +1,11 @@
 """Do charge-curve indicators improve remaining-life prediction beyond capacity alone?
 
 Same cells, same eight-point windows, same asset-grouped splits and the same model
-(gradient boosting); only the input channels differ. Several split seeds show how
-much of a difference is just a lucky split.
+(gradient boosting); only the input channels differ. Windows come from one shared
+constructor with a common requirement (every indicator present), so every feature
+set is scored on identical windows. Sampling is a fixed physical stride read from the
+cache metadata; a cache thinned with a length-dependent stride is refused unless the
+diagnostic flag is given.
 """
 
 from __future__ import annotations
@@ -16,10 +19,11 @@ import numpy as np
 from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.preprocessing import StandardScaler
 
-from argus.battery import hust_curves
-from argus.battery.data import load_histories
+from argus.battery import hust, hust_curves
+from argus.battery.data import load_histories_with_meta
 from argus.battery.schema import BatteryRequest
-from argus.battery.training import WINDOW, asset_split, threshold_event
+from argus.battery.training import asset_split
+from argus.battery.windows import CellWindows, cell_windows, stack, window_report
 
 SPLIT_SEEDS = (41, 42, 43, 44, 45)
 FEATURE_SETS = {
@@ -28,89 +32,79 @@ FEATURE_SETS = {
     "plus_ica": ("ica_peak_v", "ica_peak_height", "ica_peak_width_v"),
     "plus_all_indicators": hust_curves.INDICATORS,
 }
+REQUIRED = hust_curves.INDICATORS
 
 
-def windows(
-    history: BatteryRequest,
-    indicators: dict[int, dict[str, float]],
-    names: tuple[str, ...],
-) -> tuple[np.ndarray, np.ndarray]:
-    """Windows ending before the threshold event; indicator names add channels."""
-    p = history.profile
-    event = threshold_event(history)
-    rows = [r for r in history.records if r.condition_id == p.reference_condition_id]
-    x, y = [], []
-    if event is None:
-        return np.empty((0, WINDOW * (2 + len(names)))), np.empty(0)
-    for end in range(WINDOW, len(rows) + 1):
-        window = rows[end - WINDOW : end]
-        if window[-1].equivalent_cycles >= event:
-            break
-        extra = [indicators.get(int(r.equivalent_cycles)) for r in window]
-        if names and any(e is None for e in extra):
-            continue
-        axis = np.array([r.equivalent_cycles for r in window])
-        channels = [
-            np.array([r.capacity_ah / p.reference_capacity_ah for r in window]),
-            (axis - axis[0]) / 100,
-        ]
-        channels += [np.array([e[n] for e in extra]) for n in names]  # type: ignore[index]
-        x.append(np.stack(channels, axis=1).reshape(-1))
-        y.append((event - window[-1].equivalent_cycles))
-    return np.array(x, dtype=float), np.array(y, dtype=float)
-
-
-def evaluate(
-    histories: list[BatteryRequest],
-    series: dict[str, dict[int, dict[str, float]]],
-    names: tuple[str, ...],
-    seed: int,
-) -> float:
-    split = asset_split(histories, seed)
-
-    def stack(group: list[BatteryRequest]) -> tuple[np.ndarray, np.ndarray]:
-        parts = [windows(h, series.get(h.profile.battery_id, {}), names) for h in group]
-        return np.concatenate([p[0] for p in parts]), np.concatenate(
-            [p[1] for p in parts]
-        )
-
-    x, y = stack(split["train"] + split["validation"])
+def fit_model(
+    train: list[CellWindows], channels: tuple[str, ...]
+) -> tuple[StandardScaler, HistGradientBoostingRegressor]:
+    """Scaler and model are fitted on the training cells only."""
+    x, y, _ = stack(train, channels, with_offset=False)
     scaler = StandardScaler().fit(x)
     model = HistGradientBoostingRegressor(
         max_iter=100, max_leaf_nodes=10, l2_regularization=1.0, random_state=3
     ).fit(scaler.transform(x), y)
+    return scaler, model
+
+
+def evaluate(
+    cells: dict[str, CellWindows],
+    split: dict[str, list[BatteryRequest]],
+    channels: tuple[str, ...],
+) -> float:
+    pick = lambda group: [cells[h.profile.battery_id] for h in group]  # noqa: E731
+    scaler, model = fit_model(pick(split["train"] + split["validation"]), channels)
     maes = []
-    for h in split["test"]:
-        hx, hy = windows(h, series.get(h.profile.battery_id, {}), names)
-        if len(hy):
-            maes.append(
-                float(
-                    np.abs(
-                        np.maximum(0, model.predict(scaler.transform(hx))) - hy
-                    ).mean()
-                )
-            )
+    for cell in pick(split["test"]):
+        if not len(cell):
+            continue
+        x, y, _ = stack([cell], channels, with_offset=False)
+        maes.append(
+            float(np.abs(np.maximum(0, model.predict(scaler.transform(x))) - y).mean())
+        )
     return float(np.mean(maes))
 
 
-def run(dataset: Path, indicators: Path = hust_curves.OUTPUT) -> dict[str, Any]:
-    histories = load_histories(dataset)
-    series = hust_curves.load(indicators)
+def run(
+    cells_path: Path = hust.OUTPUT,
+    indicators_path: Path = hust_curves.OUTPUT,
+    threshold_pct: float = 90.0,
+    allow_diagnostic: bool = False,
+) -> dict[str, Any]:
+    meta, histories = load_histories_with_meta(cells_path, threshold_pct)
+    if meta.get("diagnostic_only") and not allow_diagnostic:
+        raise ValueError(
+            "cache uses a length-dependent stride; pass allow_diagnostic to use it"
+        )
+    indicator_meta, series = hust_curves.load_with_meta(indicators_path)
+    if meta.get("stride") != indicator_meta.get("stride") or meta.get(
+        "sampling"
+    ) != indicator_meta.get("sampling"):
+        raise ValueError("capacity and indicator caches were thinned differently")
+    cells = {
+        h.profile.battery_id: cell_windows(
+            h, series.get(h.profile.battery_id, {}), REQUIRED
+        )
+        for h in histories
+    }
     result: dict[str, Any] = {
-        "cells": len(histories),
+        "sampling": {k: meta.get(k) for k in ("sampling", "stride", "diagnostic_only")},
+        "threshold_pct": threshold_pct,
+        "common_windows": window_report(list(cells.values())),
         "split_seeds": list(SPLIT_SEEDS),
         "sets": {},
     }
-    for label, names in FEATURE_SETS.items():
-        scores = [evaluate(histories, series, names, seed) for seed in SPLIT_SEEDS]
+    splits = {seed: asset_split(histories, seed) for seed in SPLIT_SEEDS}
+    for label, channels in FEATURE_SETS.items():
+        scores = [evaluate(cells, splits[seed], channels) for seed in SPLIT_SEEDS]
         result["sets"][label] = {
-            "channels": ["capacity", "cycle_offset", *names],
+            "channels": ["capacity", *channels],
             "test_macro_mae_cycles_per_split": [round(s, 2) for s in scores],
             "mean": round(float(np.mean(scores)), 2),
             "std": round(float(np.std(scores)), 2),
         }
     base = result["sets"]["capacity_only"]["test_macro_mae_cycles_per_split"]
-    for label, entry in result["sets"].items():
+    for entry in result["sets"].values():
         entry["better_than_capacity_only_in_splits"] = sum(
             a < b for a, b in zip(entry["test_macro_mae_cycles_per_split"], base)
         )
@@ -119,11 +113,13 @@ def run(dataset: Path, indicators: Path = hust_curves.OUTPUT) -> dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("dataset", type=Path)
+    parser.add_argument("--cells", type=Path, default=hust.OUTPUT)
     parser.add_argument("--indicators", type=Path, default=hust_curves.OUTPUT)
+    parser.add_argument("--threshold", type=float, default=90.0)
+    parser.add_argument("--allow-diagnostic", action="store_true")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    result = run(args.dataset, args.indicators)
+    result = run(args.cells, args.indicators, args.threshold, args.allow_diagnostic)
     text = json.dumps(result, indent=1)
     if args.output:
         args.output.write_text(text + "\n", encoding="utf-8")

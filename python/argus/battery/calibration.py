@@ -40,5 +40,6 @@ def calibrate_interval(
         "nominal_coverage": meta["nominal_coverage"],
         "leave_one_cell_out_coverage": meta["leave_one_cell_out_coverage"],
         "cells": meta["cells"],
+        "calibration_status": meta.get("status"),
         "uncalibrated_interval": interval,
     }
