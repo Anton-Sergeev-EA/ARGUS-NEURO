@@ -34,7 +34,7 @@
 
 [Diagnostic contract](docs/RELIABILITY.md) · [Evaluation notes](experiments/2026-09-30_reliability/notes.md)
 
-ARGUS-NEURO combines battery-capacity analysis with power-electronics diagnostic research. The landing page accepts controlled battery tests and published NASA cell measurements; `/equipment.html` monitors a six-asset synthetic fleet. Battery life is a conditional trend projection, while equipment diagnostics require separate validation before field use.
+ARGUS-NEURO combines battery-capacity analysis with power-electronics diagnostic research. The landing page accepts controlled battery tests and published NASA cell measurements; `/equipment.html` monitors a nine-asset synthetic fleet. Battery life is a conditional trend projection, while equipment diagnostics require separate validation before field use.
 
 ## Battery analysis: measurements to an explainable report
 
@@ -58,6 +58,16 @@ Data: NASA PCoE (4 cells), CALB (28 NCM cells) and HUST (77 LFP cells), 3,723 fo
 - **Learned models halve the error of a straight line** on two chemistries (CALB 47 vs 96 cycles, HUST 77 vs 156). They are offered only as an optional second opinion with domain checks; trained weights are never committed.
 - **Voltage-curve indicators lower the error by 24%** (68.6 → 52.4 cycles on HUST, better in 5 of 5 splits) but need a recorded charge curve, so they are not yet part of the report.
 - All of this concerns laboratory cells, not EV packs. Pack reports keep the uncalibrated interval and say so.
+
+## Use cases
+
+Five situations ask the same question about wear, each with its own priorities. [Details and validation status](docs/USE_CASES.md).
+
+- **Electric vehicles:** capacity trend, calibrated range for laboratory cells, care advice from the manufacturer limits you supply.
+- **Charging stations:** a DC fast-charging cabinet is a monitored asset on the equipment page (simulated; no real charger data or OCPP adapter yet).
+- **Rescue and medical drones:** a conservative threshold preset and a *review before assigning to time-critical missions* advisory. Decision support, not an airworthiness assessment.
+- **Shared e-scooters and rental power banks:** **Fleet triage** ranks hundreds of packs from one CSV: service now, plan service, monitor, not enough data.
+- None of these use cases has field data behind it; thresholds are operator choices.
 
 ## Quick start: battery page
 
@@ -97,7 +107,7 @@ The solid line shows the first 40 measured tests; the dashed line is the 70% thr
 
 ![Connected synthetic fleet dashboard with ML and DL inference](docs/screenshots/equipment-live-en.jpg)
 
-The dashboard is connected to the server simulator: six assets, **ML + DL** inference, features, deviation evidence and an anomaly log. **Source: server simulation** identifies the data; remaining life uses a synthetic scale rather than real operating hours.
+The dashboard is connected to the server simulator: nine assets, **ML + DL** inference, features, deviation evidence and an anomaly log. **Source: server simulation** identifies the data; remaining life uses a synthetic scale rather than real operating hours.
 
 ## Start with a small reproducible example
 
@@ -282,7 +292,7 @@ Native tests remain active in Release. Python tests cover feature parity and edg
 
 [CI](.github/workflows/ci.yml) uses Python 3.12 and Node 22, builds the extension with compiler warnings as errors, runs both CTest executables and `clang-tidy`, runs both Python modes with a 70% coverage floor, checks formatting, dashboard logic and README/documentation consistency, and validates the complete staged training/export workflow.
 
-Current local result (29 October 2026): 2 of 2 CTest executables, 145 Python tests with the native extension (124 passed and 21 native-only skips with the NumPy fallback), 73% line coverage, 14 dashboard tests. Tests that need the downloaded NASA, CALB or HUST data skip when it is absent.
+Current local result (29 October 2026): 2 of 2 CTest executables, 153 Python tests with the native extension (132 passed and 21 native-only skips with the NumPy fallback), 74% line coverage, 18 dashboard tests. Tests that need the downloaded NASA, CALB or HUST data skip when it is absent.
 
 ### Recorded evaluation
 

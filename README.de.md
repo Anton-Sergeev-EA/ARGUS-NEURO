@@ -6,7 +6,7 @@
 
 [Diagnosevertrag (Englisch)](docs/RELIABILITY.md) · [Evaluierungsnotizen (Englisch)](experiments/2026-09-30_reliability/notes.md)
 
-ARGUS-NEURO verbindet die Analyse der Batteriekapazität mit der Forschung zur Diagnose von Leistungselektronik. Die Startseite verarbeitet kontrollierte Kapazitätstests und veröffentlichte NASA-Zellmessungen; `/equipment.html` überwacht eine synthetische Flotte aus sechs Anlagen. Die Batterielebensdauer ist eine bedingte Trendprojektion; vor dem Feldeinsatz ist eine gesonderte Validierung nötig.
+ARGUS-NEURO verbindet die Analyse der Batteriekapazität mit der Forschung zur Diagnose von Leistungselektronik. Die Startseite verarbeitet kontrollierte Kapazitätstests und veröffentlichte NASA-Zellmessungen; `/equipment.html` überwacht eine synthetische Flotte aus neun Anlagen. Die Batterielebensdauer ist eine bedingte Trendprojektion; vor dem Feldeinsatz ist eine gesonderte Validierung nötig.
 
 ## Batterieanalyse und nachvollziehbare Berichte
 
@@ -30,7 +30,17 @@ Daten: NASA PCoE (4 Zellen), CALB (28 NCM-Zellen) und HUST (77 LFP-Zellen), 3 72
 - **Gelernte Modelle halbieren den Fehler der Geraden** bei zwei Chemien (CALB 47 gegenüber 96 Zyklen, HUST 77 gegenüber 156). Sie werden nur als optionale „Zweitmeinung“ mit Gültigkeitsprüfung angeboten; trainierte Gewichte werden nie eingecheckt.
 - **Spannungskurven-Indikatoren senken den Fehler um 24 %** (68,6 → 52,4 Zyklen bei HUST, in 5 von 5 Aufteilungen besser), benötigen aber eine aufgezeichnete Ladekurve und sind daher noch nicht Teil des Berichts.
 - Das betrifft Laborzellen, keine Fahrzeugpacks. Pack-Berichte behalten das unkalibrierte Intervall und weisen darauf hin.
-- **Prüfung:** Die CI baut C++ mit Warnungen als Fehlern, führt `clang-tidy`, Python-Tests mit 70 % Mindestabdeckung und die README-Konsistenzprüfung aus. Lokal (29. Oktober 2026): 145 Python-Tests (124 bestanden und 21 übersprungen ohne native Erweiterung), 14 Oberflächentests, Abdeckung 73 %.
+- **Prüfung:** Die CI baut C++ mit Warnungen als Fehlern, führt `clang-tidy`, Python-Tests mit 70 % Mindestabdeckung und die README-Konsistenzprüfung aus. Lokal (29. Oktober 2026): 153 Python-Tests (132 bestanden und 21 übersprungen ohne native Erweiterung), 18 Oberflächentests, Abdeckung 74 %.
+
+## Anwendungsfälle
+
+Fünf Situationen stellen dieselbe Frage nach dem Verschleiß, mit unterschiedlichen Prioritäten. [Details und Validierungsstand](docs/USE_CASES.md) (Englisch).
+
+- **Elektrofahrzeuge:** Kapazitätstrend, kalibrierter Bereich für Laborzellen und Pflegehinweise nach den von Ihnen angegebenen Herstellergrenzen.
+- **Ladestationen:** Ein DC-Schnellladeschrank ist ein überwachtes Asset auf der Geräteseite (simuliert; noch keine echten Ladedaten oder OCPP-Adapter).
+- **Rettungs- und Medizindrohnen:** vorsichtiger Grenzwert-Vorschlag und der Hinweis „vor dem Einsatz bei dringenden Missionen prüfen“. Entscheidungshilfe, keine Lufttüchtigkeitsbewertung.
+- **Geteilte E-Scooter und Miet-Powerbanks:** **Flottenpriorisierung** ordnet Hunderte Batterien aus einer CSV: jetzt warten, Service planen, beobachten, zu wenig Daten.
+- Keiner dieser Fälle hat Felddaten; Grenzwerte wählt der Betreiber.
 
 ## Schnellstart: Batterieseite
 
@@ -70,7 +80,7 @@ Grün: die ersten 40 Messungen; gestrichelt: die 70-%-Grenze. Die Beschriftung b
 
 ![Verbundene synthetische Flotte mit ML- und DL-Inferenz](docs/screenshots/equipment-live-en.jpg)
 
-Sechs simulierte Anlagen, **ML + DL**, Merkmale, Abweichungsnachweise und Alarmprotokoll. **Source: server simulation** benennt die Quelle. Die Lebensdaueranzeige verwendet eine synthetische Skala, keine realen Betriebsstunden.
+Neun simulierte Anlagen, **ML + DL**, Merkmale, Abweichungsnachweise und Alarmprotokoll. **Source: server simulation** benennt die Quelle. Die Lebensdaueranzeige verwendet eine synthetische Skala, keine realen Betriebsstunden.
 
 ## Umgesetzte Funktionen
 

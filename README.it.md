@@ -6,7 +6,7 @@
 
 [Contratto diagnostico (in inglese)](docs/RELIABILITY.md) · [Note di valutazione (in inglese)](experiments/2026-09-30_reliability/notes.md)
 
-ARGUS-NEURO combina l’analisi della capacità delle batterie con la ricerca sulla diagnostica dell’elettronica di potenza. La pagina principale usa prove controllate e misure pubblicate di celle NASA; `/equipment.html` monitora sei unità sintetiche. La vita della batteria è una proiezione condizionata della tendenza; l’impiego sul campo richiede una validazione separata.
+ARGUS-NEURO combina l’analisi della capacità delle batterie con la ricerca sulla diagnostica dell’elettronica di potenza. La pagina principale usa prove controllate e misure pubblicate di celle NASA; `/equipment.html` monitora nove unità sintetiche. La vita della batteria è una proiezione condizionata della tendenza; l’impiego sul campo richiede una validazione separata.
 
 ## Analisi della batteria e rapporto spiegabile
 
@@ -30,7 +30,17 @@ Dati: NASA PCoE (4 celle), CALB (28 celle NCM) e HUST (77 celle LFP), 3 723 punt
 - **I modelli appresi dimezzano l’errore della retta** su due chimiche (CALB 47 contro 96 cicli, HUST 77 contro 156). Sono offerti solo come «seconda opinione» facoltativa con verifica del dominio; i pesi addestrati non vengono mai versionati.
 - **Gli indicatori della curva di tensione riducono l’errore del 24 %** (68,6 → 52,4 cicli su HUST, migliori in 5 partizioni su 5), ma richiedono una curva di carica registrata e quindi non fanno ancora parte del rapporto.
 - Tutto ciò riguarda celle di laboratorio, non pacchi di veicoli. I rapporti dei pacchi mantengono l’intervallo non calibrato e lo dichiarano.
-- **Verifica:** la CI compila il C++ con avvisi come errori, esegue `clang-tidy`, i test Python con soglia di copertura del 70 % e la coerenza dei README. In locale (29 ottobre 2026): 145 test Python (124 superati e 21 saltati senza estensione nativa), 14 test dell’interfaccia, copertura 73 %.
+- **Verifica:** la CI compila il C++ con avvisi come errori, esegue `clang-tidy`, i test Python con soglia di copertura del 70 % e la coerenza dei README. In locale (29 ottobre 2026): 153 test Python (132 superati e 21 saltati senza estensione nativa), 18 test dell’interfaccia, copertura 74 %.
+
+## Casi d’uso
+
+Cinque situazioni pongono la stessa domanda sull’usura, con priorità diverse. [Dettagli e stato di validazione](docs/USE_CASES.md) (inglese).
+
+- **Veicoli elettrici:** tendenza di capacità, intervallo calibrato per celle di laboratorio e consigli secondo i limiti del costruttore che fornite.
+- **Stazioni di ricarica:** un armadio di ricarica rapida DC è un asset monitorato nella pagina delle apparecchiature (simulato; ancora senza dati reali né adattatore OCPP).
+- **Droni di soccorso e medici:** una soglia prudente e l’avviso «verificare prima di assegnarla a missioni urgenti». Supporto alla decisione, non valutazione di aeronavigabilità.
+- **Monopattini condivisi e power bank a noleggio:** la **Priorità della flotta** ordina centinaia di batterie da un CSV: intervenire ora, pianificare, monitorare, dati insufficienti.
+- Nessun caso ha dati di campo; le soglie sono scelte dall’operatore.
 
 ## Avvio rapido: batteria
 
@@ -70,7 +80,7 @@ Verde: prime 40 misure; tratteggio: soglia del 70 %. Il testo descrive il cambia
 
 ![Flotta sintetica collegata con inferenza ML e DL](docs/screenshots/equipment-live-en.jpg)
 
-Sei unità simulate, **ML + DL**, caratteristiche, evidenze degli scostamenti e registro anomalie. **Source: server simulation** identifica l’origine. La vita residua usa una scala sintetica, non ore operative reali.
+Nove unità simulate, **ML + DL**, caratteristiche, evidenze degli scostamenti e registro anomalie. **Source: server simulation** identifica l’origine. La vita residua usa una scala sintetica, non ore operative reali.
 
 ## Funzionalità implementate
 

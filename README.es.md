@@ -6,7 +6,7 @@
 
 [Contrato de diagnóstico (en inglés)](docs/RELIABILITY.md) · [Notas de evaluación (en inglés)](experiments/2026-09-30_reliability/notes.md)
 
-ARGUS-NEURO combina el análisis de capacidad de baterías con la investigación de diagnóstico de electrónica de potencia. La página principal admite pruebas controladas y mediciones publicadas de celdas NASA; `/equipment.html` supervisa una flota sintética de seis activos. La vida de la batería es una proyección condicional de tendencia y el uso en campo requiere validación independiente.
+ARGUS-NEURO combina el análisis de capacidad de baterías con la investigación de diagnóstico de electrónica de potencia. La página principal admite pruebas controladas y mediciones publicadas de celdas NASA; `/equipment.html` supervisa una flota sintética de nueve activos. La vida de la batería es una proyección condicional de tendencia y el uso en campo requiere validación independiente.
 
 ## Análisis de batería e informes explicables
 
@@ -30,7 +30,17 @@ Datos: NASA PCoE (4 celdas), CALB (28 celdas NCM) y HUST (77 celdas LFP), 3 723 
 - **Los modelos aprendidos reducen a la mitad el error de la recta** en dos químicas (CALB 47 frente a 96 ciclos, HUST 77 frente a 156). Solo se ofrecen como «segunda opinión» opcional con comprobación de dominio; los pesos entrenados nunca se suben al repositorio.
 - **Los indicadores de la curva de tensión reducen el error un 24 %** (68,6 → 52,4 ciclos en HUST, mejor en 5 de 5 particiones), pero requieren una curva de carga registrada, por lo que aún no forman parte del informe.
 - Todo esto se refiere a celdas de laboratorio, no a paquetes de vehículos. Los informes de paquete mantienen el intervalo sin calibrar y lo indican.
-- **Verificación:** la CI compila C++ con advertencias como errores, ejecuta `clang-tidy`, las pruebas Python con un mínimo de cobertura del 70 % y la coherencia de los README. En local (29 de octubre de 2026): 145 pruebas Python (124 superadas y 21 omitidas sin la extensión nativa), 14 pruebas de interfaz, cobertura 73 %.
+- **Verificación:** la CI compila C++ con advertencias como errores, ejecuta `clang-tidy`, las pruebas Python con un mínimo de cobertura del 70 % y la coherencia de los README. En local (29 de octubre de 2026): 153 pruebas Python (132 superadas y 21 omitidas sin la extensión nativa), 18 pruebas de interfaz, cobertura 74 %.
+
+## Casos de uso
+
+Cinco situaciones plantean la misma pregunta sobre el desgaste, con prioridades distintas. [Detalles y estado de validación](docs/USE_CASES.md) (inglés).
+
+- **Vehículos eléctricos:** tendencia de capacidad, rango calibrado para celdas de laboratorio y consejos según los límites del fabricante que usted aporte.
+- **Estaciones de carga:** un armario de carga rápida DC es un activo monitorizado en la página de equipos (simulado; aún sin datos reales ni adaptador OCPP).
+- **Drones de rescate y médicos:** un umbral prudente y un aviso «revise antes de asignarla a misiones urgentes». Apoyo a la decisión, no evaluación de aeronavegabilidad.
+- **Patinetes compartidos y baterías externas de alquiler:** **Priorización de flota** ordena cientos de baterías desde un CSV: revisar ya, planificar, vigilar, datos insuficientes.
+- Ningún caso cuenta con datos de campo; los umbrales los decide el operador.
 
 ## Inicio rápido: pantalla de batería
 
@@ -70,7 +80,7 @@ La línea verde muestra las primeras 40 mediciones y la discontinua el umbral de
 
 ![Panel conectado de flota sintética con inferencia ML y DL](docs/screenshots/equipment-live-en.jpg)
 
-Seis activos simulados, **ML + DL**, características, evidencias de desviación y registro de anomalías. **Source: server simulation** identifica el origen. La vida restante usa una escala sintética, no horas reales de funcionamiento.
+Nueve activos simulados, **ML + DL**, características, evidencias de desviación y registro de anomalías. **Source: server simulation** identifica el origen. La vida restante usa una escala sintética, no horas reales de funcionamiento.
 
 ## Funcionalidades implementadas
 
