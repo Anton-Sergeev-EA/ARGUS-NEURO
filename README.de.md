@@ -28,10 +28,10 @@ Daten: NASA PCoE (4 Zellen), CALB (28 NCM-Zellen) und HUST (77 LFP-Zellen), 3 71
 
 - **Das einfache Intervall war zu selbstsicher.** Das Bootstrap-Intervall 5–95 % enthielt die tatsächliche Restlebensdauer nur in **9 %** der Prognosen, nominal sind 90 %.
 - **Das kalibrierte Intervall hält im Mittel, nicht bei jeder Quelle.** Ein Conformal-Radius von 0,65 mit gleichem Gewicht je Datenquelle deckt **96 %** der Prognosen bei unbekannten Zellen ab und **95 %**, wenn ein ganzer Datensatz ausgeschlossen wird, aber nur **83 %** bei CALB und **73 %** bei NASA (HUST 100 %). Das mediane Intervall ist etwa das 1,6-Fache der Restlebensdauer. Bei neuer Chemie oder neuem Protokoll kann die Abdeckung geringer sein.
-- **Bei festem Schritt schlagen Kurvenanpassungen jetzt die Gerade** (mittlerer Fehler 61 gegenüber 83 Zyklen). Standard bleibt die Gerade, bis die Wahl an einem vorab festgelegten Protokoll bestätigt ist.
+- **Kurvenanpassungen schlagen die Gerade bei HUST, nicht überall.** Zellweise gepaart auf gemeinsamen Prognosen liegt der mittlere Fehler bei 53 gegenüber 82 Zyklen, das 95-%-Intervall des Gewinns bei 23–35 Zyklen über 108 Zellen; aber 75 von 77 HUST-Zellen verbessern sich, CALB wird um 5 Zyklen schlechter und NASA bleibt gleich. Die Analyse war nicht vorab festgelegt, daher bleibt die Gerade Standard.
 - **Die früheren Gewinne gelernter Modelle und der Kurvenindikatoren sind zurückgezogen.** In der korrigierten Pipeline ist das Ensemble mit Kurvenindikatoren auf den HUST-Entwicklungszellen 11–15 % genauer als die stärkste Nur-Kapazität-Referenz, bei 15 gesperrten Zellen ist der Unterschied jedoch statistisch nicht bestätigt (siehe Abschnitt zur Beweislage).
 - Das betrifft Laborzellen, keine Fahrzeugpacks. Pack-Berichte behalten das unkalibrierte Intervall und weisen darauf hin.
-- **Prüfung:** Die CI baut C++ mit Warnungen als Fehlern, führt `clang-tidy`, Python-Tests mit 70 % Mindestabdeckung und die README-Konsistenzprüfung aus. Lokal (30. Oktober 2026): 214 Python-Tests (193 bestanden und 21 übersprungen ohne native Erweiterung), 18 Oberflächentests, Abdeckung 73 %.
+- **Prüfung:** Die CI baut C++ mit Warnungen als Fehlern, führt `clang-tidy`, Python-Tests mit 70 % Mindestabdeckung und die README-Konsistenzprüfung aus. Lokal (30. Oktober 2026): 216 Python-Tests (195 bestanden und 21 übersprungen ohne native Erweiterung), 18 Oberflächentests, Abdeckung 73 %.
 
 ## Anwendungsfälle
 

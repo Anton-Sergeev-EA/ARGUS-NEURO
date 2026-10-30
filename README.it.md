@@ -28,10 +28,10 @@ Dati: NASA PCoE (4 celle), CALB (28 celle NCM) e HUST (77 celle LFP), 3 713 punt
 
 - **L’intervallo semplice era troppo sicuro di sé.** L’intervallo bootstrap 5–95 % ha coperto la vita residua reale solo nel **9 %** delle previsioni contro un 90 % nominale.
 - **L’intervallo calibrato regge in media, non su ogni fonte.** Un raggio conforme di 0,65 con lo stesso peso per dataset copre il **96 %** delle previsioni su celle mai viste e il **95 %** escludendo un intero dataset, ma solo l’**83 %** per CALB e il **73 %** per NASA (HUST 100 %). L’intervallo mediano è circa 1,6 volte la vita residua. Una nuova chimica o un nuovo protocollo possono risultare sotto-coperti.
-- **A passo fisso le curve ora battono la retta** (errore medio 61 contro 83 cicli). Il predefinito resta la retta finché la scelta non è confermata su un protocollo fissato in anticipo.
+- **Le curve battono la retta su HUST, non ovunque.** Con l’accoppiamento per cella sulle previsioni comuni l’errore medio è 53 contro 82 cicli e l’intervallo al 95 % del guadagno è 23–35 cicli su 108 celle, ma migliorano 75 delle 77 celle HUST, CALB peggiora di 5 cicli e NASA non cambia. L’analisi non era preregistrata, quindi la retta resta il predefinito.
 - **I vantaggi precedenti dei modelli appresi e degli indicatori di curva sono ritirati.** Nella pipeline corretta l’insieme con indicatori di curva è più accurato dell’11–15 % rispetto alla migliore base solo-capacità sulle celle di sviluppo HUST, ma su 15 celle bloccate la differenza non è confermata statisticamente (vedi la sezione sulle prove).
 - Tutto ciò riguarda celle di laboratorio, non pacchi di veicoli. I rapporti dei pacchi mantengono l’intervallo non calibrato e lo dichiarano.
-- **Verifica:** la CI compila il C++ con avvisi come errori, esegue `clang-tidy`, i test Python con soglia di copertura del 70 % e la coerenza dei README. In locale (30 ottobre 2026): 214 test Python (193 superati e 21 saltati senza estensione nativa), 18 test dell’interfaccia, copertura 73 %.
+- **Verifica:** la CI compila il C++ con avvisi come errori, esegue `clang-tidy`, i test Python con soglia di copertura del 70 % e la coerenza dei README. In locale (30 ottobre 2026): 216 test Python (195 superati e 21 saltati senza estensione nativa), 18 test dell’interfaccia, copertura 73 %.
 
 ## Casi d’uso
 

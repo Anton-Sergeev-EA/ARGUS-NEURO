@@ -56,7 +56,7 @@ Data: NASA PCoE (4 cells), CALB (28 NCM cells) and HUST (77 LFP cells), 3,713 fo
 
 - **The plain interval was over-confident.** The bootstrap 5–95% interval covered the true remaining life in only **9%** of forecasts against a nominal 90%.
 - **The calibrated interval holds on average, not on every source.** A conformal radius of 0.65 with equal weight per source dataset covers **96%** of forecasts on cells it did not see and **95%** when a whole dataset is held out, but only **83%** for CALB and **73%** for NASA (HUST 100%). The median interval is about 1.6 times the remaining life. A new chemistry or protocol may be under-covered.
-- **Curved fits now beat the straight line** at the fixed stride (mean error 61 vs 83 cycles). The default stays the straight line until the choice is confirmed on a protocol fixed in advance.
+- **Curved fits beat the straight line on HUST, not everywhere.** Paired by cell on shared forecasts, the mean error is 53 vs 82 cycles and the 95% interval of the gain is 23–35 cycles over 108 cells, but 75 of 77 HUST cells improve, CALB gets worse by 5 cycles and NASA is unchanged. The analysis was not preregistered, so the straight line stays the default.
 - **The earlier gains of learned models and curve indicators are withdrawn.** On the repaired pipeline the ensemble with curve indicators is 11–15% more accurate than the strongest capacity-only baseline on HUST development cells, but on 15 locked cells the difference is not statistically confirmed (see the evidence section).
 - All of this concerns laboratory cells, not EV packs. Pack reports keep the uncalibrated interval and say so.
 
@@ -348,7 +348,7 @@ Native tests remain active in Release. Python tests cover feature parity and edg
 
 [CI](.github/workflows/ci.yml) uses Python 3.12 and Node 22, builds the extension with compiler warnings as errors, runs both CTest executables and `clang-tidy`, runs both Python modes with a 70% coverage floor, checks formatting, dashboard logic and README/documentation consistency, and validates the complete staged training/export workflow.
 
-Current local result (30 October 2026): 2 of 2 CTest executables, 214 Python tests with the native extension (193 passed and 21 native-only skips with the NumPy fallback), 73% line coverage, 18 dashboard tests. Tests that need the downloaded NASA, CALB or HUST data skip when it is absent.
+Current local result (30 October 2026): 2 of 2 CTest executables, 216 Python tests with the native extension (195 passed and 21 native-only skips with the NumPy fallback), 73% line coverage, 18 dashboard tests. Tests that need the downloaded NASA, CALB or HUST data skip when it is absent.
 
 ### Recorded evaluation
 
