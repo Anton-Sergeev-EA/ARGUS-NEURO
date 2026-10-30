@@ -77,6 +77,8 @@ def triage(
                 "margin_points": None if soh is None else round(soh - threshold, 2),
                 "remaining_equivalent_cycles": report["rul"].get("equivalent_cycles"),
                 "forecast_status": report["rul"]["status"],
+                "forecast_interval_kind": report["rul"].get("interval_kind"),
+                "measurement_scope": report["measurement_scope"],
                 "usable_records": report["data_quality"]["usable_records"],
                 "assessment_id": report["assessment_id"],
             }

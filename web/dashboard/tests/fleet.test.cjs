@@ -11,7 +11,7 @@ test('every language translates the fleet page, the priorities and every reason 
   const dynamic = [...PRIORITIES.map(p => 'prio_' + p),
     'reason_below_service_threshold', 'reason_bms_alarm', 'reason_approaching_threshold',
     'reason_forecast_within_planning_horizon', 'reason_cell_imbalance', 'reason_no_comparable_measurements',
-    'colBattery', 'colSoh', 'colMargin', 'colPriority', 'colReasons', 'colRemaining', 'fleetLimits', 'fleetError', 'fleetSummary'];
+    'fleetUncalibrated', 'colBattery', 'colSoh', 'colMargin', 'colPriority', 'colReasons', 'colRemaining', 'fleetLimits', 'fleetError', 'fleetSummary'];
   for (const lang of LANGUAGES) {
     for (const key of [...keys, ...dynamic]) {
       assert.ok(TEXT[lang][key] && TEXT[lang][key].trim(), `${lang} ${key}`);

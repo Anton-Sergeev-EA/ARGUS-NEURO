@@ -69,11 +69,11 @@ if (typeof document !== 'undefined') {
       cell(tr, number(row.soh_pct));
       cell(tr, number(row.margin_points));
       const cycles = row.remaining_equivalent_cycles;
-      cell(tr, cycles ? [...new Set(cycles.map(number))].join('–') : '—');
+      cell(tr, cycles ? [...new Set(cycles.map(number))].join('–') + (row.measurement_scope === 'pack' && row.forecast_interval_kind !== 'empirically_calibrated_cell_level' ? ' *' : '') : '—');
       cell(tr, row.reasons.map(code => t('reason_' + code)).join('; ') || '—');
       table.append(tr);
     });
-    $('limits').textContent = t('fleetLimits');
+    $('limits').textContent = t('fleetLimits') + ' ' + t('fleetUncalibrated');
     $('message').textContent = last.batteries.toLocaleString(lang) + ' ' + t('fleetSummary');
   }
 
