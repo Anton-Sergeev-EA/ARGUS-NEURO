@@ -56,6 +56,25 @@ bash scripts/run_dashboard.sh
 
 Ouvrez [http://127.0.0.1:8000](http://127.0.0.1:8000), choisissez **B0018**, **40** observations et **Load measured NASA history**. L’anglais est la langue initiale ; sélectionnez le français en haut. Aucun entraînement n’est requis ici. Pour le diagnostic ML/DL des équipements, exécutez séparément `bash scripts/train_all.sh`, puis ouvrez `/equipment.html`.
 
+## Exécuter dans Docker sur n’importe quelle machine
+
+Il suffit de Docker Engine ou de Docker Desktop avec Compose v2 : l’image compile elle-même le cœur C++ et ses tests, tourne sur CPU et occupe environ 2 Go sur disque. Testé sous Linux x86-64 ; le même Dockerfile se construit pour arm64 (par exemple Apple Silicon), ce qui n’a pas été testé ici.
+
+```bash
+docker compose up --build -d
+docker compose exec argus bash scripts/train_all.sh
+docker compose exec argus python -m argus.battery.public_data --download
+docker compose restart argus
+bash scripts/docker_smoke.sh
+```
+
+1. La première commande construit l’image (quelques minutes) et démarre le serveur.
+2. La deuxième entraîne une fois les modèles d’équipements (environ une minute). Sans elle, la page équipements fonctionne en mode de base et indique que les modèles sont indisponibles ; la page batterie n’en a pas besoin.
+3. La troisième télécharge une fois les quatre cellules NASA publiées (environ 200 Mo). Elles ne sont pas intégrées à l’image : le catalogue n’indique aucune licence et les données ne sont pas redistribuées.
+4. La quatrième redémarre le serveur pour qu’il charge les modèles entraînés ; la cinquième vérifie le conteneur en marche (état, trois pages, rapport d’exemple).
+
+Ouvrez [http://127.0.0.1:8000](http://127.0.0.1:8000). Le port n’écoute que sur localhost, car l’API n’a pas d’authentification ; changez-le avec `ARGUS_PORT`. Le volume `argus-data` conserve modèles, données NASA et rapports enregistrés : `docker compose down` le garde, `docker compose down -v` le supprime. Le conteneur s’exécute en utilisateur non root, avec un système de fichiers racine en lecture seule.
+
 ## Comment fonctionne le projet
 
 ARGUS-NEURO transforme des mesures en un rapport qui dit ce qui est connu, ce qui est estimé et ce qui est refusé.

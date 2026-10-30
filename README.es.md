@@ -56,6 +56,25 @@ bash scripts/run_dashboard.sh
 
 Abra [http://127.0.0.1:8000](http://127.0.0.1:8000), elija **B0018**, mantenga **40** observaciones y pulse **Load measured NASA history**. El idioma inicial es inglés; puede elegir español arriba. Esta ruta no necesita entrenar modelos. Para el diagnóstico ML/DL de equipos, ejecute además `bash scripts/train_all.sh` y abra `/equipment.html`.
 
+## Ejecutar en Docker en cualquier máquina
+
+Solo hace falta Docker Engine o Docker Desktop con Compose v2: la imagen compila sola el núcleo C++ y sus pruebas, funciona en CPU y ocupa unos 2 GB en disco. Probado en Linux x86-64; el mismo Dockerfile se construye para arm64 (por ejemplo Apple Silicon), algo que aquí no se ha probado.
+
+```bash
+docker compose up --build -d
+docker compose exec argus bash scripts/train_all.sh
+docker compose exec argus python -m argus.battery.public_data --download
+docker compose restart argus
+bash scripts/docker_smoke.sh
+```
+
+1. El primer comando construye la imagen (varios minutos) e inicia el servidor.
+2. El segundo entrena una vez los modelos de equipos (cerca de un minuto). Sin él, la página de equipos funciona en modo base e indica que los modelos no están disponibles; la página de batería no lo necesita.
+3. El tercero descarga una vez las cuatro celdas NASA publicadas (unos 200 MB). No están incluidas en la imagen porque el catálogo no indica licencia y los datos no se redistribuyen.
+4. El cuarto reinicia el servidor para que cargue los modelos entrenados; el quinto comprueba el contenedor en marcha (estado, tres páginas, informe de ejemplo).
+
+Abra [http://127.0.0.1:8000](http://127.0.0.1:8000). El puerto solo escucha en localhost porque la API no tiene autenticación; cámbielo con `ARGUS_PORT`. El volumen `argus-data` guarda modelos, datos NASA e informes guardados: `docker compose down` lo conserva, `docker compose down -v` lo borra. El contenedor se ejecuta como usuario sin privilegios con el sistema de archivos raíz de solo lectura.
+
 ## Cómo funciona el proyecto
 
 ARGUS-NEURO convierte mediciones en un informe que dice qué se sabe, qué se estima y qué se rechaza afirmar.

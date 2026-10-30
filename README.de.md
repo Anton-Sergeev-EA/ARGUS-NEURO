@@ -56,6 +56,25 @@ bash scripts/run_dashboard.sh
 
 Öffnen Sie [http://127.0.0.1:8000](http://127.0.0.1:8000), wählen Sie **B0018**, **40** Beobachtungen und **Load measured NASA history**. Englisch ist Standard; oben lässt sich Deutsch auswählen. Dafür ist kein Modelltraining nötig. Für die ML/DL-Gerätediagnose zusätzlich `bash scripts/train_all.sh` ausführen und `/equipment.html` öffnen.
 
+## Auf jedem Rechner in Docker starten
+
+Nötig sind nur Docker Engine oder Docker Desktop mit Compose v2: Das Image baut den C++-Kern samt Tests selbst, läuft auf der CPU und belegt rund 2 GB auf der Platte. Getestet unter Linux x86-64; dasselbe Dockerfile baut auch für arm64 (etwa Apple Silicon), was hier nicht getestet wurde.
+
+```bash
+docker compose up --build -d
+docker compose exec argus bash scripts/train_all.sh
+docker compose exec argus python -m argus.battery.public_data --download
+docker compose restart argus
+bash scripts/docker_smoke.sh
+```
+
+1. Der erste Befehl baut das Image (einige Minuten) und startet den Server.
+2. Der zweite trainiert einmalig die Anlagenmodelle (etwa eine Minute). Ohne ihn läuft die Geräteseite im Basismodus und meldet, dass die Modelle fehlen; die Batterieseite braucht ihn nicht.
+3. Der dritte lädt einmalig die vier veröffentlichten NASA-Zellen (etwa 200 MB). Sie sind nicht im Image enthalten, weil der Katalog keine Lizenz nennt und die Daten nicht weiterverbreitet werden.
+4. Der vierte startet den Server neu, damit er die trainierten Modelle lädt; der fünfte prüft den laufenden Container (Zustand, drei Seiten, Beispielbericht).
+
+Öffnen Sie [http://127.0.0.1:8000](http://127.0.0.1:8000). Der Port ist nur an localhost gebunden, weil die API keine Authentifizierung hat; mit `ARGUS_PORT` ändern Sie ihn. Das Volume `argus-data` bewahrt Modelle, NASA-Daten und gespeicherte Berichte: `docker compose down` behält es, `docker compose down -v` löscht es. Der Container läuft als Nicht-Root-Benutzer mit schreibgeschütztem Root-Dateisystem.
+
 ## So funktioniert das Projekt
 
 ARGUS-NEURO macht aus Messwerten einen Bericht, der sagt, was bekannt ist, was geschätzt wird und was bewusst zurückgehalten wird.

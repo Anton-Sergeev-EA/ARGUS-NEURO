@@ -56,6 +56,25 @@ bash scripts/run_dashboard.sh
 
 打开 [http://127.0.0.1:8000](http://127.0.0.1:8000)，选择 **B0018**、**40** 次观测并点击 **Load measured NASA history**。默认语言为英语，可在页面顶部切换中文。该流程无需训练模型。使用设备 ML/DL 诊断时，另行运行 `bash scripts/train_all.sh`，再访问 `/equipment.html`。
 
+## 在任何机器上用 Docker 运行
+
+只需 Docker Engine 或带 Compose v2 的 Docker Desktop：镜像会自行编译 C++ 核心并运行其测试，只用 CPU，占用约 2 GB 磁盘。已在 Linux x86-64 上测试；同一个 Dockerfile 也可为 arm64（例如 Apple Silicon）构建，但这里未测试。
+
+```bash
+docker compose up --build -d
+docker compose exec argus bash scripts/train_all.sh
+docker compose exec argus python -m argus.battery.public_data --download
+docker compose restart argus
+bash scripts/docker_smoke.sh
+```
+
+1. 第一条命令构建镜像（需几分钟）并启动服务器。
+2. 第二条一次性训练设备模型（约一分钟）。不执行它时，设备页面以基线模式运行并提示模型不可用；电池页面不需要它。
+3. 第三条一次性下载四个已公开的 NASA 单体（约 200 MB）。它们没有打包进镜像，因为目录未注明许可，且该数据不再分发。
+4. 第四条重启服务器以加载训练好的模型；第五条检查运行中的容器（健康状态、三个页面、示例报告）。
+
+打开 [http://127.0.0.1:8000](http://127.0.0.1:8000)。端口只绑定到本机，因为 API 没有身份验证；可用 `ARGUS_PORT` 修改。卷 `argus-data` 保存模型、NASA 数据和已保存的报告：`docker compose down` 会保留它，`docker compose down -v` 会删除它。容器以非 root 用户运行，根文件系统为只读。
+
 ## 项目如何工作
 
 ARGUS-NEURO 把测量数据变成一份报告，清楚说明哪些是已知的、哪些是估计的、哪些被拒绝给出。

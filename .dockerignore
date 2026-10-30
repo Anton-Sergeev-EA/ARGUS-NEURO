@@ -1,0 +1,21 @@
+.git
+.github
+.venv
+.claude
+.hypothesis
+.ruff_cache
+.pytest_cache
+.coverage
+**/__pycache__
+build
+compile_commands.json
+docs
+experiments
+README*.md
+# Local state and downloaded data stay out of the image; the datasets are not redistributed.
+artifacts/battery-local
+artifacts/run-*
+artifacts/revalidated-*
+artifacts/battery-benchmark-*
+artifacts/active.json
+artifacts/active.json.tmp

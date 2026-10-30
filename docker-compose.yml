@@ -1,0 +1,21 @@
+# docker compose up --build   ->   http://127.0.0.1:8000
+services:
+  argus:
+    build: .
+    image: argus-neuro:local
+    # Bound to localhost only: the API has no authentication. Change the address deliberately.
+    ports:
+      - "127.0.0.1:${ARGUS_PORT:-8000}:8000"
+    volumes:
+      - argus-data:/app/artifacts
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+volumes:
+  argus-data:

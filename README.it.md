@@ -56,6 +56,25 @@ bash scripts/run_dashboard.sh
 
 Aprire [http://127.0.0.1:8000](http://127.0.0.1:8000), scegliere **B0018**, **40** osservazioni e **Load measured NASA history**. L’inglese è predefinito; selezionare l’italiano in alto. Questo percorso non richiede addestramento. Per la diagnostica ML/DL delle apparecchiature eseguire separatamente `bash scripts/train_all.sh` e aprire `/equipment.html`.
 
+## Eseguire in Docker su qualsiasi macchina
+
+Bastano Docker Engine o Docker Desktop con Compose v2: l’immagine compila da sola il nucleo C++ e i suoi test, funziona su CPU e occupa circa 2 GB su disco. Provato su Linux x86-64; lo stesso Dockerfile si costruisce anche per arm64 (per esempio Apple Silicon), cosa non provata qui.
+
+```bash
+docker compose up --build -d
+docker compose exec argus bash scripts/train_all.sh
+docker compose exec argus python -m argus.battery.public_data --download
+docker compose restart argus
+bash scripts/docker_smoke.sh
+```
+
+1. Il primo comando costruisce l’immagine (alcuni minuti) e avvia il server.
+2. Il secondo addestra una volta i modelli delle apparecchiature (circa un minuto). Senza di esso la pagina apparecchiature funziona in modalità di base e segnala che i modelli non sono disponibili; la pagina batteria non ne ha bisogno.
+3. Il terzo scarica una volta le quattro celle NASA pubblicate (circa 200 MB). Non sono incluse nell’immagine perché il catalogo non indica una licenza e i dati non vengono ridistribuiti.
+4. Il quarto riavvia il server perché carichi i modelli addestrati; il quinto verifica il contenitore in esecuzione (stato, tre pagine, rapporto di esempio).
+
+Aprite [http://127.0.0.1:8000](http://127.0.0.1:8000). La porta è legata solo a localhost perché l’API non ha autenticazione; si cambia con `ARGUS_PORT`. Il volume `argus-data` conserva modelli, dati NASA e rapporti salvati: `docker compose down` lo mantiene, `docker compose down -v` lo elimina. Il contenitore gira come utente non root con il file system radice in sola lettura.
+
 ## Come funziona il progetto
 
 ARGUS-NEURO trasforma le misure in un rapporto che dice cosa è noto, cosa è stimato e cosa viene rifiutato.

@@ -54,6 +54,25 @@ bash scripts/run_dashboard.sh
 
 [http://127.0.0.1:8000](http://127.0.0.1:8000) を開き、**B0018**、**40**回の観測、**Load measured NASA history** を選択します。初期言語は英語です。上部で日本語に切り替えられます。この処理にモデル学習は不要です。機器の ML/DL 診断には別途 `bash scripts/train_all.sh` を実行し、`/equipment.html` を開いてください。
 
+## どのマシンでも Docker で実行
+
+必要なのは Docker Engine、または Compose v2 付きの Docker Desktop だけです。イメージは C++ コアとそのテストを自分でビルドし、CPU で動作し、ディスクを約 2 GB 使います。Linux x86-64 で検証済みで、同じ Dockerfile は arm64（例：Apple Silicon）向けにもビルドできますが、ここでは検証していません。
+
+```bash
+docker compose up --build -d
+docker compose exec argus bash scripts/train_all.sh
+docker compose exec argus python -m argus.battery.public_data --download
+docker compose restart argus
+bash scripts/docker_smoke.sh
+```
+
+1. 1 つ目のコマンドがイメージをビルド（数分）してサーバーを起動します。
+2. 2 つ目が機器モデルを一度だけ学習します（約 1 分）。実行しないと機器ページはベースラインモードで動き、モデルが利用できないと表示します。電池ページには不要です。
+3. 3 つ目が公開済み NASA セル 4 種（約 200 MB）を一度だけダウンロードします。カタログにライセンス表記がなく、データは再配布しないため、イメージには含めていません。
+4. 4 つ目が学習済みモデルを読み込むためにサーバーを再起動し、5 つ目が起動中のコンテナ（状態、3 ページ、サンプルレポート）を確認します。
+
+[http://127.0.0.1:8000](http://127.0.0.1:8000) を開きます。API に認証がないため、ポートはローカルホストのみに公開されます。変更は `ARGUS_PORT` で行います。ボリューム `argus-data` にモデル、NASA データ、保存したレポートが残ります。`docker compose down` では残り、`docker compose down -v` で削除されます。コンテナは非 root ユーザーで、読み取り専用のルートファイルシステムで動作します。
+
 ## プロジェクトの仕組み
 
 ARGUS-NEURO は測定値を、何が分かっていて、何が推定で、何を控えるのかを示すレポートに変えます。

@@ -83,6 +83,25 @@ bash scripts/run_dashboard.sh
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000), choose **B0018**, keep **40** observations and select **Load measured NASA history**. English is the default; the language selector is at the top. This route needs no model training. For model-backed equipment diagnostics, separately run `bash scripts/train_all.sh` and open `/equipment.html`.
 
+## Run in Docker on any machine
+
+Docker Engine or Docker Desktop with Compose v2 is all you need; the image builds the C++ core and its tests itself, runs on the CPU and takes about 2 GB on disk. Tested on Linux x86-64; the same Dockerfile builds for arm64 (for example Apple Silicon), which has not been tested here.
+
+```bash
+docker compose up --build -d
+docker compose exec argus bash scripts/train_all.sh
+docker compose exec argus python -m argus.battery.public_data --download
+docker compose restart argus
+bash scripts/docker_smoke.sh
+```
+
+1. The first command builds the image (several minutes) and starts the server.
+2. The second trains the equipment models once (about one minute). Without it the equipment page runs in baseline mode and says the models are unavailable; the battery page does not need it.
+3. The third downloads the four public NASA cells (about 200 MB) once. They are not baked into the image, because the catalog states no licence and the data is not redistributed.
+4. The fourth restarts the server so it loads the trained models; the fifth checks the running container (health, three pages, example report).
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The port is bound to localhost only, because the API has no authentication; set `ARGUS_PORT` to change it. The volume `argus-data` keeps models, NASA data and saved reports: `docker compose down` keeps it, `docker compose down -v` deletes it. The container runs as a non-root user with a read-only root filesystem.
+
 ## How the project works
 
 ARGUS-NEURO turns measurements into a report that says what is known, what is estimated and what is withheld.
