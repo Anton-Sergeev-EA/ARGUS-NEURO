@@ -2,7 +2,7 @@
 # ARGUS-NEURO in one image: builds the C++20 core and the pybind11 module, then serves the
 # dashboard and API on port 8000. CPU only; works on linux/amd64 and linux/arm64.
 
-FROM python:3.12-slim-bookworm AS build
+FROM python:3.15-slim-bookworm AS build
 RUN apt-get update \
     && apt-get install -y --no-install-recommends build-essential cmake ninja-build \
     && rm -rf /var/lib/apt/lists/*
@@ -18,7 +18,7 @@ ENV ARGUS_PYTHON=/opt/venv/bin/python
 RUN bash scripts/build_cpp_core.sh && ctest --test-dir build --output-on-failure \
     && mkdir /native && cp build/cpp_core/argus_core*.so /native/
 
-FROM python:3.12-slim-bookworm AS runtime
+FROM python:3.15-slim-bookworm AS runtime
 RUN useradd --system --uid 10001 --create-home argus
 WORKDIR /app
 COPY --from=build /opt/venv /opt/venv
